@@ -39,3 +39,4 @@ persistence:
 env:
   FILEBROWSER_ROOT: /data
   PORT: '8080'
+  LOG_LEVEL: 'info'

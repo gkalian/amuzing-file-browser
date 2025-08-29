@@ -10,6 +10,15 @@ export type SettingsDoc = {
   ignoreNames?: string[];
 } | null;
 
+export type LogLevel = 'error' | 'warn' | 'info' | 'debug';
+
+const LEVEL_ORDER: LogLevel[] = ['error', 'warn', 'info', 'debug'];
+function normalizeLogLevel(v: string | undefined): LogLevel {
+  const x = String(v || '').toLowerCase();
+  if (LEVEL_ORDER.includes(x as LogLevel)) return x as LogLevel;
+  return 'info';
+}
+
 export const DEFAULT_ALLOWED_TYPES = 'jpg, jpeg, gif, png, webp, 7z, zip';
 
 // Backing store (mutable at runtime)
@@ -19,6 +28,7 @@ const state = {
   maxUploadMB: process.env.FILEBROWSER_MAX_UPLOAD_MB ? Number(process.env.FILEBROWSER_MAX_UPLOAD_MB) : 50,
   allowedTypes: undefined as string | undefined,
   ignoreNames: ['.settings.json'] as string[],
+  logLevel: normalizeLogLevel(process.env.LOG_LEVEL),
 };
 
 // Accessors
@@ -37,6 +47,15 @@ export function getAllowedTypes() {
 export function getIgnoreNames() {
   return state.ignoreNames;
 }
+export function getLogLevel(): LogLevel {
+  return state.logLevel;
+}
+
+export function isLevelEnabled(level: LogLevel) {
+  const idx = LEVEL_ORDER.indexOf(level);
+  const cur = LEVEL_ORDER.indexOf(state.logLevel);
+  return idx <= cur;
+}
 
 // Mutators
 export function setRoot(newRoot: string) {
@@ -50,6 +69,9 @@ export function setAllowedTypes(v: string | undefined) {
 }
 export function setIgnoreNames(v: string[]) {
   state.ignoreNames = v.filter((s) => typeof s === 'string' && s.length > 0);
+}
+export function setLogLevel(v: string | LogLevel) {
+  state.logLevel = normalizeLogLevel(String(v));
 }
 
 // Settings helpers (.settings.json lives under current root)

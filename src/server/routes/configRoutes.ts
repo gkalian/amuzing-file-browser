@@ -54,6 +54,18 @@ export function registerConfigRoutes(app: express.Application) {
         allowedTypes: getAllowedTypes() || DEFAULT_ALLOWED_TYPES,
         ignoreNames: getIgnoreNames(),
       });
+      // Action log
+      console.log(
+        JSON.stringify({
+          time: new Date().toISOString(),
+          level: 'info',
+          action: 'config.update',
+          root: getRoot(),
+          maxUploadMB: getMaxUploadMB(),
+          allowedTypes: getAllowedTypes() || DEFAULT_ALLOWED_TYPES,
+          ignoreNames: getIgnoreNames(),
+        })
+      );
 
       res.json({
         ok: true,

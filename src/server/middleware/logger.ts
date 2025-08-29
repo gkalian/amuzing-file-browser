@@ -1,7 +1,8 @@
 import express from 'express';
+import { log } from '../log.js';
 
 export function registerLogger(app: express.Application) {
-  // Simple request logger: prints JSON to stdout
+  // Debug-level access logger: prints JSON for every request
   app.use((req, res, next) => {
     const start = Date.now();
     const { method } = req;
@@ -11,19 +12,7 @@ export function registerLogger(app: express.Application) {
       const durationMs = Date.now() - start;
       const status = res.statusCode;
       const length = res.getHeader('content-length') || '-';
-      // Structured line for easy parsing in log systems
-      console.log(
-        JSON.stringify({
-          time: new Date().toISOString(),
-          level: 'info',
-          method,
-          url,
-          status,
-          durationMs,
-          length,
-          ua,
-        })
-      );
+      log('debug', { method, url, status, durationMs, length, ua });
     });
     next();
   });

@@ -5,7 +5,8 @@ import { registerConfigRoutes } from './routes/configRoutes.js';
 import { registerHealthRoutes } from './routes/healthRoutes.js';
 import { registerFsRoutes } from './routes/fsRoutes.js';
 import { createMulter, preUploadLimitCheck } from './upload.js';
-import { getRoot } from './config.js';
+import { toApiPath } from './paths.js';
+import { logAction } from './log.js';
 
 export function createApp() {
   const app = express();
@@ -28,15 +29,23 @@ export function createApp() {
     preUploadLimitCheck(),
     upload.array('files'),
     async (req, res) => {
-      res.json({
-        ok: true,
-        files:
-          (req.files as Express.Multer.File[] | undefined)?.map((f) => ({
-            originalname: f.originalname,
-            size: f.size,
-            path: path.posix.join('/', path.relative(getRoot(), f.path).split(path.sep).join('/')),
-          })) || [],
-      });
+      const files =
+        (req.files as Express.Multer.File[] | undefined)?.map((f) => ({
+          originalname: f.originalname,
+          size: f.size,
+          path: toApiPath(f.path),
+        })) || [];
+
+      const totalBytes = files.reduce((acc, f) => acc + (typeof f.size === 'number' ? f.size : 0), 0);
+      const dest = String((req.query as any).path || '/');
+      // Action log (base at info, extras at debug)
+      logAction(
+        'upload',
+        { count: files.length, totalBytes, dest },
+        { files: files.map((f) => ({ name: f.originalname, size: f.size, path: f.path })), ua: req.get('user-agent') || '' }
+      );
+
+      res.json({ ok: true, files });
     }
   );
 
