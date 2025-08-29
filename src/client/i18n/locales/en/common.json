@@ -1,0 +1,68 @@
+{
+  "app": {
+    "title": "Amuzing File Browser"
+  },
+  "settings": {
+    "title": "Settings",
+    "rootPath": "Root path",
+    "rootPlaceholder": "/absolute/path",
+    "maxUpload": "Max upload (MB)",
+    "theme": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "preview": "Show image preview",
+    "save": "Save settings",
+    "saved": "Settings saved",
+    "lang": "Language",
+    "allowedTypes": "Allowed upload formats (comma-separated)",
+    "allowedTypesPlaceholder": "e.g. jpg,png,webp"
+  },
+  "search": {
+    "placeholder": "Search"
+  },
+  "notifications": {
+    "linkCopied": "Link copied: {{url}}",
+    "copyLinkFailed": "Failed to copy link",
+    "uploadSuccess": "Uploaded: {{name}}",
+    "uploadFailed": "Upload failed",
+    "deleteSuccess": "Deleted: {{name}}",
+    "deleteFailed": "Delete failed",
+    "mkdirSuccess": "Folder created: {{name}}",
+    "mkdirFailed": "Create Folder failed",
+    "renameSuccess": "Renamed to: {{name}}",
+    "renameFailed": "Rename failed",
+    "settingsSaved": "Settings saved",
+    "settingsSaveFailed": "Settings save failed",
+    "uploadTypeNotAllowed": "Not allowed format: {{name}}"
+  },
+  "header": {
+    "upload": "Upload",
+    "newFolder": "New folder",
+    "settings": "Settings"
+  },
+  "table": {
+    "headers": { "name": "Name", "size": "Size", "modified": "Modified" },
+    "tooltips": { "openFolder": "Open folder", "selectDeselect": "Select/Deselect" },
+    "aria": { "download": "download", "rename": "rename", "getLink": "get-link", "delete": "delete" }
+  },
+  "bottom": {
+    "stats": "{{dirs}} folders • {{files}} files • {{size}} total"
+  },
+  "mkdir": {
+    "title": "Create folder",
+    "placeholder": "Folder name",
+    "create": "Create"
+  },
+  "rename": {
+    "placeholder": "New name"
+  },
+  "preview": {
+    "selectFile": "Select a file to preview",
+    "folder": "Folder",
+    "labels": { "name": "Name:", "dimensions": "Dimensions:", "size": "Size:", "type": "Type:", "modified": "Modified:" },
+    "noPreview": "No preview available"
+  },
+  "footer": {
+    "version": "Amuzing File Browser {{year}}, ver. {{version}}"
+  }
+}

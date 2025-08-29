@@ -1,0 +1,163 @@
+// Virtualized file table listing with actions (open, rename, link, delete)
+import React, { memo, useCallback, useMemo } from 'react';
+import { Anchor, Group, Table, ActionIcon } from '@mantine/core';
+import {
+  IconFolder,
+  IconFile,
+  IconDownload,
+  IconPencil,
+  IconLink,
+  IconTrash,
+} from '@tabler/icons-react';
+import { api } from '../services/apiClient';
+import type { FsItem } from '../core/types';
+import { useTranslation } from 'react-i18next';
+import { notifySuccess, notifyError } from '../core/notify';
+import { TableVirtuoso } from 'react-virtuoso';
+
+type Item = FsItem & { displaySize?: string; displayMtime?: string };
+type Props = {
+  items: Item[];
+  onOpen: (item: FsItem) => void;
+  onRequestRename: (item: FsItem) => void;
+  onDelete: (item: FsItem) => void;
+  selectedPath?: string | null;
+};
+
+// Hoisted Virtuoso components to avoid re-creating them on each render
+const VirtTable = (props: any) => <Table {...props} highlightOnHover stickyHeader />;
+const VirtTableHead = Table.Thead;
+const VirtTableRow = Table.Tr as any;
+const VirtTableBody = (props: any) => <Table.Tbody {...props} data-testid="table-body" />;
+
+function FileTableBase({ items, onOpen, onRequestRename, onDelete, selectedPath }: Props) {
+  const { t } = useTranslation();
+  const numberFmt = useMemo(() => new Intl.NumberFormat(), []);
+  // Memoized header and row renderer to minimize allocations
+  const headerContent = useCallback(
+    () => (
+      <Table.Tr>
+        <Table.Th>{t('table.headers.name', { defaultValue: 'Name' })}</Table.Th>
+        <Table.Th>{t('table.headers.size', { defaultValue: 'Size' })}</Table.Th>
+        <Table.Th>{t('table.headers.modified', { defaultValue: 'Modified' })}</Table.Th>
+        <Table.Th style={{ width: 220 }}></Table.Th>
+      </Table.Tr>
+    ),
+    [t]
+  );
+
+  const onGetLink = useCallback(
+    async (it: Item) => {
+      const url = new URL('/files' + it.path, window.location.origin).toString();
+      try {
+        await navigator.clipboard.writeText(url);
+        notifySuccess(t('notifications.linkCopied', { defaultValue: 'Link copied: {{url}}', url }));
+      } catch (e: any) {
+        notifyError(
+          t('notifications.copyLinkFailed', { defaultValue: 'Failed to copy link' }) +
+            (e?.message ? `: ${e.message}` : ''),
+          t('notifications.copyLinkFailed', { defaultValue: 'Failed to copy link' })
+        );
+      }
+    },
+    [t]
+  );
+
+  const itemContent = useCallback(
+    (_: number, it: Item) => {
+      const isSelected = selectedPath === it.path;
+      const selStyle = isSelected ? { background: 'var(--mantine-color-blue-0)' } : undefined;
+      return (
+        <>
+          <Table.Td
+            style={{ cursor: 'pointer', ...selStyle }}
+            data-selected={isSelected || undefined}
+            onClick={() => onOpen(it)}
+            title={
+              it.isDir
+                ? t('table.tooltips.openFolder', { defaultValue: 'Open folder' })
+                : (it.mime || '').startsWith('image/')
+                  ? t('table.tooltips.selectDeselect', { defaultValue: 'Select/Deselect' })
+                  : undefined
+            }
+          >
+            <Group gap={6} wrap="nowrap">
+              {it.isDir ? <IconFolder size={18} /> : <IconFile size={18} />}
+              <Anchor onClick={() => onOpen(it)} data-testid="item-open">
+                {it.name}
+              </Anchor>
+            </Group>
+          </Table.Td>
+          <Table.Td style={selStyle}>
+            {it.isDir ? '-' : (it.displaySize ?? numberFmt.format(it.size))}
+          </Table.Td>
+          <Table.Td style={selStyle}>
+            {it.displayMtime ?? new Date(it.mtimeMs).toLocaleString()}
+          </Table.Td>
+          <Table.Td style={selStyle}>
+            <Group gap={4}>
+              {!it.isDir && (
+                <ActionIcon
+                  component="a"
+                  href={api.downloadUrl(it.path)}
+                  variant="light"
+                  aria-label={t('table.aria.download', { defaultValue: 'download' })}
+                  data-testid="action-download"
+                >
+                  <IconDownload size={16} />
+                </ActionIcon>
+              )}
+              <ActionIcon
+                variant="light"
+                aria-label={t('table.aria.rename', { defaultValue: 'rename' })}
+                onClick={() => onRequestRename(it)}
+                data-testid="action-rename"
+              >
+                <IconPencil size={16} />
+              </ActionIcon>
+              {!it.isDir && (
+                <ActionIcon
+                  variant="light"
+                  aria-label={t('table.aria.getLink', { defaultValue: 'get-link' })}
+                  onClick={() => onGetLink(it)}
+                  data-testid="action-get-link"
+                >
+                  <IconLink size={16} />
+                </ActionIcon>
+              )}
+              <ActionIcon
+                variant="light"
+                color="red"
+                aria-label={t('table.aria.delete', { defaultValue: 'delete' })}
+                onClick={() => onDelete(it)}
+                data-testid="action-delete"
+              >
+                <IconTrash size={16} />
+              </ActionIcon>
+            </Group>
+          </Table.Td>
+        </>
+      );
+    },
+    [numberFmt, onDelete, onOpen, onRequestRename, onGetLink, selectedPath]
+  );
+
+  return (
+    <TableVirtuoso<Item>
+      data={items}
+      style={{ height: '100%' }}
+      computeItemKey={(_, it) => it.path}
+      increaseViewportBy={{ top: 200, bottom: 400 }}
+      components={{
+        Table: VirtTable,
+        TableHead: VirtTableHead,
+        TableRow: VirtTableRow,
+        TableBody: VirtTableBody,
+      }}
+      fixedHeaderContent={headerContent}
+      itemContent={itemContent}
+    />
+  );
+}
+
+export const FileTable = memo(FileTableBase);

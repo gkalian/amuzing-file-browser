@@ -1,0 +1,17 @@
+CHANGELOG.md
+
+build
+chart
+coverage
+dist
+fonts
+helm
+node_modules
+
+package-lock.json
+pnpm-lock.yaml
+yarn-error.log
+yarn.lock
+
+.gitignore
+.prettierignore

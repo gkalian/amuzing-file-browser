@@ -1,0 +1,41 @@
+image:
+  repository: ghcr.io/gkalian/amuzing-filebrowser
+  tag: '1.0.0'
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
+service:
+  type: ClusterIP
+  port: 80
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+ingress:
+  enabled: false
+  className: ''
+  annotations: {}
+  hosts:
+    - host: filebrowser.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+persistence:
+  enabled: true
+  size: 10Gi
+  storageClass: ''
+  accessModes:
+    - ReadWriteOnce
+  mountPath: /data
+
+env:
+  FILEBROWSER_ROOT: /data
+  PORT: '8080'
