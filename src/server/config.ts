@@ -1,4 +1,6 @@
-// Centralized runtime config and settings persistence for the server
+// Runtime configuration and settings persistence for the server.
+// Holds mutable state (root, upload limits, ignore list, log level),
+// reads/writes .settings.json, and exposes helpers like isLevelEnabled(LOG_LEVEL).
 import fs from 'fs';
 import fsp from 'fs/promises';
 import path from 'path';
@@ -13,6 +15,7 @@ export type SettingsDoc = {
 export type LogLevel = 'error' | 'warn' | 'info' | 'debug';
 
 const LEVEL_ORDER: LogLevel[] = ['error', 'warn', 'info', 'debug'];
+// Normalize string env value to a valid LogLevel (defaults to 'info').
 function normalizeLogLevel(v: string | undefined): LogLevel {
   const x = String(v || '').toLowerCase();
   if (LEVEL_ORDER.includes(x as LogLevel)) return x as LogLevel;
@@ -51,6 +54,7 @@ export function getLogLevel(): LogLevel {
   return state.logLevel;
 }
 
+// Returns true when the requested level is enabled according to current LOG_LEVEL
 export function isLevelEnabled(level: LogLevel) {
   const idx = LEVEL_ORDER.indexOf(level);
   const cur = LEVEL_ORDER.indexOf(state.logLevel);

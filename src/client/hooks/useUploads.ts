@@ -1,3 +1,5 @@
+// Hook: manages queued uploads with type filtering, per-file and total progress,
+// notifications, and directory refresh on completion.
 import { useCallback, useState } from 'react';
 import { api } from '../services/apiClient';
 import { notifyError, notifySuccess } from '../core/notify';
@@ -19,6 +21,7 @@ export function useUploads(params: {
     async (files: File[]) => {
       if (!files?.length) return;
       let arr = Array.from(files);
+      // Parse allowed extensions (comma-separated); empty list means allow all
       const allowed = (allowedTypes || '')
         .split(',')
         .map((s) => s.trim().toLowerCase())
@@ -46,7 +49,7 @@ export function useUploads(params: {
         arr.map((f) => ({ name: f.name, size: f.size || 0, uploaded: 0, status: 'pending' as const }))
       );
       try {
-        let base = 0;
+        let base = 0; // accumulated bytes from completed files
         for (let idx = 0; idx < arr.length; idx++) {
           const f = arr[idx];
           setUploadItems((prev) => prev.map((it, i) => (i === idx ? { ...it, status: 'uploading' } : it)));
@@ -74,6 +77,7 @@ export function useUploads(params: {
         await loadList(cwd);
       } finally {
         setUploading(false);
+        // Small delay to let the user see the completion, then reset UI state
         setTimeout(() => {
           setUploadedBytes(0);
           setTotalBytes(0);

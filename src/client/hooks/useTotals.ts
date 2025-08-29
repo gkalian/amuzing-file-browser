@@ -1,3 +1,4 @@
+// Hook: computes counts of files/dirs and total size for current items list.
 import { useMemo } from 'react';
 import type { UiFsItem } from './useFileList';
 

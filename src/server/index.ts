@@ -1,3 +1,5 @@
+// Server bootstrap: loads settings, builds the Express app, and starts listening.
+// Also installs global error handlers for process-level failures.
 // Express server entry: provides config endpoints and filesystem API (list/stat/preview/upload/download)
 import { createApp } from './app.js';
 import { ensureRootExists, loadInitialSettings, getRoot, getPort } from './config.js';

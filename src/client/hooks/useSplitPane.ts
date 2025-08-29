@@ -1,3 +1,4 @@
+// Hook: manages draggable horizontal split with clamped bounds and RAF throttling.
 import { useEffect, useRef, useState } from 'react';
 
 export function useSplitPane(initial = 70, min = 67, max = 80) {

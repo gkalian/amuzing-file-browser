@@ -1,3 +1,5 @@
+// Request logging middleware: emits debug-level access logs using the centralized log() helper.
+// Access logs are printed only when LOG_LEVEL >= debug.
 import express from 'express';
 import { log } from '../log.js';
 

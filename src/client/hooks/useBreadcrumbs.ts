@@ -1,3 +1,4 @@
+// Hook: builds breadcrumb nodes from current working directory (cwd) and a root label.
 import { useMemo } from 'react';
 
 export function useBreadcrumbs(cwd: string, rootLabel: string) {

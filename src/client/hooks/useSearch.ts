@@ -1,3 +1,4 @@
+// Hook: debounced search state with React transition for snappy input.
 import { startTransition, useCallback, useState } from 'react';
 import { useDebouncedValue } from '@mantine/hooks';
 

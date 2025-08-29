@@ -1,3 +1,4 @@
+// Notification helpers: thin wrappers around Mantine notifications for success/info/error.
 import { notifications } from '@mantine/notifications';
 
 export function notifySuccess(message: string, title = 'Success') {

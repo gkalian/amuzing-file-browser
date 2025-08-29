@@ -1,3 +1,5 @@
+// Centralized logging helpers: gate logs by LOG_LEVEL and provide a simple action logger.
+// Use log(level, data) for access/errors and logAction(action, base, debugExtras?) for structured actions.
 import { isLevelEnabled, type LogLevel } from './config.js';
 
 function nowISO() {

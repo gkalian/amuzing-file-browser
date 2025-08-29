@@ -1,3 +1,4 @@
+// Hook: tracks if viewport width is below a threshold to adapt layout (e.g., hide preview).
 import { useEffect, useState } from 'react';
 
 export function useIsNarrow(threshold = 700) {

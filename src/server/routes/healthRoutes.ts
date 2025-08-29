@@ -1,3 +1,4 @@
+// Health route: readiness/liveness endpoint exposing current ROOT for quick diagnostics.
 import express from 'express';
 import { getRoot } from '../config.js';
 

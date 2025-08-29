@@ -1,3 +1,4 @@
+// Hook: filesystem operations (mkdir, delete, rename) with notifications and list refresh.
 import { useCallback } from 'react';
 import { api, type FsItem } from '../services/apiClient';
 import { notifyError, notifySuccess } from '../core/notify';

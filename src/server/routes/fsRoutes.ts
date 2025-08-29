@@ -1,3 +1,5 @@
+// File-system routes: list/stat/preview/download and basic mutations (mkdir/rename/delete/write).
+// Uses safeJoinRoot/toApiPath to sandbox operations under ROOT and mime-based preview for text/images.
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
@@ -9,7 +11,7 @@ import { getIgnoreNames } from '../config.js';
 import { logAction } from '../log.js';
 
 export function registerFsRoutes(app: express.Application) {
-  // Pretty public file URL: /files/<path within root>
+  // Pretty public file URL: /files/<path within root> (regex avoids path-to-regexp edge cases)
   app.get(/^\/files\/.+$/, async (req, res) => {
     try {
       const rel = req.path.slice('/files'.length) || '/';
@@ -89,14 +91,14 @@ export function registerFsRoutes(app: express.Application) {
       const target = safeJoinRoot(String(req.query.path || '/'));
       const st = await fsp.stat(target);
       if (st.isDirectory()) return res.status(400).json({ error: 'Cannot preview a directory' });
-      const type = mime.lookup(target) || false;
+      const type = mime.lookup(target) || false; // Determine mime to decide text vs binary handling
       if (isTextLike(type)) {
         const content = await fsp.readFile(target, 'utf8');
         // Action log: preview (text)
         logAction('preview', { path: toApiPath(target), bytes: st.size }, { ua: req.get('user-agent') || '' });
         res.type((type as string) || 'text/plain').send(content);
       } else if (isImageLike(type)) {
-        // Action log: preview (image)
+        // Stream images directly to the client
         logAction('preview', { path: toApiPath(target), bytes: st.size }, { ua: req.get('user-agent') || '' });
         res.type((type as string) || 'application/octet-stream');
         fs.createReadStream(target).pipe(res);

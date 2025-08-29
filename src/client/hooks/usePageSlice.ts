@@ -1,3 +1,4 @@
+// Hook: computes current page slice and total pages from a list, page, and pageSize.
 import { useMemo } from 'react';
 
 export function usePageSlice<T>(list: T[] | null | undefined, page: number, pageSize: number) {

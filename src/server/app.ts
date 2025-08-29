@@ -1,3 +1,5 @@
+// Express app assembler: wires middleware, routes and upload endpoint.
+// In production it also serves the built client from /dist.
 import express from 'express';
 import path from 'path';
 import { registerLogger } from './middleware/logger.js';

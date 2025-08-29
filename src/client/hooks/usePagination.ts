@@ -1,3 +1,4 @@
+// Hook: stateful pagination (page/pageSize) with derived paged items and totalPages.
 import { useMemo, useState } from 'react';
 
 export function usePagination<T>(items: T[], defaultPageSize: '25' | '50' | '100' = '25') {

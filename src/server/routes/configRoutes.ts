@@ -1,3 +1,5 @@
+// Config routes: expose current server config and allow updating persistent settings.
+// POST /api/config validates and persists values to .settings.json via saveSettings().
 import express from 'express';
 import path from 'path';
 import {
@@ -12,6 +14,7 @@ import {
   saveSettings,
   DEFAULT_ALLOWED_TYPES,
 } from '../config.js';
+import { logAction } from '../log.js';
 
 export function registerConfigRoutes(app: express.Application) {
   // GET /api/config
@@ -48,23 +51,23 @@ export function registerConfigRoutes(app: express.Application) {
         setIgnoreNames(ignoreNames);
       }
 
+      // Persist new values to settings file under the current root
       await saveSettings(getRoot(), {
         root: getRoot(),
         maxUploadMB: getMaxUploadMB(),
         allowedTypes: getAllowedTypes() || DEFAULT_ALLOWED_TYPES,
         ignoreNames: getIgnoreNames(),
       });
-      // Action log
-      console.log(
-        JSON.stringify({
-          time: new Date().toISOString(),
-          level: 'info',
-          action: 'config.update',
+      // Action log (base at info, extras at debug)
+      logAction(
+        'config.update',
+        {
           root: getRoot(),
           maxUploadMB: getMaxUploadMB(),
           allowedTypes: getAllowedTypes() || DEFAULT_ALLOWED_TYPES,
           ignoreNames: getIgnoreNames(),
-        })
+        },
+        { ua: req.get('user-agent') || '' }
       );
 
       res.json({

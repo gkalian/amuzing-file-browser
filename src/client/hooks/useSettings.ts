@@ -1,3 +1,4 @@
+// Hook: loads/saves server config (root, upload limit, allowed types) with debounced autosave.
 import { useEffect, useRef, useState } from 'react';
 import { api } from '../services/apiClient';
 import { notifyError, notifySuccess } from '../core/notify';
@@ -27,7 +28,7 @@ export function useSettings(params: {
     });
   }, [defaultAllowedTypes]);
 
-  // debounced autosave
+  // Debounced autosave to avoid spamming server on each keystroke
   useEffect(() => {
     const h = setTimeout(async () => {
       if (!configLoadedRef.current) return;
