@@ -17,10 +17,7 @@ export function useFileSystemOps(params: {
       if (!trimmed) return;
       try {
         await api.mkdir(joinPath(cwd, trimmed));
-        notifySuccess(
-          t('notifications.mkdirSuccess', { defaultValue: 'Folder created: {{name}}', name: trimmed }),
-          t('header.newFolder', { defaultValue: 'New folder' })
-        );
+        notifySuccess(t('notifications.mkdirSuccess', { defaultValue: 'Folder created: {{name}}', name: trimmed }));
         await loadList(cwd);
       } catch (e: any) {
         notifyError(String(e?.message || e), t('notifications.mkdirFailed', { defaultValue: 'Create Folder failed' }));
@@ -34,10 +31,7 @@ export function useFileSystemOps(params: {
     async (item: FsItem) => {
       try {
         await api.delete(item.path);
-        notifySuccess(
-          t('notifications.deleteSuccess', { defaultValue: 'Deleted: {{name}}', name: item.name }),
-          t('notifications.deleteSuccess', { defaultValue: 'Delete' })
-        );
+        notifySuccess(t('notifications.deleteSuccess', { defaultValue: 'Deleted: {{name}}', name: item.name }));
         await loadList(cwd);
       } catch (e: any) {
         notifyError(String(e?.message || e), t('notifications.deleteFailed', { defaultValue: 'Delete failed' }));
@@ -54,10 +48,7 @@ export function useFileSystemOps(params: {
       try {
         const to = joinPath(parentPath(item.path), trimmed);
         await api.rename(item.path, to);
-        notifySuccess(
-          t('notifications.renameSuccess', { defaultValue: 'Renamed to: {{name}}', name: trimmed }),
-          t('notifications.renameSuccess', { defaultValue: 'Rename' })
-        );
+        notifySuccess(t('notifications.renameSuccess', { defaultValue: 'Renamed to: {{name}}', name: trimmed }));
         await loadList(cwd);
       } catch (e: any) {
         notifyError(String(e?.message || e), t('notifications.renameFailed', { defaultValue: 'Rename failed' }));

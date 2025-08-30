@@ -73,7 +73,7 @@ function PreviewPanelBase({ item }: { item: FsItem | null }) {
     return (
       <Box style={{ height: '100%' }}>
         <iframe
-          title="textpreview"
+          title={t('preview.textPreview', { defaultValue: 'Text preview' })}
           src={api.previewUrl(item.path)}
           loading="lazy"
           style={{ width: '100%', height: '100%', border: '1px solid #eee' }}
@@ -81,7 +81,7 @@ function PreviewPanelBase({ item }: { item: FsItem | null }) {
       </Box>
     );
   }
-  return <Text c="dimmed">No preview available</Text>;
+  return <Text c="dimmed">{t('preview.noPreview', { defaultValue: 'No preview available' })}</Text>;
 }
 
 export const PreviewPanel = memo(PreviewPanelBase, (prev, next) => {

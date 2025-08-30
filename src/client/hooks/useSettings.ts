@@ -48,10 +48,7 @@ export function useSettings(params: {
       try {
         await api.setConfig(current);
         lastSavedRef.current = { ...current } as any;
-        notifySuccess(
-          t('notifications.settingsSaved', { defaultValue: 'Settings saved' }),
-          t('settings.title', { defaultValue: 'Settings' })
-        );
+        notifySuccess(t('notifications.settingsSaved', { defaultValue: 'Settings saved' }));
       } catch (e) {
         notifyError(
           String(e),

@@ -72,7 +72,7 @@ export function useUploads(params: {
             setUploadItems((prev) => prev.map((it, i) => (i === idx ? { ...it, status: 'error', error: String(e?.message || e) } : it)));
             continue;
           }
-          notifySuccess(t('notifications.uploadSuccess', { defaultValue: 'Uploaded: {{name}}', name: f.name }), t('header.upload', { defaultValue: 'Upload' }));
+          notifySuccess(t('notifications.uploadSuccess', { defaultValue: 'Uploaded: {{name}}', name: f.name }));
         }
         await loadList(cwd);
       } finally {

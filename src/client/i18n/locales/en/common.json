@@ -21,6 +21,9 @@
     "placeholder": "Search"
   },
   "notifications": {
+    "titleSuccess": "Success",
+    "titleInfo": "Info",
+    "titleError": "Error",
     "linkCopied": "Link copied: {{url}}",
     "copyLinkFailed": "Failed to copy link",
     "uploadSuccess": "Uploaded: {{name}}",
@@ -60,7 +63,12 @@
     "selectFile": "Select a file to preview",
     "folder": "Folder",
     "labels": { "name": "Name:", "dimensions": "Dimensions:", "size": "Size:", "type": "Type:", "modified": "Modified:" },
+    "textPreview": "Text preview",
     "noPreview": "No preview available"
+  },
+  "aria": {
+    "clear": "clear",
+    "uploadProgress": "upload-progress"
   },
   "footer": {
     "version": "Amuzing File Browser {{year}}, ver. {{version}}"

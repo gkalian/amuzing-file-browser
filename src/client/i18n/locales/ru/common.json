@@ -21,6 +21,9 @@
     "placeholder": "Поиск"
   },
   "notifications": {
+    "titleSuccess": "Успех",
+    "titleInfo": "Инфо",
+    "titleError": "Ошибка",
     "linkCopied": "Ссылка скопирована: {{url}}",
     "copyLinkFailed": "Не удалось скопировать ссылку",
     "uploadSuccess": "Загружен: {{name}}",
@@ -57,7 +60,12 @@
     "selectFile": "Выберите файл для предпросмотра",
     "folder": "Папка",
     "labels": { "name": "Имя:", "dimensions": "Размеры:", "size": "Размер:", "type": "Тип:", "modified": "Изменён:" },
+    "textPreview": "Предпросмотр текста",
     "noPreview": "Предпросмотр недоступен"
+  },
+  "aria": {
+    "clear": "очистить",
+    "uploadProgress": "прогресс-загрузки"
   },
   "footer": {
     "version": "Amuzing File Browser {{year}}, вер. {{version}}"
