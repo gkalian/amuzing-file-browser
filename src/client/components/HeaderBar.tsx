@@ -1,6 +1,6 @@
 // Header toolbar with logo, search, and primary actions (upload, new folder, settings)
 import React, { memo } from 'react';
-import { Group, Anchor, Text, Button, FileButton, TextInput, ActionIcon } from '@mantine/core';
+import { Group, Anchor, Button, FileButton, TextInput, ActionIcon } from '@mantine/core';
 import { IconUpload, IconPlus, IconX } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 
@@ -12,6 +12,7 @@ type Props = {
   onOpenSettings: () => void;
   onLogoClick: () => void;
   progressSlot?: React.ReactNode;
+  theme: 'light' | 'dark';
 };
 
 function HeaderBarBase({
@@ -22,15 +23,25 @@ function HeaderBarBase({
   onOpenSettings,
   onLogoClick,
   progressSlot,
+  theme,
 }: Props) {
   const { t } = useTranslation();
+  const logoSrc = theme === 'dark' ? '/document-light.png' : '/document-dark.png';
   return (
     <Group justify="space-between" px="md" h="100%">
       <Group wrap="nowrap" gap="md">
-        <Anchor data-testid="logo" onClick={onLogoClick}>
-          <Text fw={700}>{t('app.title', { defaultValue: 'Amuzing File Browser' })}</Text>
+        <Anchor data-testid="logo" onClick={onLogoClick} style={{ lineHeight: 0, display: 'flex', alignItems: 'center' }}>
+          <picture>
+            <img
+              key={theme}
+              src={logoSrc}
+              alt={t('app.title', { defaultValue: 'Amuzing File Browser' })}
+              style={{ display: 'block', height: 24 }}
+            />
+          </picture>
         </Anchor>
         <TextInput
+          size="xs"
           placeholder={t('search.placeholder', { defaultValue: 'Search' })}
           value={search}
           onChange={(e) => setSearch(e.currentTarget.value)}
@@ -39,13 +50,13 @@ function HeaderBarBase({
           rightSection={
             search ? (
               <ActionIcon
-                size="sm"
+                size="xs"
                 variant="subtle"
                 onClick={() => setSearch('')}
                 aria-label="clear"
                 data-testid="search-clear"
               >
-                <IconX size={14} />
+                <IconX size={12} />
               </ActionIcon>
             ) : undefined
           }

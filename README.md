@@ -48,3 +48,7 @@ npm start
 - Server: `src/server/` (Express)
 - Helm chart: `helm/`
 - Dockerfile at project root.
+
+## Credits
+
+- Header icon by [Icons8](https://icons8.com/)

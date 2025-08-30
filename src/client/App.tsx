@@ -50,15 +50,12 @@ function AppBase() {
     setCfgMaxUpload,
     cfgAllowedTypes,
     setCfgAllowedTypes,
+    cfgTheme,
+    setCfgTheme,
   } = useSettings({ defaultAllowedTypes: DEFAULT_ALLOWED_TYPES, t });
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    try {
-      const v = localStorage.getItem('mantine-color-scheme') as 'light' | 'dark' | null;
-      return v || 'light';
-    } catch {
-      return 'light';
-    }
-  });
+  // theme is now loaded/saved via useSettings (server persistence)
+  const theme = cfgTheme;
+  const setTheme = setCfgTheme;
 
   // upload progress state handled by hook
   const [showPreview, setShowPreview] = useState<boolean>(() => {
@@ -93,11 +90,6 @@ function AppBase() {
   // Apply theme immediately when changed
   useEffect(() => {
     document.documentElement.setAttribute('data-mantine-color-scheme', theme);
-    try {
-      localStorage.setItem('mantine-color-scheme', theme);
-    } catch (e) {
-      console.debug('persist theme failed', e);
-    }
   }, [theme]);
 
   // Persist preview preference
@@ -190,6 +182,7 @@ function AppBase() {
           onNewFolder={() => setMkdirOpen(true)}
           onOpenSettings={() => setSettingsOpen(true)}
           onLogoClick={() => setCwd('/')}
+          theme={theme}
           progressSlot={
             <UploadQueue
               uploading={uploading}
@@ -277,4 +270,3 @@ function AppBase() {
 }
 
 export const App = memo(AppBase);
-

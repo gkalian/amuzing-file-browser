@@ -10,6 +10,7 @@ export type SettingsDoc = {
   maxUploadMB?: number;
   allowedTypes?: string;
   ignoreNames?: string[];
+  theme?: 'light' | 'dark';
 } | null;
 
 export type LogLevel = 'error' | 'warn' | 'info' | 'debug';
@@ -32,6 +33,7 @@ const state = {
   allowedTypes: undefined as string | undefined,
   ignoreNames: ['.settings.json'] as string[],
   logLevel: normalizeLogLevel(process.env.LOG_LEVEL),
+  theme: 'light' as 'light' | 'dark',
 };
 
 // Accessors
@@ -52,6 +54,9 @@ export function getIgnoreNames() {
 }
 export function getLogLevel(): LogLevel {
   return state.logLevel;
+}
+export function getTheme(): 'light' | 'dark' {
+  return state.theme;
 }
 
 // Returns true when the requested level is enabled according to current LOG_LEVEL
@@ -76,6 +81,10 @@ export function setIgnoreNames(v: string[]) {
 }
 export function setLogLevel(v: string | LogLevel) {
   state.logLevel = normalizeLogLevel(String(v));
+}
+export function setTheme(v: string | 'light' | 'dark') {
+  const x = String(v || '').toLowerCase();
+  state.theme = x === 'dark' ? 'dark' : 'light';
 }
 
 // Settings helpers (.settings.json lives under current root)
@@ -105,6 +114,7 @@ export async function saveSettings(dir: string, data: Required<NonNullable<Setti
         maxUploadMB: data.maxUploadMB,
         allowedTypes: data.allowedTypes,
         ignoreNames: data.ignoreNames,
+        theme: data.theme,
       },
       null,
       2
@@ -135,6 +145,9 @@ export async function loadInitialSettings() {
     }
     if (Array.isArray(s.ignoreNames)) {
       setIgnoreNames(s.ignoreNames);
+    }
+    if (s.theme === 'light' || s.theme === 'dark') {
+      setTheme(s.theme);
     }
   }
   // ensure defaults

@@ -8,9 +8,16 @@ async function json<T>(input: RequestInfo, init?: RequestInit) {
 }
 
 export const api = {
-  getConfig: () => json<{ root: string; maxUploadMB: number; allowedTypes?: string }>(`/api/config`),
-  setConfig: (payload: { root?: string; maxUploadMB?: number; allowedTypes?: string }) =>
-    json<{ ok: true; root: string; maxUploadMB: number; allowedTypes?: string }>(`/api/config`, {
+  getConfig: () =>
+    json<{
+      root: string;
+      maxUploadMB: number;
+      allowedTypes?: string;
+      ignoreNames?: string[];
+      theme: 'light' | 'dark';
+    }>(`/api/config`),
+  setConfig: (payload: { root?: string; maxUploadMB?: number; allowedTypes?: string; theme?: 'light' | 'dark' }) =>
+    json<{ ok: true; root: string; maxUploadMB: number; allowedTypes?: string; theme: 'light' | 'dark' }>(`/api/config`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
