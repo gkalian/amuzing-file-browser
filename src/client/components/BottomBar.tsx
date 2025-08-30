@@ -35,19 +35,21 @@ function BottomBarBase({ totals, pageSize, setPageSize, totalPages, page, setPag
         })}
       </Text>
       <Box style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
-        <Group gap="xs" align="center" data-testid="pager-controls">
-          <SegmentedControl
-            data={[
-              { label: '25', value: '25' },
-              { label: '50', value: '50' },
-              { label: '100', value: '100' },
-            ]}
-            value={pageSize}
-            onChange={(v) => setPageSize((v as '25' | '50' | '100') || '25')}
-            size="xs"
-          />
+        <Group gap="xs" align="center" id="pager-controls" data-testid="pager-controls">
           <Pagination total={totalPages} value={page} onChange={setPage} size="sm" />
         </Group>
+      </Box>
+      <Box style={{ position: 'absolute', right: 0 }}>
+        <SegmentedControl
+          data={[
+            { label: '25', value: '25' },
+            { label: '50', value: '50' },
+            { label: '100', value: '100' },
+          ]}
+          value={pageSize}
+          onChange={(v) => setPageSize((v as '25' | '50' | '100') || '25')}
+          size="xs"
+        />
       </Box>
     </Group>
   );
