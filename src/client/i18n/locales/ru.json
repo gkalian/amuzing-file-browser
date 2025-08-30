@@ -1,0 +1,76 @@
+{
+  "app": {
+    "title": "Amuzing File Browser"
+  },
+  "settings": {
+    "title": "Настройки",
+    "rootPath": "Путь к корню",
+    "rootPlaceholder": "/absolute/path",
+    "maxUpload": "Макс. размер загрузки (МБ)",
+    "theme": "Тема",
+    "themeLight": "Светлая",
+    "themeDark": "Тёмная",
+    "preview": "Показывать предпросмотр изображений",
+    "save": "Сохранить",
+    "saved": "Настройки сохранены",
+    "lang": "Язык",
+    "allowedTypes": "Разрешённые форматы загрузки (через запятую)",
+    "allowedTypesPlaceholder": "например: jpg,png,webp"
+  },
+  "search": {
+    "placeholder": "Поиск"
+  },
+  "notifications": {
+    "titleSuccess": "Успех",
+    "titleInfo": "Инфо",
+    "titleError": "Ошибка",
+    "linkCopied": "Ссылка скопирована: {{url}}",
+    "copyLinkFailed": "Не удалось скопировать ссылку",
+    "uploadSuccess": "Загружен: {{name}}",
+    "uploadFailed": "Ошибка загрузки",
+    "deleteSuccess": "Удалён: {{name}}",
+    "deleteFailed": "Ошибка удаления",
+    "mkdirSuccess": "Папка создана: {{name}}",
+    "mkdirFailed": "Ошибка создания папки",
+    "renameSuccess": "Переименовано в: {{name}}",
+    "renameFailed": "Ошибка переименования",
+    "settingsSaved": "Настройки сохранены",
+    "settingsSaveFailed": "Ошибка сохранения настроек",
+    "uploadTypeNotAllowed": "Недопустимый формат: {{name}}"
+  },
+  "header": {
+    "upload": "Загрузить",
+    "newFolder": "Новая папка",
+    "settings": "Настройки"
+  },
+  "table": {
+    "headers": { "name": "Имя", "size": "Размер", "modified": "Изменён" },
+    "tooltips": { "openFolder": "Открыть папку", "selectDeselect": "Выбрать/Снять" },
+    "aria": { "download": "скачать", "rename": "переименовать", "getLink": "получить-ссылку", "delete": "удалить" }
+  },
+  "bottom": {
+    "stats": "{{dirs}} папок • {{files}} файлов • {{size}} всего"
+  },
+  "mkdir": {
+    "title": "Создать папку",
+    "placeholder": "Имя папки",
+    "create": "Создать"
+  },
+  "rename": {
+    "placeholder": "Новое имя"
+  },
+  "preview": {
+    "selectFile": "Выберите файл для предпросмотра",
+    "folder": "Папка",
+    "labels": { "name": "Имя:", "dimensions": "Размеры:", "size": "Размер:", "type": "Тип:", "modified": "Изменён:" },
+    "textPreview": "Предпросмотр текста",
+    "noPreview": "Предпросмотр недоступен"
+  },
+  "aria": {
+    "clear": "очистить",
+    "uploadProgress": "прогресс-загрузки"
+  },
+  "footer": {
+    "version": "Amuzing File Browser {{year}}, вер. {{version}}"
+  }
+}
