@@ -7,6 +7,29 @@ import express from 'express';
 import { getMaxUploadMB } from './config.js';
 import { safeJoinRoot } from './paths.js';
 
+// Generate a unique filename in dir by appending " (2)", "(3)", ... before extension
+function resolveUniqueName(dir: string, original: string): string {
+  const originalPath = path.join(dir, original);
+  if (!fs.existsSync(originalPath)) return original;
+
+  const parsed = path.parse(original); // { name, ext }
+  // Detect existing suffix " (n)" and increment from there
+  const m = parsed.name.match(/^(.*?)(?: \((\d+)\))?$/);
+  const base = m ? m[1] : parsed.name;
+  const start = m && m[2] ? Number(m[2]) + 1 : 2;
+
+  let i = start;
+  // Try base (i).ext until free
+  // Note: ext already contains leading dot (or empty string)
+  // Handle files without extension and dotfiles as-is
+  // Examples: "file.txt" -> "file (2).txt"; ".env" -> ".env (2)"
+  for (;;) {
+    const candidate = `${base} (${i})${parsed.ext}`;
+    if (!fs.existsSync(path.join(dir, candidate))) return candidate;
+    i += 1;
+  }
+}
+
 // Multer storage within ROOT
 export function createMulter() {
   const storage = multer.diskStorage({
@@ -20,7 +43,15 @@ export function createMulter() {
         cb(e as Error, '');
       }
     },
-    filename: (_req, file, cb) => cb(null, file.originalname),
+    filename: (req, file, cb) => {
+      try {
+        const dest = safeJoinRoot(String((req as any).query.path || '/'));
+        const name = resolveUniqueName(dest, file.originalname);
+        cb(null, name);
+      } catch (e) {
+        cb(e as Error, file.originalname);
+      }
+    },
   });
   return multer({ storage });
 }

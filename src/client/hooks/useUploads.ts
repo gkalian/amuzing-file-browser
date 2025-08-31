@@ -54,7 +54,7 @@ export function useUploads(params: {
           const f = arr[idx];
           setUploadItems((prev) => prev.map((it, i) => (i === idx ? { ...it, status: 'uploading' } : it)));
           try {
-            await api.uploadWithProgress(cwd, [f], (loaded, _tot) => {
+            const resp = await api.uploadWithProgress(cwd, [f], (loaded, _tot) => {
               const current = base + Math.min(loaded, f.size || 0);
               setUploadedBytes(current);
               setUploadItems((prev) =>
@@ -65,6 +65,8 @@ export function useUploads(params: {
             setUploadedBytes(base);
             setUploadItems((prev) => prev.map((it, i) => (i === idx ? { ...it, uploaded: f.size || 0, status: 'done' } : it)));
             setUploadItems((prev) => prev.filter((it) => it.status !== 'done'));
+            const saved = (resp?.files && resp.files[0]?.filename) || f.name;
+            notifySuccess(t('notifications.uploadSuccess', { defaultValue: 'Uploaded: {{name}}', name: saved }));
           } catch (e: any) {
             notifyError(`${f.name}: ${String(e?.message || e)}`, t('notifications.uploadFailed', { defaultValue: 'Upload failed' }), true);
             base += f.size || 0;
@@ -72,7 +74,6 @@ export function useUploads(params: {
             setUploadItems((prev) => prev.map((it, i) => (i === idx ? { ...it, status: 'error', error: String(e?.message || e) } : it)));
             continue;
           }
-          notifySuccess(t('notifications.uploadSuccess', { defaultValue: 'Uploaded: {{name}}', name: f.name }));
         }
         await loadList(cwd);
       } finally {

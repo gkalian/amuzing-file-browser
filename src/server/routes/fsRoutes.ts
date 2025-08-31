@@ -114,12 +114,34 @@ export function registerFsRoutes(app: express.Application) {
   app.post('/api/fs/mkdir', async (req, res) => {
     try {
       const { path: p } = req.body as { path: string };
-      const target = safeJoinRoot(p);
-      await fsp.mkdir(target, { recursive: true });
+      const target0 = safeJoinRoot(p);
+      const parent = path.dirname(target0);
+      const desired = path.basename(target0);
+
+      // If directory exists, find a unique variant: "name (2)", "name (3)", ...
+      let finalName = desired;
+      let target = target0;
+      if (fs.existsSync(target0)) {
+        const m = desired.match(/^(.*?)(?: \((\d+)\))?$/);
+        const base = m ? m[1] : desired;
+        let i = m && m[2] ? Number(m[2]) + 1 : 2;
+        for (;;) {
+          const cand = `${base} (${i})`;
+          const abs = path.join(parent, cand);
+          if (!fs.existsSync(abs)) {
+            finalName = cand;
+            target = abs;
+            break;
+          }
+          i += 1;
+        }
+      }
+
+      await fsp.mkdir(target, { recursive: false });
       const apiPath = toApiPath(target);
       // Action log
-      logAction('mkdir', { path: apiPath }, { ua: req.get('user-agent') || '' });
-      res.json({ ok: true, path: apiPath });
+      logAction('mkdir', { path: apiPath, name: finalName }, { ua: req.get('user-agent') || '' });
+      res.json({ ok: true, path: apiPath, name: finalName });
     } catch (e: any) {
       res.status(400).json({ error: e.message });
     }

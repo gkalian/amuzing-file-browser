@@ -1,5 +1,5 @@
 // Header toolbar with logo, search, and primary actions (upload, new folder, settings)
-import React, { memo } from 'react';
+import React, { memo, useRef } from 'react';
 import { Group, Anchor, Button, FileButton, TextInput, ActionIcon } from '@mantine/core';
 import { IconUpload, IconPlus, IconX } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
@@ -27,6 +27,7 @@ function HeaderBarBase({
 }: Props) {
   const { t } = useTranslation();
   const logoSrc = theme === 'dark' ? '/document-light.png' : '/document-dark.png';
+  const resetRef = useRef<() => void>(null);
   return (
     <Group justify="space-between" px="md" h="100%">
       <Group wrap="nowrap" gap="md">
@@ -64,7 +65,7 @@ function HeaderBarBase({
       </Group>
       {progressSlot}
       <Group>
-        <FileButton multiple onChange={(files) => onUpload(files as File[])}>
+        <FileButton multiple onChange={(files) => { onUpload(files as File[]); resetRef.current?.(); }} resetRef={resetRef}>
           {(props) => (
             <Button
               {...props}

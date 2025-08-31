@@ -29,7 +29,7 @@ export const api = {
       `/api/fs/stat?path=${encodeURIComponent(path)}`
     ),
   mkdir: (path: string) =>
-    json<{ ok: true; path: string }>(`/api/fs/mkdir`, {
+    json<{ ok: true; path: string; name: string }>(`/api/fs/mkdir`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ path }),
@@ -62,7 +62,7 @@ export const api = {
     if (!res.ok) throw new Error(await res.text());
     return (await res.json()) as {
       ok: true;
-      files: { originalname: string; size: number; path: string }[];
+      files: { originalname: string; filename: string; size: number; path: string }[];
     };
   },
   uploadWithProgress: (
@@ -72,7 +72,7 @@ export const api = {
   ) =>
     new Promise<{
       ok: true;
-      files: { originalname: string; size: number; path: string }[];
+      files: { originalname: string; filename: string; size: number; path: string }[];
     }>((resolve, reject) => {
       const fd = new FormData();
       files.forEach((f) => fd.append('files', f, f.name));

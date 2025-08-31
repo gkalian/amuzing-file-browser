@@ -16,8 +16,9 @@ export function useFileSystemOps(params: {
       const trimmed = (name || '').trim();
       if (!trimmed) return;
       try {
-        await api.mkdir(joinPath(cwd, trimmed));
-        notifySuccess(t('notifications.mkdirSuccess', { defaultValue: 'Folder created: {{name}}', name: trimmed }));
+        const resp = await api.mkdir(joinPath(cwd, trimmed));
+        const shown = resp?.name || trimmed;
+        notifySuccess(t('notifications.mkdirSuccess', { defaultValue: 'Folder created: {{name}}', name: shown }));
         await loadList(cwd);
       } catch (e: any) {
         notifyError(String(e?.message || e), t('notifications.mkdirFailed', { defaultValue: 'Create Folder failed' }));

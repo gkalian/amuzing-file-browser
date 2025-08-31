@@ -34,6 +34,7 @@ export function createApp() {
       const files =
         (req.files as Express.Multer.File[] | undefined)?.map((f) => ({
           originalname: f.originalname,
+          filename: path.basename(f.path),
           size: f.size,
           path: toApiPath(f.path),
         })) || [];
@@ -44,7 +45,7 @@ export function createApp() {
       logAction(
         'upload',
         { count: files.length, totalBytes, dest },
-        { files: files.map((f) => ({ name: f.originalname, size: f.size, path: f.path })), ua: req.get('user-agent') || '' }
+        { files: files.map((f) => ({ name: f.originalname, saved: f.filename, size: f.size, path: f.path })) || '' }
       );
 
       res.json({ ok: true, files });
