@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/gkalian/amuzing-file-browser/compare/v1.2.0...v1.2.1) (2025-08-31)
+
+
+### Bug Fixes
+
+* readme update ([e3e51cc](https://github.com/gkalian/amuzing-file-browser/commit/e3e51cca652074234073efc79d78e43e056b9499))
+
 # [1.2.0](https://github.com/gkalian/amuzing-file-browser/compare/v1.1.0...v1.2.0) (2025-08-31)
 
 
