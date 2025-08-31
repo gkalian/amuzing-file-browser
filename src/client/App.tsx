@@ -31,7 +31,10 @@ function AppBase() {
   const { t } = useTranslation();
   const DEFAULT_ALLOWED_TYPES = 'jpg, jpeg, gif, png, webp, 7z, zip';
   const [cwd, setCwd] = useState<string>('/');
-  const [selected, setSelected] = useState<FsItem | null>(null);
+  // multi-select: store selected file paths (folders are not selectable)
+  const [selectedPaths, setSelectedPaths] = useState<Set<string>>(new Set());
+  // anchor index for Shift-range selection within current page
+  const [lastSelectedIndex, setLastSelectedIndex] = useState<number | null>(null);
   // file list
   const { items, loading, loadList } = useFileList(cwd);
   // search
@@ -81,8 +84,9 @@ function AppBase() {
   // removed inline editor
 
   useEffect(() => {
-    // clear preview selection when changing directory
-    setSelected(null);
+    // clear selection when changing directory
+    setSelectedPaths(new Set());
+    setLastSelectedIndex(null);
   }, [cwd]);
 
   // settings are loaded and autosaved via useSettings()
@@ -101,6 +105,18 @@ function AppBase() {
     }
   }, [showPreview]);
 
+  // Allow deselect with Escape key
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedPaths(new Set());
+        setLastSelectedIndex(null);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   // autosave is handled in useSettings
 
   const crumbs = useBreadcrumbs(cwd, t('breadcrumbs.root', { defaultValue: 'root' }));
@@ -115,6 +131,16 @@ function AppBase() {
   // filesystem operations
   const { mkdir, remove, rename } = useFileSystemOps({ cwd, t, loadList });
 
+  // filter and pagination derived data (used by click handlers)
+  const filtered = useMemo(() => {
+    const q = debouncedSearch.trim().toLowerCase();
+    const list = items || [];
+    if (!q) return list;
+    return list.filter((it) => it.name.toLowerCase().includes(q));
+  }, [items, debouncedSearch]);
+  const totals = useTotals(filtered as any);
+  const { paged, totalPages } = usePageSlice(filtered as any[], page, Number(pageSize));
+
 
   const handleMkdir = useCallback(async () => {
     if (!mkdirName.trim()) return;
@@ -127,51 +153,85 @@ function AppBase() {
   const handleDelete = useCallback(
     async (item: FsItem) => {
       await remove(item).then(() => {
-        if (selected?.path === item.path) setSelected(null);
+        setSelectedPaths((prev) => {
+          if (!prev.size) return prev;
+          const next = new Set(prev);
+          next.delete(item.path);
+          return next;
+        });
       }).catch(() => {});
     },
-    [remove, selected?.path]
+    [remove]
   );
 
+  const [renameTarget, setRenameTarget] = useState<FsItem | null>(null);
   const handleRename = useCallback(async () => {
-    if (!selected) return;
+    if (!renameTarget) return;
     if (!renameName.trim()) return;
-    await rename(selected, renameName.trim()).then(() => {
+    await rename(renameTarget, renameName.trim()).then(() => {
       setRenameOpen(false);
-      setSelected(null);
+      setRenameTarget(null);
+      setSelectedPaths((prev) => {
+        const next = new Set(prev);
+        next.delete(renameTarget.path);
+        return next;
+      });
     }).catch(() => {});
-  }, [rename, selected, renameName]);
+  }, [rename, renameTarget, renameName]);
 
   // no editor modal anymore; only preview panel
 
-  const onOpen = useCallback((item: FsItem) => {
-    if (item.isDir) {
-      setCwd(item.path);
-      setSelected(null);
-    } else if ((item.mime || '').startsWith('image/')) {
-      // toggle select/deselect image for preview
-      setSelected((prev) => (prev?.path === item.path ? null : item));
-    } else {
-      // do not open editor, no selection for non-images
-      setSelected(null);
-    }
-  }, []);
+  const onItemClick = useCallback(
+    (item: FsItem, index: number, e: React.MouseEvent) => {
+      // Directories: open on plain click; ignore for selection
+      if (item.isDir) {
+        if (!e.shiftKey && !e.ctrlKey && !e.metaKey) {
+          setCwd(item.path);
+          setSelectedPaths(new Set());
+          setLastSelectedIndex(null);
+        }
+        return;
+      }
+
+      // Files selection logic
+      const path = item.path;
+      const isToggle = e.ctrlKey || e.metaKey;
+      const isRange = e.shiftKey && lastSelectedIndex !== null;
+
+      if (isRange) {
+        // Select a contiguous range within current page, only files
+        const start = Math.min(lastSelectedIndex!, index);
+        const end = Math.max(lastSelectedIndex!, index);
+        const rangePaths = new Set<string>();
+        for (let i = start; i <= end; i++) {
+          const it = (paged as unknown as FsItem[])[i];
+          if (it && !it.isDir) rangePaths.add(it.path);
+        }
+        setSelectedPaths(rangePaths);
+      } else if (isToggle) {
+        setSelectedPaths((prev) => {
+          const next = new Set(prev);
+          if (next.has(path)) next.delete(path);
+          else next.add(path);
+          return next;
+        });
+        setLastSelectedIndex(index);
+      } else {
+        // single selection
+        setSelectedPaths(new Set([path]));
+        setLastSelectedIndex(index);
+      }
+    },
+    [lastSelectedIndex, paged]
+  );
 
   const requestRename = useCallback((it: FsItem) => {
-    setSelected(it);
+    setRenameTarget(it);
     setRenameName(it.name);
     setRenameOpen(true);
   }, []);
 
-  const filtered = useMemo(() => {
-    const q = debouncedSearch.trim().toLowerCase();
-    const list = items || [];
-    if (!q) return list;
-    return list.filter((it) => it.name.toLowerCase().includes(q));
-  }, [items, debouncedSearch]);
-
-  const totals = useTotals(filtered as any);
-  const { paged, totalPages } = usePageSlice(filtered as any[], page, Number(pageSize));
+  
   return (
     <AppShell header={{ height: 72 }} footer={{ height: 56 }} padding="md">
       <AppShell.Header>
@@ -206,10 +266,14 @@ function AppBase() {
           <FileBrowserPane
             items={paged as any}
             loading={loading}
-            selected={selected}
-            onOpen={onOpen}
+            selectedPaths={selectedPaths}
+            onItemClick={onItemClick}
             onRequestRename={requestRename}
             onDelete={handleDelete}
+            onDeselect={() => {
+              setSelectedPaths(new Set());
+              setLastSelectedIndex(null);
+            }}
             showPreview={showPreview}
             isNarrow={isNarrow}
             split={split}

@@ -1,12 +1,13 @@
 // File preview panel: renders images with meta or shows inline text preview
-import { Box, Group, Paper, Text, Code } from '@mantine/core';
+import { Box, Group, Paper, Text, Code, ActionIcon } from '@mantine/core';
 import { api } from '../services/apiClient';
 import type { FsItem } from '../core/types';
 import React, { memo, useState, useCallback } from 'react';
 import { formatBytes } from '../core/utils';
 import { useTranslation } from 'react-i18next';
+import { IconX } from '@tabler/icons-react';
 
-function PreviewPanelBase({ item }: { item: FsItem | null }) {
+function PreviewPanelBase({ item, onDeselect }: { item: FsItem | null; onDeselect?: () => void }) {
   const { t } = useTranslation();
   const [dims, setDims] = useState<{ w: number; h: number } | null>(null);
 
@@ -20,6 +21,13 @@ function PreviewPanelBase({ item }: { item: FsItem | null }) {
     }, []);
     return (
       <Box style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <Group justify="flex-end" gap={4}>
+          {onDeselect && (
+            <ActionIcon variant="light" aria-label={t('preview.deselect', { defaultValue: 'Deselect' })} onClick={onDeselect}>
+              <IconX size={16} />
+            </ActionIcon>
+          )}
+        </Group>
         <Box style={{ flex: 1, overflow: 'auto' }}>
           <img
             src={api.previewUrl(item.path)}
@@ -71,7 +79,14 @@ function PreviewPanelBase({ item }: { item: FsItem | null }) {
     ['application/json', 'application/xml'].includes(item.mime || '')
   ) {
     return (
-      <Box style={{ height: '100%' }}>
+      <Box style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <Group justify="flex-end" gap={4}>
+          {onDeselect && (
+            <ActionIcon variant="light" aria-label={t('preview.deselect', { defaultValue: 'Deselect' })} onClick={onDeselect}>
+              <IconX size={16} />
+            </ActionIcon>
+          )}
+        </Group>
         <iframe
           title={t('preview.textPreview', { defaultValue: 'Text preview' })}
           src={api.previewUrl(item.path)}

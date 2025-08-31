@@ -18,10 +18,10 @@ import { TableVirtuoso } from 'react-virtuoso';
 type Item = FsItem & { displaySize?: string; displayMtime?: string };
 type Props = {
   items: Item[];
-  onOpen: (item: FsItem) => void;
+  onItemClick: (item: FsItem, index: number, e: React.MouseEvent) => void;
   onRequestRename: (item: FsItem) => void;
   onDelete: (item: FsItem) => void;
-  selectedPath?: string | null;
+  selectedPaths: Set<string>;
 };
 
 // Hoisted Virtuoso components to avoid re-creating them on each render
@@ -30,7 +30,7 @@ const VirtTableHead = Table.Thead;
 const VirtTableRow = Table.Tr as any;
 const VirtTableBody = (props: any) => <Table.Tbody {...props} data-testid="table-body" />;
 
-function FileTableBase({ items, onOpen, onRequestRename, onDelete, selectedPath }: Props) {
+function FileTableBase({ items, onItemClick, onRequestRename, onDelete, selectedPaths }: Props) {
   const { t } = useTranslation();
   const numberFmt = useMemo(() => new Intl.NumberFormat(), []);
   // Memoized header and row renderer to minimize allocations
@@ -64,15 +64,15 @@ function FileTableBase({ items, onOpen, onRequestRename, onDelete, selectedPath 
   );
 
   const itemContent = useCallback(
-    (_: number, it: Item) => {
-      const isSelected = selectedPath === it.path;
+    (idx: number, it: Item) => {
+      const isSelected = selectedPaths.has(it.path);
       const selStyle = isSelected ? { background: 'var(--mantine-color-blue-0)' } : undefined;
       return (
         <>
           <Table.Td
             style={{ cursor: 'pointer', ...selStyle }}
             data-selected={isSelected || undefined}
-            onClick={() => onOpen(it)}
+            onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
             title={
               it.isDir
                 ? t('table.tooltips.openFolder', { defaultValue: 'Open folder' })
@@ -83,7 +83,7 @@ function FileTableBase({ items, onOpen, onRequestRename, onDelete, selectedPath 
           >
             <Group gap={6} wrap="nowrap">
               {it.isDir ? <IconFolder size={18} /> : <IconFile size={18} />}
-              <Anchor onClick={() => onOpen(it)} data-testid="item-open">
+              <Anchor onClick={(e: any) => onItemClick(it, idx, e)} data-testid="item-open">
                 {it.name}
               </Anchor>
             </Group>
@@ -139,7 +139,7 @@ function FileTableBase({ items, onOpen, onRequestRename, onDelete, selectedPath 
         </>
       );
     },
-    [numberFmt, onDelete, onOpen, onRequestRename, onGetLink, selectedPath]
+    [numberFmt, onDelete, onItemClick, onRequestRename, onGetLink, selectedPaths]
   );
 
   return (

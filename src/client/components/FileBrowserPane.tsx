@@ -3,15 +3,16 @@ import { Box, Group, Loader } from '@mantine/core';
 import type { FsItem } from '../services/apiClient';
 import { FileTable } from './FileTable';
 import { PreviewPanel } from './PreviewPanel';
-import { MutableRefObject } from 'react';
+import type { MutableRefObject, MouseEvent as ReactMouseEvent } from 'react';
 
 export function FileBrowserPane(props: {
   items: FsItem[];
   loading: boolean;
-  selected: FsItem | null;
-  onOpen: (item: FsItem) => void;
+  selectedPaths: Set<string>;
+  onItemClick: (item: FsItem, index: number, e: ReactMouseEvent) => void;
   onRequestRename: (item: FsItem) => void;
   onDelete: (item: FsItem) => Promise<void> | void;
+  onDeselect: () => void;
   showPreview: boolean;
   isNarrow: boolean;
   split: number;
@@ -21,10 +22,11 @@ export function FileBrowserPane(props: {
   const {
     items,
     loading,
-    selected,
-    onOpen,
+    selectedPaths,
+    onItemClick,
     onRequestRename,
     onDelete,
+    onDeselect,
     showPreview,
     isNarrow,
     split,
@@ -32,7 +34,16 @@ export function FileBrowserPane(props: {
     splitRef,
   } = props;
 
-  const showImagePreview = showPreview && !isNarrow && selected && (selected.mime || '').startsWith('image/');
+  // Determine preview item: only when exactly one image file is selected
+  const selectedItem: FsItem | null = (() => {
+    if (selectedPaths.size !== 1) return null;
+    const onlyPath = Array.from(selectedPaths)[0];
+    const it = items.find((i) => i.path === onlyPath) || null;
+    if (!it) return null;
+    if ((it.mime || '').startsWith('image/')) return it;
+    return null;
+  })();
+  const showImagePreview = showPreview && !isNarrow && !!selectedItem;
 
   return (
     <Box style={{ position: 'relative' }}>
@@ -54,10 +65,10 @@ export function FileBrowserPane(props: {
           )}
           <FileTable
             items={items}
-            onOpen={onOpen}
+            onItemClick={onItemClick}
             onRequestRename={onRequestRename}
             onDelete={onDelete}
-            selectedPath={selected?.path || null}
+            selectedPaths={selectedPaths}
           />
         </Box>
 
@@ -79,7 +90,7 @@ export function FileBrowserPane(props: {
 
         {showImagePreview && (
           <Box style={{ width: `${100 - split}%`, paddingLeft: 10, height: '100%' }} data-testid="preview-pane">
-            <PreviewPanel item={selected} />
+            <PreviewPanel item={selectedItem} onDeselect={onDeselect} />
           </Box>
         )}
       </Box>
