@@ -2,7 +2,7 @@
 
 ![React](https://img.shields.io/badge/react-%2361DAFB.svg?style=for-the-badge&logo=react&logoColor=white) ![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white) ![Express](https://img.shields.io/badge/express-%23404d59.svg?style=for-the-badge&logo=express&logoColor=white) ![Mantine](https://img.shields.io/badge/mantine-%2300B4D8.svg?style=for-the-badge&logo=mantine&logoColor=white) ![GitHub license](https://img.shields.io/github/license/gkalian/timeline-generator?style=for-the-badge)
 
-A minimal file browser you can run locally, in Docker, and on Kubernetes (future taks, current helm chart is a draf). It serves a directory for listing, uploading, deleting, renaming, moving, creating folders, downloading, and previewing files (images including WebP). No auth.
+A minimal file browser you can run locally, in Docker, and on Kubernetes (future tasks, current helm chart is a draft). It serves a directory for listing, uploading, deleting, renaming, moving, creating folders, downloading, and previewing files (images including WebP). No auth.
 
 Before starting this project, I have checked what is already existed. I found multiple apps including [gtsteffaniak's File Browser](https://github.com/gtsteffaniak/filebrowser). Even so it is a great tool so far, it is a bit overcomplicated for me and my needs. So I decided to make my own simple file browser.
 
