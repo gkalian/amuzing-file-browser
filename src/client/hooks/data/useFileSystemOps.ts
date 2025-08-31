@@ -1,8 +1,8 @@
 // Hook: filesystem operations (mkdir, delete, rename) with notifications and list refresh.
 import { useCallback } from 'react';
-import { api, type FsItem } from '../services/apiClient';
-import { notifyError, notifySuccess } from '../core/notify';
-import { joinPath, parentPath } from '../core/utils';
+import { api, type FsItem } from '../../services/apiClient';
+import { notifyError, notifySuccess } from '../../core/notify';
+import { joinPath, parentPath } from '../../core/utils';
 
 export function useFileSystemOps(params: {
   cwd: string;

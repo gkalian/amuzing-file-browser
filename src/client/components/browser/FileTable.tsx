@@ -9,10 +9,10 @@ import {
   IconLink,
   IconTrash,
 } from '@tabler/icons-react';
-import { api } from '../services/apiClient';
-import type { FsItem } from '../core/types';
+import { api } from '../../services/apiClient';
+import type { FsItem } from '../../core/types';
 import { useTranslation } from 'react-i18next';
-import { notifySuccess, notifyError } from '../core/notify';
+import { notifySuccess, notifyError } from '../../core/notify';
 import { TableVirtuoso } from 'react-virtuoso';
 
 type Item = FsItem & { displaySize?: string; displayMtime?: string };

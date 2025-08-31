@@ -1,8 +1,8 @@
 // File browser pane: composes FileTable and optional PreviewPanel with a draggable split.
 import { Box, Group, Loader } from '@mantine/core';
-import type { FsItem } from '../services/apiClient';
+import type { FsItem } from '../../services/apiClient';
 import { FileTable } from './FileTable';
-import { PreviewPanel } from './PreviewPanel';
+import { PreviewPanel } from '../preview/PreviewPanel';
 import type { RefObject, MouseEvent as ReactMouseEvent } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 

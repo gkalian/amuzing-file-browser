@@ -1,9 +1,9 @@
 // File preview panel: renders images with meta or shows inline text preview
 import { Box, Group, Paper, Text, Code, ActionIcon } from '@mantine/core';
-import { api } from '../services/apiClient';
-import type { FsItem } from '../core/types';
+import { api } from '../../services/apiClient';
+import type { FsItem } from '../../core/types';
 import React, { memo, useState, useCallback } from 'react';
-import { formatBytes } from '../core/utils';
+import { formatBytes } from '../../core/utils';
 import { useTranslation } from 'react-i18next';
 import { IconX } from '@tabler/icons-react';
 

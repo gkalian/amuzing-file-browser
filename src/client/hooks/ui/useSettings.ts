@@ -1,7 +1,7 @@
 // Hook: loads/saves server config (root, upload limit, allowed types) with debounced autosave.
 import { useEffect, useRef, useState } from 'react';
-import { api } from '../services/apiClient';
-import { notifyError, notifySuccess } from '../core/notify';
+import { api } from '../../services/apiClient';
+import { notifyError, notifySuccess } from '../../core/notify';
 
 export function useSettings(params: {
   defaultAllowedTypes: string;

@@ -1,7 +1,7 @@
 // Bottom statistics and pagination bar for the file list
 import React, { memo } from 'react';
 import { Box, Group, Pagination, SegmentedControl, Text } from '@mantine/core';
-import { formatBytes } from '../core/utils';
+import { formatBytes } from '../../core/utils';
 import { useTranslation } from 'react-i18next';
 
 type Props = {

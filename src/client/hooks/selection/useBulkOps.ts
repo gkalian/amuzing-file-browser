@@ -1,8 +1,8 @@
 // Hook: bulk filesystem operations (delete, move) with name conflict resolution
 import { useCallback } from 'react';
-import { api, type FsItem } from '../services/apiClient';
-import { joinPath } from '../core/utils';
-import { notifyError, notifySuccess } from '../core/notify';
+import { api, type FsItem } from '../../services/apiClient';
+import { joinPath } from '../../core/utils';
+import { notifyError, notifySuccess } from '../../core/notify';
 
 export function useBulkOps(params: {
   cwd: string;

@@ -1,6 +1,6 @@
 // Hook: selection handling for files and folders with range/toggle logic
 import { useCallback, useEffect, useState } from 'react';
-import type { FsItem } from '../services/apiClient';
+import type { FsItem } from '../../services/apiClient';
 
 export function useSelection(params: {
   paged: FsItem[];

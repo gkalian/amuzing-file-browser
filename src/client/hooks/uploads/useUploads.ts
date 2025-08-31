@@ -1,9 +1,9 @@
 // Hook: manages queued uploads with type filtering, per-file and total progress,
 // notifications, and directory refresh on completion.
 import { useCallback, useState } from 'react';
-import { api } from '../services/apiClient';
-import { notifyError, notifySuccess } from '../core/notify';
-import type { UploadItem } from '../components/UploadQueue';
+import { api } from '../../services/apiClient';
+import { notifyError, notifySuccess } from '../../core/notify';
+import type { UploadItem } from '../../components/upload/UploadQueue';
 
 export function useUploads(params: {
   cwd: string;
