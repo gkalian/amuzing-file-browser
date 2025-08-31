@@ -1,3 +1,17 @@
+# [1.3.0](https://github.com/gkalian/amuzing-file-browser/compare/v1.2.1...v1.3.0) (2025-08-31)
+
+
+### Bug Fixes
+
+* add. buttons panel and some css changes ([84c7d64](https://github.com/gkalian/amuzing-file-browser/commit/84c7d647f2455696bc10649d61939e44b9e78fba))
+* change move behaviour and extracted hooks ([5cab3b1](https://github.com/gkalian/amuzing-file-browser/commit/5cab3b152def909d2c98e5d120b014dc21e79914))
+* deps update ([0bec75c](https://github.com/gkalian/amuzing-file-browser/commit/0bec75c4df96d0a613d2a8528240e951db14fbe0))
+
+
+### Features
+
+* new files structure ([6587767](https://github.com/gkalian/amuzing-file-browser/commit/658776744da5758ebfc54c0a2da10975b280b005))
+
 ## [1.2.1](https://github.com/gkalian/amuzing-file-browser/compare/v1.2.0...v1.2.1) (2025-08-31)
 
 
