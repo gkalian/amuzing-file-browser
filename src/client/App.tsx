@@ -1,14 +1,16 @@
 // App root component: orchestrates layout, state, API calls, and wiring between UI parts
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { AppShell, Box } from '@mantine/core';
-import { type FsItem } from './services/apiClient';
+import { AppShell, Box, Group, Button } from '@mantine/core';
+import { api, type FsItem } from './services/apiClient';
 import pkg from '../../package.json';
-import { parentPath } from './core/utils';
+import { parentPath, joinPath } from './core/utils';
 import { HeaderBar } from './components/HeaderBar';
 import { BreadcrumbsBar } from './components/BreadcrumbsBar';
 import { FileBrowserPane } from './components/FileBrowserPane';
 import { BottomBar } from './components/BottomBar';
 import { AppFooter } from './components/AppFooter';
+import { MoveModal } from './components/MoveModal';
+import { notifyError, notifySuccess } from './core/notify';
 import { UploadQueue } from './components/UploadQueue';
 import { MkdirModal } from './components/MkdirModal';
 import { RenameModal } from './components/RenameModal';
@@ -82,6 +84,10 @@ function AppBase() {
   const [renameOpen, setRenameOpen] = useState(false);
   const [renameName, setRenameName] = useState('');
   // removed inline editor
+  // bulk operations
+  const [bulkWorking, setBulkWorking] = useState(false);
+  const [moveOpen, setMoveOpen] = useState(false);
+  const [moveDest, setMoveDest] = useState('');
 
   useEffect(() => {
     // clear selection when changing directory
@@ -183,15 +189,8 @@ function AppBase() {
 
   const onItemClick = useCallback(
     (item: FsItem, index: number, e: React.MouseEvent) => {
-      // Directories: open on plain click; ignore for selection
-      if (item.isDir) {
-        if (!e.shiftKey && !e.ctrlKey && !e.metaKey) {
-          setCwd(item.path);
-          setSelectedPaths(new Set());
-          setLastSelectedIndex(null);
-        }
-        return;
-      }
+      // Directories are not selected and not opened on single click
+      if (item.isDir) return;
 
       // Files selection logic
       const path = item.path;
@@ -225,11 +224,109 @@ function AppBase() {
     [lastSelectedIndex, paged]
   );
 
+  const onItemDoubleClick = useCallback(
+    (item: FsItem, _index: number, _e: React.MouseEvent) => {
+      if (item.isDir) {
+        setCwd(item.path);
+        setSelectedPaths(new Set());
+        setLastSelectedIndex(null);
+      }
+    },
+    []
+  );
+
   const requestRename = useCallback((it: FsItem) => {
     setRenameTarget(it);
     setRenameName(it.name);
     setRenameOpen(true);
   }, []);
+
+  // bulk: clear selection
+  const clearSelection = useCallback(() => {
+    setSelectedPaths(new Set());
+    setLastSelectedIndex(null);
+  }, []);
+
+  // bulk: delete selected files
+  const handleBulkDelete = useCallback(async () => {
+    if (!selectedPaths.size) return;
+    setBulkWorking(true);
+    try {
+      const paths = Array.from(selectedPaths);
+      let ok = 0, fail = 0;
+      for (const p of paths) {
+        try {
+          await api.delete(p);
+          ok++;
+        } catch (e: any) {
+          fail++;
+          notifyError(`${p}: ${String(e?.message || e)}`, 'Delete failed');
+        }
+      }
+      await loadList(cwd);
+      clearSelection();
+      if (ok) notifySuccess(`Deleted ${ok} file(s)`);
+      if (fail) notifyError(`Failed to delete ${fail} file(s)`);
+    } finally {
+      setBulkWorking(false);
+    }
+  }, [selectedPaths, cwd, loadList, clearSelection]);
+
+  // bulk: move selected files to destination
+  const handleBulkMove = useCallback(async () => {
+    const dest = (moveDest || '').trim();
+    if (!dest || !selectedPaths.size) return;
+    setBulkWorking(true);
+    try {
+      // find names for paths
+      const all = items || [];
+      const byPath = new Map(all.map((it) => [it.path, it] as const));
+      const paths = Array.from(selectedPaths);
+      let ok = 0, fail = 0;
+      for (const p of paths) {
+        const it = byPath.get(p);
+        if (!it) {
+          fail++;
+          notifyError(`${p}: not found in list`, 'Move failed');
+          continue;
+        }
+        const to = joinPath(dest, it.name);
+        try {
+          await api.rename(p, to);
+          ok++;
+        } catch (e: any) {
+          fail++;
+          notifyError(`${it.name}: ${String(e?.message || e)}`, 'Move failed');
+        }
+      }
+      await loadList(cwd);
+      clearSelection();
+      setMoveOpen(false);
+      setMoveDest('');
+      if (ok) notifySuccess(`Moved ${ok} file(s)`);
+      if (fail) notifyError(`Failed to move ${fail} file(s)`);
+    } finally {
+      setBulkWorking(false);
+    }
+  }, [moveDest, selectedPaths, items, cwd, loadList, clearSelection]);
+
+  // destination options for move: current folder and its subfolders
+  const moveOptions = useMemo(() => {
+    const set = new Set<string>();
+    set.add(cwd);
+    (items || []).forEach((it) => { if (it.isDir) set.add(it.path); });
+    return Array.from(set);
+  }, [items, cwd]);
+
+  const onRenameSelected = useCallback(() => {
+    if (selectedPaths.size !== 1) return;
+    const p = Array.from(selectedPaths)[0];
+    const it = (items || []).find((i) => i.path === p);
+    if (!it) return;
+    setRenameTarget(it);
+    setRenameName(it.name);
+    setRenameOpen(true);
+  }, [selectedPaths, items]);
 
   
   return (
@@ -256,18 +353,37 @@ function AppBase() {
 
       <AppShell.Main style={{ overflowX: 'auto' }}>
         <Box style={{ minWidth: 700 }}>
-          <BreadcrumbsBar
-            crumbs={crumbs}
-            cwd={cwd}
-            onCrumbClick={(p) => setCwd(p)}
-            onUp={() => setCwd(parentPath(cwd))}
-          />
+          <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 8 }}>
+            <BreadcrumbsBar
+              crumbs={crumbs}
+              cwd={cwd}
+              onCrumbClick={(p) => setCwd(p)}
+              onUp={() => setCwd(parentPath(cwd))}
+            />
+            {selectedPaths.size > 0 && (
+              <Group gap="xs" wrap="nowrap">
+                <Button size="xs" variant="light" onClick={onRenameSelected} disabled={selectedPaths.size !== 1 || bulkWorking}>
+                  Rename
+                </Button>
+                <Button size="xs" variant="light" color="red" onClick={handleBulkDelete} disabled={bulkWorking}>
+                  Delete
+                </Button>
+                <Button size="xs" variant="light" onClick={() => { setMoveDest(cwd); setMoveOpen(true); }} disabled={bulkWorking}>
+                  Move
+                </Button>
+                <Button size="xs" variant="subtle" onClick={clearSelection} disabled={bulkWorking}>
+                  Clear
+                </Button>
+              </Group>
+            )}
+          </Box>
 
           <FileBrowserPane
             items={paged as any}
             loading={loading}
             selectedPaths={selectedPaths}
             onItemClick={onItemClick}
+            onItemDoubleClick={onItemDoubleClick}
             onRequestRename={requestRename}
             onDelete={handleDelete}
             onDeselect={() => {
@@ -278,7 +394,7 @@ function AppBase() {
             isNarrow={isNarrow}
             split={split}
             setDragging={setDragging}
-            splitRef={splitRef as any}
+            splitRef={splitRef}
           />
 
           <BottomBar
@@ -328,6 +444,16 @@ function AppBase() {
         setTheme={setTheme}
         showPreview={showPreview}
         setShowPreview={setShowPreview}
+      />
+
+      {/* Move modal */}
+      <MoveModal
+        opened={moveOpen}
+        dest={moveDest}
+        setDest={setMoveDest}
+        options={moveOptions}
+        onMove={handleBulkMove}
+        onClose={() => setMoveOpen(false)}
       />
     </AppShell>
   );

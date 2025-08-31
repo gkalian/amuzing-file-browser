@@ -13,7 +13,7 @@ type Props = {
 
 function BreadcrumbsBarBase({ crumbs, onCrumbClick }: Props) {
   return (
-    <Group mb="sm" gap="xs">
+    <Group gap="xs" align="center" style={{ marginBottom: 0 }}>
       <MantineBreadcrumbs>
         {crumbs.map((c, i) => (
           <Anchor key={i} onClick={() => onCrumbClick(c.path)}>

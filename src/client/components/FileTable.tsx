@@ -19,6 +19,7 @@ type Item = FsItem & { displaySize?: string; displayMtime?: string };
 type Props = {
   items: Item[];
   onItemClick: (item: FsItem, index: number, e: React.MouseEvent) => void;
+  onItemDoubleClick: (item: FsItem, index: number, e: React.MouseEvent) => void;
   onRequestRename: (item: FsItem) => void;
   onDelete: (item: FsItem) => void;
   selectedPaths: Set<string>;
@@ -30,7 +31,7 @@ const VirtTableHead = Table.Thead;
 const VirtTableRow = Table.Tr as any;
 const VirtTableBody = (props: any) => <Table.Tbody {...props} data-testid="table-body" />;
 
-function FileTableBase({ items, onItemClick, onRequestRename, onDelete, selectedPaths }: Props) {
+function FileTableBase({ items, onItemClick, onItemDoubleClick, onRequestRename, onDelete, selectedPaths }: Props) {
   const { t } = useTranslation();
   const numberFmt = useMemo(() => new Intl.NumberFormat(), []);
   // Memoized header and row renderer to minimize allocations
@@ -73,9 +74,10 @@ function FileTableBase({ items, onItemClick, onRequestRename, onDelete, selected
             style={{ cursor: 'pointer', ...selStyle }}
             data-selected={isSelected || undefined}
             onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
+            onDoubleClick={(e: React.MouseEvent) => onItemDoubleClick(it, idx, e)}
             title={
               it.isDir
-                ? t('table.tooltips.openFolder', { defaultValue: 'Open folder' })
+                ? t('table.tooltips.openFolder', { defaultValue: 'Double-click to open' })
                 : (it.mime || '').startsWith('image/')
                   ? t('table.tooltips.selectDeselect', { defaultValue: 'Select/Deselect' })
                   : undefined
@@ -83,7 +85,11 @@ function FileTableBase({ items, onItemClick, onRequestRename, onDelete, selected
           >
             <Group gap={6} wrap="nowrap">
               {it.isDir ? <IconFolder size={18} /> : <IconFile size={18} />}
-              <Anchor onClick={(e: any) => onItemClick(it, idx, e)} data-testid="item-open">
+              <Anchor
+                onClick={(e: any) => onItemClick(it, idx, e)}
+                onDoubleClick={(e: any) => onItemDoubleClick(it, idx, e)}
+                data-testid="item-open"
+              >
                 {it.name}
               </Anchor>
             </Group>
@@ -107,14 +113,6 @@ function FileTableBase({ items, onItemClick, onRequestRename, onDelete, selected
                   <IconDownload size={16} />
                 </ActionIcon>
               )}
-              <ActionIcon
-                variant="light"
-                aria-label={t('table.aria.rename', { defaultValue: 'rename' })}
-                onClick={() => onRequestRename(it)}
-                data-testid="action-rename"
-              >
-                <IconPencil size={16} />
-              </ActionIcon>
               {!it.isDir && (
                 <ActionIcon
                   variant="light"
@@ -125,15 +123,6 @@ function FileTableBase({ items, onItemClick, onRequestRename, onDelete, selected
                   <IconLink size={16} />
                 </ActionIcon>
               )}
-              <ActionIcon
-                variant="light"
-                color="red"
-                aria-label={t('table.aria.delete', { defaultValue: 'delete' })}
-                onClick={() => onDelete(it)}
-                data-testid="action-delete"
-              >
-                <IconTrash size={16} />
-              </ActionIcon>
             </Group>
           </Table.Td>
         </>
