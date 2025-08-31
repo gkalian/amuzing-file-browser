@@ -94,14 +94,47 @@ function FileTableBase({ items, onItemClick, onItemDoubleClick, onRequestRename,
               </Anchor>
             </Group>
           </Table.Td>
-          <Table.Td style={selStyle}>
+          <Table.Td
+            style={{ cursor: 'pointer', ...selStyle }}
+            onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
+            onDoubleClick={(e: React.MouseEvent) => onItemDoubleClick(it, idx, e)}
+            title={
+              it.isDir
+                ? t('table.tooltips.openFolder', { defaultValue: 'Double-click to open' })
+                : (it.mime || '').startsWith('image/')
+                  ? t('table.tooltips.selectDeselect', { defaultValue: 'Select/Deselect' })
+                  : undefined
+            }
+          >
             {it.isDir ? '-' : (it.displaySize ?? numberFmt.format(it.size))}
           </Table.Td>
-          <Table.Td style={selStyle}>
+          <Table.Td
+            style={{ cursor: 'pointer', ...selStyle }}
+            onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
+            onDoubleClick={(e: React.MouseEvent) => onItemDoubleClick(it, idx, e)}
+            title={
+              it.isDir
+                ? t('table.tooltips.openFolder', { defaultValue: 'Double-click to open' })
+                : (it.mime || '').startsWith('image/')
+                  ? t('table.tooltips.selectDeselect', { defaultValue: 'Select/Deselect' })
+                  : undefined
+            }
+          >
             {it.displayMtime ?? new Date(it.mtimeMs).toLocaleString()}
           </Table.Td>
-          <Table.Td style={selStyle}>
-            <Group gap={4}>
+          <Table.Td
+            style={{ ...selStyle, textAlign: 'right' }}
+            onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
+            onDoubleClick={(e: React.MouseEvent) => onItemDoubleClick(it, idx, e)}
+            title={
+              it.isDir
+                ? t('table.tooltips.openFolder', { defaultValue: 'Double-click to open' })
+                : (it.mime || '').startsWith('image/')
+                  ? t('table.tooltips.selectDeselect', { defaultValue: 'Select/Deselect' })
+                  : undefined
+            }
+          >
+            <Group gap={4} justify="flex-end">
               {!it.isDir && (
                 <ActionIcon
                   component="a"
@@ -109,6 +142,7 @@ function FileTableBase({ items, onItemClick, onItemDoubleClick, onRequestRename,
                   variant="light"
                   aria-label={t('table.aria.download', { defaultValue: 'download' })}
                   data-testid="action-download"
+                  onClick={(e) => e.stopPropagation()}
                 >
                   <IconDownload size={16} />
                 </ActionIcon>
@@ -117,7 +151,7 @@ function FileTableBase({ items, onItemClick, onItemDoubleClick, onRequestRename,
                 <ActionIcon
                   variant="light"
                   aria-label={t('table.aria.getLink', { defaultValue: 'get-link' })}
-                  onClick={() => onGetLink(it)}
+                  onClick={(e) => { e.stopPropagation(); onGetLink(it); }}
                   data-testid="action-get-link"
                 >
                   <IconLink size={16} />

@@ -1,16 +1,15 @@
 // App root component: orchestrates layout, state, API calls, and wiring between UI parts
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { AppShell, Box, Group, Button } from '@mantine/core';
-import { api, type FsItem } from './services/apiClient';
+import type { FsItem } from './services/apiClient';
 import pkg from '../../package.json';
-import { parentPath, joinPath } from './core/utils';
+import { parentPath } from './core/utils';
 import { HeaderBar } from './components/HeaderBar';
 import { BreadcrumbsBar } from './components/BreadcrumbsBar';
 import { FileBrowserPane } from './components/FileBrowserPane';
 import { BottomBar } from './components/BottomBar';
 import { AppFooter } from './components/AppFooter';
 import { MoveModal } from './components/MoveModal';
-import { notifyError, notifySuccess } from './core/notify';
 import { UploadQueue } from './components/UploadQueue';
 import { MkdirModal } from './components/MkdirModal';
 import { RenameModal } from './components/RenameModal';
@@ -27,16 +26,18 @@ import { useUploads } from './hooks/useUploads';
 import { useSettings } from './hooks/useSettings';
 import { usePageSlice } from './hooks/usePageSlice';
 import { useFileSystemOps } from './hooks/useFileSystemOps';
+import { usePreviewSetting } from './hooks/usePreviewSetting';
+import { useSelection } from './hooks/useSelection';
+import { useBulkOps } from './hooks/useBulkOps';
+import { useMoveOptions } from './hooks/useMoveOptions';
+import { useThemeSync } from './hooks/useThemeSync';
 
 function AppBase() {
   // no direct i18n usage in this component
   const { t } = useTranslation();
   const DEFAULT_ALLOWED_TYPES = 'jpg, jpeg, gif, png, webp, 7z, zip';
   const [cwd, setCwd] = useState<string>('/');
-  // multi-select: store selected file paths (folders are not selectable)
-  const [selectedPaths, setSelectedPaths] = useState<Set<string>>(new Set());
-  // anchor index for Shift-range selection within current page
-  const [lastSelectedIndex, setLastSelectedIndex] = useState<number | null>(null);
+  // selection state handled via useSelection hook
   // file list
   const { items, loading, loadList } = useFileList(cwd);
   // search
@@ -62,15 +63,8 @@ function AppBase() {
   const theme = cfgTheme;
   const setTheme = setCfgTheme;
 
-  // upload progress state handled by hook
-  const [showPreview, setShowPreview] = useState<boolean>(() => {
-    try {
-      const v = localStorage.getItem('showPreview');
-      return v ? v === 'true' : true;
-    } catch {
-      return true;
-    }
-  });
+  // preview flag persisted via hook
+  const { showPreview, setShowPreview } = usePreviewSetting(true);
 
   // split sizes (percentage of table width)
   const { split, setDragging, splitRef } = useSplitPane(70, 67, 80);
@@ -89,39 +83,16 @@ function AppBase() {
   const [moveOpen, setMoveOpen] = useState(false);
   const [moveDest, setMoveDest] = useState('');
 
-  useEffect(() => {
-    // clear selection when changing directory
-    setSelectedPaths(new Set());
-    setLastSelectedIndex(null);
-  }, [cwd]);
+  // selection clear on cwd change handled in useSelection hook
 
   // settings are loaded and autosaved via useSettings()
 
-  // Apply theme immediately when changed
-  useEffect(() => {
-    document.documentElement.setAttribute('data-mantine-color-scheme', theme);
-  }, [theme]);
+  // Sync theme attribute
+  useThemeSync(theme);
 
-  // Persist preview preference
-  useEffect(() => {
-    try {
-      localStorage.setItem('showPreview', String(showPreview));
-    } catch (e) {
-      console.debug('persist preview flag failed', e);
-    }
-  }, [showPreview]);
+  // preview persistence handled in usePreviewSetting
 
-  // Allow deselect with Escape key
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setSelectedPaths(new Set());
-        setLastSelectedIndex(null);
-      }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  // Escape handling is in useSelection
 
   // autosave is handled in useSettings
 
@@ -146,6 +117,16 @@ function AppBase() {
   }, [items, debouncedSearch]);
   const totals = useTotals(filtered as any);
   const { paged, totalPages } = usePageSlice(filtered as any[], page, Number(pageSize));
+
+  // selection logic extracted to hook
+  const { selectedPaths, setSelectedPaths, onItemClick, onItemDoubleClick, clearSelection } = useSelection({
+    paged: paged as any,
+    cwd,
+    onOpenDir: (path) => setCwd(path),
+  });
+
+  // bulk operations extracted to hook
+  const { bulkDelete, bulkMove } = useBulkOps({ cwd, items, loadList });
 
 
   const handleMkdir = useCallback(async () => {
@@ -187,90 +168,26 @@ function AppBase() {
 
   // no editor modal anymore; only preview panel
 
-  const onItemClick = useCallback(
-    (item: FsItem, index: number, e: React.MouseEvent) => {
-      // Directories are not selected and not opened on single click
-      if (item.isDir) return;
-
-      // Files selection logic
-      const path = item.path;
-      const isToggle = e.ctrlKey || e.metaKey;
-      const isRange = e.shiftKey && lastSelectedIndex !== null;
-
-      if (isRange) {
-        // Select a contiguous range within current page, only files
-        const start = Math.min(lastSelectedIndex!, index);
-        const end = Math.max(lastSelectedIndex!, index);
-        const rangePaths = new Set<string>();
-        for (let i = start; i <= end; i++) {
-          const it = (paged as unknown as FsItem[])[i];
-          if (it && !it.isDir) rangePaths.add(it.path);
-        }
-        setSelectedPaths(rangePaths);
-      } else if (isToggle) {
-        setSelectedPaths((prev) => {
-          const next = new Set(prev);
-          if (next.has(path)) next.delete(path);
-          else next.add(path);
-          return next;
-        });
-        setLastSelectedIndex(index);
-      } else {
-        // single selection
-        setSelectedPaths(new Set([path]));
-        setLastSelectedIndex(index);
-      }
-    },
-    [lastSelectedIndex, paged]
-  );
-
-  const onItemDoubleClick = useCallback(
-    (item: FsItem, _index: number, _e: React.MouseEvent) => {
-      if (item.isDir) {
-        setCwd(item.path);
-        setSelectedPaths(new Set());
-        setLastSelectedIndex(null);
-      }
-    },
-    []
-  );
-
+  // selection handlers moved to useSelection
   const requestRename = useCallback((it: FsItem) => {
     setRenameTarget(it);
     setRenameName(it.name);
     setRenameOpen(true);
   }, []);
 
-  // bulk: clear selection
-  const clearSelection = useCallback(() => {
-    setSelectedPaths(new Set());
-    setLastSelectedIndex(null);
-  }, []);
+  // clearSelection provided by useSelection
 
   // bulk: delete selected files
   const handleBulkDelete = useCallback(async () => {
     if (!selectedPaths.size) return;
     setBulkWorking(true);
     try {
-      const paths = Array.from(selectedPaths);
-      let ok = 0, fail = 0;
-      for (const p of paths) {
-        try {
-          await api.delete(p);
-          ok++;
-        } catch (e: any) {
-          fail++;
-          notifyError(`${p}: ${String(e?.message || e)}`, 'Delete failed');
-        }
-      }
-      await loadList(cwd);
+      await bulkDelete(selectedPaths);
       clearSelection();
-      if (ok) notifySuccess(`Deleted ${ok} file(s)`);
-      if (fail) notifyError(`Failed to delete ${fail} file(s)`);
     } finally {
       setBulkWorking(false);
     }
-  }, [selectedPaths, cwd, loadList, clearSelection]);
+  }, [selectedPaths, bulkDelete, clearSelection]);
 
   // bulk: move selected files to destination
   const handleBulkMove = useCallback(async () => {
@@ -278,45 +195,17 @@ function AppBase() {
     if (!dest || !selectedPaths.size) return;
     setBulkWorking(true);
     try {
-      // find names for paths
-      const all = items || [];
-      const byPath = new Map(all.map((it) => [it.path, it] as const));
-      const paths = Array.from(selectedPaths);
-      let ok = 0, fail = 0;
-      for (const p of paths) {
-        const it = byPath.get(p);
-        if (!it) {
-          fail++;
-          notifyError(`${p}: not found in list`, 'Move failed');
-          continue;
-        }
-        const to = joinPath(dest, it.name);
-        try {
-          await api.rename(p, to);
-          ok++;
-        } catch (e: any) {
-          fail++;
-          notifyError(`${it.name}: ${String(e?.message || e)}`, 'Move failed');
-        }
-      }
-      await loadList(cwd);
+      await bulkMove(selectedPaths, dest);
       clearSelection();
       setMoveOpen(false);
       setMoveDest('');
-      if (ok) notifySuccess(`Moved ${ok} file(s)`);
-      if (fail) notifyError(`Failed to move ${fail} file(s)`);
     } finally {
       setBulkWorking(false);
     }
-  }, [moveDest, selectedPaths, items, cwd, loadList, clearSelection]);
+  }, [moveDest, selectedPaths, bulkMove, clearSelection]);
 
-  // destination options for move: current folder and its subfolders
-  const moveOptions = useMemo(() => {
-    const set = new Set<string>();
-    set.add(cwd);
-    (items || []).forEach((it) => { if (it.isDir) set.add(it.path); });
-    return Array.from(set);
-  }, [items, cwd]);
+  // destination options for move
+  const moveOptions = useMoveOptions(cwd, items, moveDest);
 
   const onRenameSelected = useCallback(() => {
     if (selectedPaths.size !== 1) return;
@@ -328,7 +217,6 @@ function AppBase() {
     setRenameOpen(true);
   }, [selectedPaths, items]);
 
-  
   return (
     <AppShell header={{ height: 72 }} footer={{ height: 56 }} padding="md">
       <AppShell.Header>
@@ -387,8 +275,7 @@ function AppBase() {
             onRequestRename={requestRename}
             onDelete={handleDelete}
             onDeselect={() => {
-              setSelectedPaths(new Set());
-              setLastSelectedIndex(null);
+              clearSelection();
             }}
             showPreview={showPreview}
             isNarrow={isNarrow}

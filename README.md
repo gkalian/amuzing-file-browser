@@ -22,7 +22,7 @@ All suggestions, bug reports, and pull requests are welcome.
 
 ## Local Development
 
-1. Install deps
+- Install deps
 
 ```
 npm install
@@ -30,7 +30,7 @@ npm run dev
 set FILEBROWSER_ROOT=c:\\path\\to\\serve in Settings
 ```
 
-Open http://localhost:3500
+- Open http://localhost:3500
 
 ## Docker
 
