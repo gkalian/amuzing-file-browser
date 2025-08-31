@@ -15,7 +15,7 @@ function UploadProgressBase({ uploading, uploadedBytes, totalBytes }: Props) {
   const pct = Math.max(0, Math.min(100, Math.round((uploadedBytes / totalBytes) * 100)));
   return (
     <Group gap={8} wrap="nowrap" align="center" style={{ minWidth: 220 }}>
-      <Progress value={pct} style={{ width: 160 }} size="sm" aria-label={t('aria.uploadProgress', { defaultValue: 'upload-progress' })} />
+      <Progress value={pct} style={{ width: 160 }} size="sm" aria-label="upload-progress" />
       <Text size="xs" c="dimmed" style={{ width: 40, textAlign: 'right' }}>
         {pct}%
       </Text>

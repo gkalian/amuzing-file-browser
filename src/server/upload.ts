@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import multer from 'multer';
 import express from 'express';
-import { getMaxUploadMB } from './config.js';
+import { getMaxUploadMB, getAllowedTypes } from './config.js';
 import { safeJoinRoot } from './paths.js';
 
 // Generate a unique filename in dir by appending " (2)", "(3)", ... before extension
@@ -53,7 +53,24 @@ export function createMulter() {
       }
     },
   });
-  return multer({ storage });
+
+  const fileFilter = (req: express.Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+    try {
+      const allowed = String(getAllowedTypes() || '')
+        .split(',')
+        .map((s) => s.trim().toLowerCase())
+        .filter(Boolean);
+      if (allowed.length === 0) return cb(null, true);
+      const name = file.originalname || '';
+      const dot = name.lastIndexOf('.');
+      const ext = dot >= 0 ? name.slice(dot + 1).toLowerCase() : '';
+      if (allowed.includes(ext)) return cb(null, true);
+      return cb(new Error(`Not allowed format: ${name}`));
+    } catch (e) {
+      return cb(e as Error);
+    }
+  };
+  return multer({ storage, fileFilter });
 }
 
 // Pre-check content-length against dynamic limit

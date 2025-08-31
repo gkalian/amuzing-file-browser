@@ -1,6 +1,6 @@
 // File browser pane: composes FileTable and optional PreviewPanel with a draggable split.
 import { Box, Group, Loader } from '@mantine/core';
-import type { FsItem } from '../../services/apiClient';
+import type { FsItem } from '../../core/types';
 import { FileTable } from './FileTable';
 import { PreviewPanel } from '../preview/PreviewPanel';
 import type { RefObject, MouseEvent as ReactMouseEvent } from 'react';
@@ -12,8 +12,6 @@ export function FileBrowserPane(props: {
   selectedPaths: Set<string>;
   onItemClick: (item: FsItem, index: number, e: ReactMouseEvent) => void;
   onItemDoubleClick: (item: FsItem, index: number, e: ReactMouseEvent) => void;
-  onRequestRename: (item: FsItem) => void;
-  onDelete: (item: FsItem) => Promise<void> | void;
   onDeselect: () => void;
   showPreview: boolean;
   isNarrow: boolean;
@@ -27,8 +25,6 @@ export function FileBrowserPane(props: {
     selectedPaths,
     onItemClick,
     onItemDoubleClick,
-    onRequestRename,
-    onDelete,
     onDeselect,
     showPreview,
     isNarrow,
@@ -79,8 +75,6 @@ export function FileBrowserPane(props: {
             items={items}
             onItemClick={onItemClick}
             onItemDoubleClick={onItemDoubleClick}
-            onRequestRename={onRequestRename}
-            onDelete={onDelete}
             selectedPaths={selectedPaths}
           />
         </Box>

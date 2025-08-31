@@ -23,7 +23,7 @@ function PreviewPanelBase({ item, onDeselect }: { item: FsItem | null; onDeselec
       <Box style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         <Group justify="flex-end" gap={4}>
           {onDeselect && (
-            <ActionIcon variant="light" aria-label={t('preview.deselect', { defaultValue: 'Deselect' })} onClick={onDeselect}>
+            <ActionIcon variant="light" aria-label="deselect" onClick={onDeselect}>
               <IconX size={16} />
             </ActionIcon>
           )}
@@ -82,7 +82,7 @@ function PreviewPanelBase({ item, onDeselect }: { item: FsItem | null; onDeselec
       <Box style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
         <Group justify="flex-end" gap={4}>
           {onDeselect && (
-            <ActionIcon variant="light" aria-label={t('preview.deselect', { defaultValue: 'Deselect' })} onClick={onDeselect}>
+            <ActionIcon variant="light" aria-label="deselect" onClick={onDeselect}>
               <IconX size={16} />
             </ActionIcon>
           )}

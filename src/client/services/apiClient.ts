@@ -3,7 +3,18 @@ import type { ListResponse, FsItem } from '../core/types';
 
 async function json<T>(input: RequestInfo, init?: RequestInit) {
   const res = await fetch(input, init);
-  if (!res.ok) throw new Error(await res.text());
+  if (!res.ok) {
+    // Try to parse structured error first
+    try {
+      const data = await res.json();
+      const msg = (data && (data.error || data.message)) as string | undefined;
+      if (msg) throw new Error(msg);
+    } catch {
+      // Fallback to raw text
+      const txt = await res.text();
+      throw new Error(txt || `HTTP ${res.status}`);
+    }
+  }
   return (await res.json()) as T;
 }
 

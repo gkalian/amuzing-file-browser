@@ -54,7 +54,7 @@ function HeaderBarBase({
                 size="xs"
                 variant="subtle"
                 onClick={() => setSearch('')}
-                aria-label={t('aria.clear', { defaultValue: 'clear' })}
+                aria-label="clear"
                 data-testid="search-clear"
               >
                 <IconX size={12} />

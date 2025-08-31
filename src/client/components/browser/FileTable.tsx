@@ -1,14 +1,7 @@
 // Virtualized file table listing with actions (open, rename, link, delete)
 import React, { memo, useCallback, useMemo } from 'react';
 import { Anchor, Group, Table, ActionIcon } from '@mantine/core';
-import {
-  IconFolder,
-  IconFile,
-  IconDownload,
-  IconPencil,
-  IconLink,
-  IconTrash,
-} from '@tabler/icons-react';
+import { IconFolder, IconFile, IconDownload, IconLink } from '@tabler/icons-react';
 import { api } from '../../services/apiClient';
 import type { FsItem } from '../../core/types';
 import { useTranslation } from 'react-i18next';
@@ -20,8 +13,6 @@ type Props = {
   items: Item[];
   onItemClick: (item: FsItem, index: number, e: React.MouseEvent) => void;
   onItemDoubleClick: (item: FsItem, index: number, e: React.MouseEvent) => void;
-  onRequestRename: (item: FsItem) => void;
-  onDelete: (item: FsItem) => void;
   selectedPaths: Set<string>;
 };
 
@@ -31,7 +22,7 @@ const VirtTableHead = Table.Thead;
 const VirtTableRow = Table.Tr as any;
 const VirtTableBody = (props: any) => <Table.Tbody {...props} data-testid="table-body" />;
 
-function FileTableBase({ items, onItemClick, onItemDoubleClick, onRequestRename, onDelete, selectedPaths }: Props) {
+function FileTableBase({ items, onItemClick, onItemDoubleClick, selectedPaths }: Props) {
   const { t } = useTranslation();
   const numberFmt = useMemo(() => new Intl.NumberFormat(), []);
   // Memoized header and row renderer to minimize allocations
@@ -140,7 +131,7 @@ function FileTableBase({ items, onItemClick, onItemDoubleClick, onRequestRename,
                   component="a"
                   href={api.downloadUrl(it.path)}
                   variant="light"
-                  aria-label={t('table.aria.download', { defaultValue: 'download' })}
+                  aria-label="download"
                   data-testid="action-download"
                   onClick={(e) => e.stopPropagation()}
                 >
@@ -150,7 +141,7 @@ function FileTableBase({ items, onItemClick, onItemDoubleClick, onRequestRename,
               {!it.isDir && (
                 <ActionIcon
                   variant="light"
-                  aria-label={t('table.aria.getLink', { defaultValue: 'get-link' })}
+                  aria-label="get-link"
                   onClick={(e) => { e.stopPropagation(); onGetLink(it); }}
                   data-testid="action-get-link"
                 >
@@ -162,7 +153,7 @@ function FileTableBase({ items, onItemClick, onItemDoubleClick, onRequestRename,
         </>
       );
     },
-    [numberFmt, onDelete, onItemClick, onRequestRename, onGetLink, selectedPaths]
+    [numberFmt, onItemClick, onGetLink, onItemDoubleClick, selectedPaths]
   );
 
   return (

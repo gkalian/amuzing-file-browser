@@ -1,6 +1,7 @@
 // Hook: loads directory listing, sorts folders first, and formats size/mtime for display.
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { api, type FsItem } from '../../services/apiClient';
+import { api } from '../../services/apiClient';
+import type { FsItem } from '../../core/types';
 
 export type UiFsItem = FsItem & { displaySize: string; displayMtime: string };
 

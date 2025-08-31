@@ -1,6 +1,7 @@
 // Hook: bulk filesystem operations (delete, move) with name conflict resolution
 import { useCallback } from 'react';
-import { api, type FsItem } from '../../services/apiClient';
+import { api } from '../../services/apiClient';
+import type { FsItem } from '../../core/types';
 import { joinPath } from '../../core/utils';
 import { notifyError, notifySuccess } from '../../core/notify';
 

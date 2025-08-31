@@ -1,7 +1,7 @@
 // App root component: orchestrates layout, state, API calls, and wiring between UI parts
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { AppShell, Box, Group, Button } from '@mantine/core';
-import type { FsItem } from './services/apiClient';
+import type { FsItem } from './core/types';
 import pkg from '../../package.json';
 import { parentPath } from './core/utils';
 import { HeaderBar } from './components/layout/HeaderBar';
@@ -137,19 +137,7 @@ function AppBase() {
     }).catch(() => {});
   }, [mkdirName, mkdir]);
 
-  const handleDelete = useCallback(
-    async (item: FsItem) => {
-      await remove(item).then(() => {
-        setSelectedPaths((prev) => {
-          if (!prev.size) return prev;
-          const next = new Set(prev);
-          next.delete(item.path);
-          return next;
-        });
-      }).catch(() => {});
-    },
-    [remove]
-  );
+  // inline delete via table is removed; bulk delete is available via toolbar
 
   const [renameTarget, setRenameTarget] = useState<FsItem | null>(null);
   const handleRename = useCallback(async () => {
@@ -169,11 +157,6 @@ function AppBase() {
   // no editor modal anymore; only preview panel
 
   // selection handlers moved to useSelection
-  const requestRename = useCallback((it: FsItem) => {
-    setRenameTarget(it);
-    setRenameName(it.name);
-    setRenameOpen(true);
-  }, []);
 
   // clearSelection provided by useSelection
 
@@ -272,8 +255,6 @@ function AppBase() {
             selectedPaths={selectedPaths}
             onItemClick={onItemClick}
             onItemDoubleClick={onItemDoubleClick}
-            onRequestRename={requestRename}
-            onDelete={handleDelete}
             onDeselect={() => {
               clearSelection();
             }}
