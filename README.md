@@ -6,7 +6,7 @@ A minimal file browser you can run locally, in Docker, and on Kubernetes (future
 
 Before starting this project, I have checked what is already existed. I found multiple apps including [gtsteffaniak's File Browser](https://github.com/gtsteffaniak/filebrowser). Even so it is a great tool so far, it is a bit overcomplicated for me and my needs. So I decided to make my own simple file browser.
 
-It is mostly vibe-coded project with Windsurf AI as I am not a developer, so I strongly recommend to check [gtsteffaniak's File Browser](https://github.com/gtsteffaniak/filebrowser) for more features. You may use this project on your own risk. I do not take any responsibility for any damage or loss of your data. But in case you still want to use it, feel free to do so. 
+It is mostly vibe-coded project with Windsurf AI as I am not a developer, so I strongly recommend to check [gtsteffaniak's File Browser](https://github.com/gtsteffaniak/filebrowser) for more features. You may use this project on your own risk. I do not take any responsibility for any damage or loss of your data.
 
 All suggestions, bug reports, and pull requests are welcome.
 
