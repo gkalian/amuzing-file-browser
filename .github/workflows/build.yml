@@ -34,6 +34,29 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Compute next release version (dry-run)
+        id: nextver
+        uses: cycjimmy/semantic-release-action@v4
+        with:
+          dry_run: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Bump package.json to next version (no tag)
+        if: ${{ steps.nextver.outputs.new_release_version != '' }}
+        run: npm version ${{ steps.nextver.outputs.new_release_version }} --no-git-tag-version
+
+      - name: Determine version
+        id: version
+        run: |
+          if [ -n "${{ steps.nextver.outputs.new_release_version }}" ]; then
+            echo "version=${{ steps.nextver.outputs.new_release_version }}" >> $GITHUB_OUTPUT
+          else
+            VERSION=$(node -p "require('./package.json').version")
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+          fi
+          echo "Using version ${{ steps.version.outputs.version }}"
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -44,19 +67,8 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run semantic-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
-
-      - name: Read version
-        id: version
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Using version $VERSION"
-
       - name: Build and push Docker image
+        if: ${{ steps.nextver.outputs.new_release_version != '' }}
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -65,3 +77,9 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:v${{ steps.version.outputs.version }}
+
+      - name: Run semantic-release (publish)
+        if: ${{ steps.nextver.outputs.new_release_version != '' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
