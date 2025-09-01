@@ -1,3 +1,10 @@
+## [1.3.5](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.4...v1.3.5) (2025-09-01)
+
+
+### Bug Fixes
+
+* manual chunks, eslint fixes and prettier applied ([61fa75a](https://github.com/gkalian/amuzing-file-browser/commit/61fa75a4584bd042f958231e032c522788392ff8))
+
 ## [1.3.4](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.3...v1.3.4) (2025-09-01)
 
 
