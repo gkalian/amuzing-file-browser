@@ -1,6 +1,6 @@
 // Unit tests for server-side MIME helper utilities
 import { describe, it, expect } from 'vitest';
-import { isTextLike, isImageLike } from './utils';
+import { isTextLike, isImageLike } from '../../src/server/utils';
 
 describe('utils mime helpers (smoke)', () => {
   it('isTextLike returns true for text/plain and application/json', () => {

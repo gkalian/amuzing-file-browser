@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, within } from '../../utils/test-utils'
+import { render, screen, within } from '../../../utils/test-utils'
 import { MoveModal } from '@/client/components/modals/MoveModal'
 
 describe('MoveModal (render-only)', () => {

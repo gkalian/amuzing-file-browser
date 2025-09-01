@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, within } from '../../utils/test-utils'
+import { render, screen, within } from '../../../utils/test-utils'
 import { MkdirModal } from '@/client/components/modals/MkdirModal'
 
 describe('MkdirModal (render-only)', () => {

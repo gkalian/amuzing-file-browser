@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen } from '../utils/test-utils'
+import { render, screen } from '../../utils/test-utils'
 import { HeaderBar } from '@/client/components/layout/HeaderBar'
 
 describe('HeaderBar (render-only)', () => {
