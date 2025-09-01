@@ -131,7 +131,8 @@ function FileTableBase({ items, onItemClick, onItemDoubleClick, selectedPaths }:
                   component="a"
                   href={api.downloadUrl(it.path)}
                   variant="light"
-                  aria-label="download"
+                  aria-label={t('table.actions.download', { defaultValue: 'Download' })}
+                  title={t('table.actions.download', { defaultValue: 'Download' })}
                   data-testid="action-download"
                   onClick={(e) => e.stopPropagation()}
                 >
@@ -141,7 +142,8 @@ function FileTableBase({ items, onItemClick, onItemDoubleClick, selectedPaths }:
               {!it.isDir && (
                 <ActionIcon
                   variant="light"
-                  aria-label="get-link"
+                  aria-label={t('table.actions.copyLink', { defaultValue: 'Copy permanent link' })}
+                  title={t('table.actions.copyLink', { defaultValue: 'Copy permanent link' })}
                   onClick={(e) => { e.stopPropagation(); onGetLink(it); }}
                   data-testid="action-get-link"
                 >

@@ -31,12 +31,18 @@ function HeaderBarBase({
   return (
     <Group justify="space-between" px="md" h="100%">
       <Group wrap="nowrap" gap="md">
-        <Anchor data-testid="logo" onClick={onLogoClick} style={{ lineHeight: 0, display: 'flex', alignItems: 'center' }}>
+        <Anchor
+          data-testid="logo"
+          onClick={onLogoClick}
+          title={t('header.logoTooltip', { defaultValue: 'Go to home' })}
+          style={{ lineHeight: 0, display: 'flex', alignItems: 'center' }}
+        >
           <picture>
             <img
               key={theme}
               src={logoSrc}
               alt={t('app.title', { defaultValue: 'Amuzing File Browser' })}
+              title={t('app.title', { defaultValue: 'Amuzing File Browser' })}
               style={{ display: 'block', height: 24 }}
             />
           </picture>
@@ -72,6 +78,8 @@ function HeaderBarBase({
               variant="default"
               size="xs"
               leftSection={<IconUpload size={16} />}
+              title={t('header.uploadTooltip', { defaultValue: 'Upload files' })}
+              aria-label={t('header.upload', { defaultValue: 'Upload' })}
               data-testid="btn-upload"
             >
               {t('header.upload', { defaultValue: 'Upload' })}
@@ -83,11 +91,20 @@ function HeaderBarBase({
           size="xs"
           leftSection={<IconPlus size={16} />}
           onClick={onNewFolder}
+          title={t('header.newFolderTooltip', { defaultValue: 'Create new folder' })}
+          aria-label={t('header.newFolder', { defaultValue: 'New folder' })}
           data-testid="btn-new-folder"
         >
           {t('header.newFolder', { defaultValue: 'New folder' })}
         </Button>
-        <Button variant="default" size="xs" onClick={onOpenSettings} data-testid="btn-settings">
+        <Button
+          variant="default"
+          size="xs"
+          onClick={onOpenSettings}
+          title={t('header.settingsTooltip', { defaultValue: 'Open settings' })}
+          aria-label={t('header.settings', { defaultValue: 'Settings' })}
+          data-testid="btn-settings"
+        >
           {t('header.settings', { defaultValue: 'Settings' })}
         </Button>
       </Group>
