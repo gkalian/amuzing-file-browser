@@ -54,7 +54,11 @@ export function createMulter() {
     },
   });
 
-  const fileFilter = (req: express.Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+  const fileFilter = (
+    req: express.Request,
+    file: Express.Multer.File,
+    cb: multer.FileFilterCallback
+  ) => {
     try {
       const allowed = String(getAllowedTypes() || '')
         .split(',')

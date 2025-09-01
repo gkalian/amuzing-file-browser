@@ -1,7 +1,6 @@
 // UploadProgress: small inline progress bar to show total upload progress
 import { Group, Progress, Text } from '@mantine/core';
 import React, { memo } from 'react';
-import { useTranslation } from 'react-i18next';
 
 type Props = {
   uploading: boolean;
@@ -10,7 +9,6 @@ type Props = {
 };
 
 function UploadProgressBase({ uploading, uploadedBytes, totalBytes }: Props) {
-  const { t } = useTranslation();
   if (!uploading || totalBytes <= 0) return null;
   const pct = Math.max(0, Math.min(100, Math.round((uploadedBytes / totalBytes) * 100)));
   return (

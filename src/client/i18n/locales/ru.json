@@ -46,7 +46,12 @@
   "table": {
     "headers": { "name": "Имя", "size": "Размер", "modified": "Изменён" },
     "tooltips": { "openFolder": "Открыть папку", "selectDeselect": "Выбрать/Снять" },
-    "aria": { "download": "скачать", "rename": "переименовать", "getLink": "получить-ссылку", "delete": "удалить" }
+    "aria": {
+      "download": "скачать",
+      "rename": "переименовать",
+      "getLink": "получить-ссылку",
+      "delete": "удалить"
+    }
   },
   "bottom": {
     "stats": "{{dirs}} папок • {{files}} файлов • {{size}} всего"
@@ -62,7 +67,13 @@
   "preview": {
     "selectFile": "Выберите файл для предпросмотра",
     "folder": "Папка",
-    "labels": { "name": "Имя:", "dimensions": "Размеры:", "size": "Размер:", "type": "Тип:", "modified": "Изменён:" },
+    "labels": {
+      "name": "Имя:",
+      "dimensions": "Размеры:",
+      "size": "Размер:",
+      "type": "Тип:",
+      "modified": "Изменён:"
+    },
     "textPreview": "Предпросмотр текста",
     "noPreview": "Предпросмотр недоступен"
   },

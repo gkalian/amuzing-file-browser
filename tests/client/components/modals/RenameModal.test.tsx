@@ -1,6 +1,6 @@
-import React from 'react'
-import { render, screen } from '../../../utils/test-utils'
-import { RenameModal } from '@/client/components/modals/RenameModal'
+import React from 'react';
+import { render, screen } from '../../../utils/test-utils';
+import { RenameModal } from '@/client/components/modals/RenameModal';
 
 describe('RenameModal (render-only)', () => {
   it('should render input and rename button when opened', () => {
@@ -12,9 +12,9 @@ describe('RenameModal (render-only)', () => {
         onRename={() => {}}
         onClose={() => {}}
       />
-    )
+    );
 
-    expect(screen.getByPlaceholderText(/New name/i)).toBeInTheDocument()
-    expect(screen.getAllByText(/Rename/i)[0]).toBeInTheDocument()
-  })
-})
+    expect(screen.getByPlaceholderText(/New name/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Rename/i)[0]).toBeInTheDocument();
+  });
+});

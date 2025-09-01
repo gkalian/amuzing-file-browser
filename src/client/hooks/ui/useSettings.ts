@@ -15,7 +15,12 @@ export function useSettings(params: {
 
   // track initial config load and last saved snapshot
   const configLoadedRef = useRef(false);
-  const lastSavedRef = useRef<{ root: string; maxUploadMB: number; allowedTypes: string; theme: 'light' | 'dark' } | null>(null);
+  const lastSavedRef = useRef<{
+    root: string;
+    maxUploadMB: number;
+    allowedTypes: string;
+    theme: 'light' | 'dark';
+  } | null>(null);
 
   // initial load
   useEffect(() => {
@@ -26,7 +31,12 @@ export function useSettings(params: {
       setCfgAllowedTypes(allowed);
       setCfgTheme(c.theme);
       configLoadedRef.current = true;
-      lastSavedRef.current = { root: c.root, maxUploadMB: c.maxUploadMB, allowedTypes: allowed, theme: c.theme };
+      lastSavedRef.current = {
+        root: c.root,
+        maxUploadMB: c.maxUploadMB,
+        allowedTypes: allowed,
+        theme: c.theme,
+      };
     });
   }, [defaultAllowedTypes]);
 
@@ -34,7 +44,12 @@ export function useSettings(params: {
   useEffect(() => {
     const h = setTimeout(async () => {
       if (!configLoadedRef.current) return;
-      const current = { root: cfgRoot, maxUploadMB: cfgMaxUpload, allowedTypes: cfgAllowedTypes, theme: cfgTheme };
+      const current = {
+        root: cfgRoot,
+        maxUploadMB: cfgMaxUpload,
+        allowedTypes: cfgAllowedTypes,
+        theme: cfgTheme,
+      };
       const last = lastSavedRef.current;
       if (
         last &&

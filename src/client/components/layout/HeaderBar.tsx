@@ -71,7 +71,14 @@ function HeaderBarBase({
       </Group>
       {progressSlot}
       <Group>
-        <FileButton multiple onChange={(files) => { onUpload(files as File[]); resetRef.current?.(); }} resetRef={resetRef}>
+        <FileButton
+          multiple
+          onChange={(files) => {
+            onUpload(files as File[]);
+            resetRef.current?.();
+          }}
+          resetRef={resetRef}
+        >
           {(props) => (
             <Button
               {...props}

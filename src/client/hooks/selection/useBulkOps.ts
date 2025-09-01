@@ -12,37 +12,34 @@ export function useBulkOps(params: {
 }) {
   const { cwd, items, loadList } = params;
 
-  const resolveUniquePath = useCallback(
-    async (destDir: string, name: string, isDir: boolean) => {
-      const dot = name.lastIndexOf('.');
-      const hasExt = !isDir && dot > 0;
-      const base = hasExt ? name.slice(0, dot) : name;
-      const ext = hasExt ? name.slice(dot) : '';
-      const baseNoSuffix = base.replace(/\s*\((\d+)\)$/g, '');
+  const resolveUniquePath = useCallback(async (destDir: string, name: string, isDir: boolean) => {
+    const dot = name.lastIndexOf('.');
+    const hasExt = !isDir && dot > 0;
+    const base = hasExt ? name.slice(0, dot) : name;
+    const ext = hasExt ? name.slice(dot) : '';
+    const baseNoSuffix = base.replace(/\s*\((\d+)\)$/g, '');
 
-      // First try the original name
-      let candidate = joinPath(destDir, `${baseNoSuffix}${ext}`);
+    // First try the original name
+    let candidate = joinPath(destDir, `${baseNoSuffix}${ext}`);
+    try {
+      await api.stat(candidate);
+    } catch {
+      return candidate; // not exists
+    }
+
+    // Then try incremental suffixes
+    for (let i = 2; i < 1000; i++) {
+      candidate = joinPath(destDir, `${baseNoSuffix} (${i})${ext}`);
       try {
         await api.stat(candidate);
       } catch {
-        return candidate; // not exists
+        return candidate; // found a free one
       }
-
-      // Then try incremental suffixes
-      for (let i = 2; i < 1000; i++) {
-        candidate = joinPath(destDir, `${baseNoSuffix} (${i})${ext}`);
-        try {
-          await api.stat(candidate);
-        } catch {
-          return candidate; // found a free one
-        }
-      }
-      // Fallback: timestamp
-      const ts = Date.now();
-      return joinPath(destDir, `${baseNoSuffix} (${ts})${ext}`);
-    },
-    []
-  );
+    }
+    // Fallback: timestamp
+    const ts = Date.now();
+    return joinPath(destDir, `${baseNoSuffix} (${ts})${ext}`);
+  }, []);
 
   const ensureDestDir = useCallback(async (dest: string) => {
     if (dest === '/') return true;
@@ -68,7 +65,8 @@ export function useBulkOps(params: {
     async (paths: Set<string>) => {
       if (!paths.size) return { ok: 0, fail: 0 };
       const list = Array.from(paths);
-      let ok = 0, fail = 0;
+      let ok = 0,
+        fail = 0;
       for (const p of list) {
         try {
           await api.delete(p);
@@ -96,7 +94,8 @@ export function useBulkOps(params: {
       const all = items || [];
       const byPath = new Map(all.map((it) => [it.path, it] as const));
       const list = Array.from(paths);
-      let ok = 0, fail = 0;
+      let ok = 0,
+        fail = 0;
       for (const p of list) {
         const it = byPath.get(p);
         if (!it) {

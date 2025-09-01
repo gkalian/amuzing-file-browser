@@ -1,11 +1,7 @@
 // Hook: build list of destination options for Move modal
 import type { FsItem } from '../../core/types';
 
-export function useMoveOptions(
-  cwd: string,
-  items: FsItem[] | null | undefined,
-  moveDest: string
-) {
+export function useMoveOptions(cwd: string, items: FsItem[] | null | undefined, moveDest: string) {
   // keep it simple: compute on call; caller can memoize if needed
   const set = new Set<string>();
   set.add('/');

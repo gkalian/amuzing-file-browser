@@ -11,7 +11,12 @@ function PreviewPanelBase({ item, onDeselect }: { item: FsItem | null; onDeselec
   const { t } = useTranslation();
   const [dims, setDims] = useState<{ w: number; h: number } | null>(null);
 
-  if (!item) return <Text c="dimmed">{t('preview.selectFile', { defaultValue: 'Select a file to preview' })}</Text>;
+  if (!item)
+    return (
+      <Text c="dimmed">
+        {t('preview.selectFile', { defaultValue: 'Select a file to preview' })}
+      </Text>
+    );
   if (item.isDir) return <Text c="dimmed">{t('preview.folder', { defaultValue: 'Folder' })}</Text>;
   if ((item.mime || '').startsWith('image/')) {
     const onImgLoad = useCallback<React.ReactEventHandler<HTMLImageElement>>((e) => {
@@ -36,17 +41,27 @@ function PreviewPanelBase({ item, onDeselect }: { item: FsItem | null; onDeselec
             decoding="async"
             fetchPriority="low"
             onLoad={onImgLoad}
-            style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', borderRadius: 8, display: 'block' }}
+            style={{
+              maxWidth: '100%',
+              maxHeight: '100%',
+              objectFit: 'contain',
+              borderRadius: 8,
+              display: 'block',
+            }}
           />
           <Paper withBorder p="sm" mt="sm" radius="md" data-testid="image-meta">
             <Group gap="md" wrap="wrap">
               <Text size="sm">
-                <Text span c="dimmed">{t('preview.labels.name', { defaultValue: 'Name:' })}</Text>{' '}
+                <Text span c="dimmed">
+                  {t('preview.labels.name', { defaultValue: 'Name:' })}
+                </Text>{' '}
                 <Code style={{ fontSize: 'inherit' }}>{item.name}</Code>
               </Text>
               {dims && (
                 <Text size="sm">
-                  <Text span c="dimmed">{t('preview.labels.dimensions', { defaultValue: 'Dimensions:' })}</Text>{' '}
+                  <Text span c="dimmed">
+                    {t('preview.labels.dimensions', { defaultValue: 'Dimensions:' })}
+                  </Text>{' '}
                   <Code style={{ fontSize: 'inherit' }}>
                     {dims.w} × {dims.h}px
                   </Code>
@@ -54,19 +69,27 @@ function PreviewPanelBase({ item, onDeselect }: { item: FsItem | null; onDeselec
               )}
               {typeof item.size === 'number' && (
                 <Text size="sm">
-                  <Text span c="dimmed">{t('preview.labels.size', { defaultValue: 'Size:' })}</Text>{' '}
+                  <Text span c="dimmed">
+                    {t('preview.labels.size', { defaultValue: 'Size:' })}
+                  </Text>{' '}
                   <Code style={{ fontSize: 'inherit' }}>{formatBytes(item.size)}</Code>
                 </Text>
               )}
               {item.mime && (
                 <Text size="sm">
-                  <Text span c="dimmed">{t('preview.labels.type', { defaultValue: 'Type:' })}</Text>{' '}
+                  <Text span c="dimmed">
+                    {t('preview.labels.type', { defaultValue: 'Type:' })}
+                  </Text>{' '}
                   <Code style={{ fontSize: 'inherit' }}>{item.mime}</Code>
                 </Text>
               )}
               <Text size="sm">
-                <Text span c="dimmed">{t('preview.labels.modified', { defaultValue: 'Modified:' })}</Text>{' '}
-                <Code style={{ fontSize: 'inherit' }}>{new Date(item.mtimeMs).toLocaleString()}</Code>
+                <Text span c="dimmed">
+                  {t('preview.labels.modified', { defaultValue: 'Modified:' })}
+                </Text>{' '}
+                <Code style={{ fontSize: 'inherit' }}>
+                  {new Date(item.mtimeMs).toLocaleString()}
+                </Code>
               </Text>
             </Group>
           </Paper>

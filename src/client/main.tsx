@@ -17,7 +17,14 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <MantineProvider defaultColorScheme="auto" theme={theme}>
     <Notifications
       position="top-right"
-      style={{ top: 50, right: 12, zIndex: 1000, pointerEvents: 'auto', display: 'inline-block', width: 'max-content' }}
+      style={{
+        top: 50,
+        right: 12,
+        zIndex: 1000,
+        pointerEvents: 'auto',
+        display: 'inline-block',
+        width: 'max-content',
+      }}
     />
     <App />
   </MantineProvider>

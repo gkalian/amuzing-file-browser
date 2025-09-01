@@ -14,7 +14,12 @@ type Props = {
 function RenameModalBase({ opened, name, setName, onRename, onClose }: Props) {
   const { t } = useTranslation();
   return (
-    <Modal opened={opened} onClose={onClose} title={t('table.aria.rename', { defaultValue: 'Rename' })} centered>
+    <Modal
+      opened={opened}
+      onClose={onClose}
+      title={t('table.aria.rename', { defaultValue: 'Rename' })}
+      centered
+    >
       <Group>
         <TextInput
           placeholder={t('rename.placeholder', { defaultValue: 'New name' })}

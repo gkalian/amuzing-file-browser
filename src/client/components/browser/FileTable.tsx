@@ -144,7 +144,10 @@ function FileTableBase({ items, onItemClick, onItemDoubleClick, selectedPaths }:
                   variant="light"
                   aria-label={t('table.actions.copyLink', { defaultValue: 'Copy permanent link' })}
                   title={t('table.actions.copyLink', { defaultValue: 'Copy permanent link' })}
-                  onClick={(e) => { e.stopPropagation(); onGetLink(it); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onGetLink(it);
+                  }}
                   data-testid="action-get-link"
                 >
                   <IconLink size={16} />

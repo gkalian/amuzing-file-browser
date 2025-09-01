@@ -1,6 +1,6 @@
-import React from 'react'
-import { render, screen } from '../../utils/test-utils'
-import { BottomBar } from '@/client/components/layout/BottomBar'
+import React from 'react';
+import { render, screen } from '../../utils/test-utils';
+import { BottomBar } from '@/client/components/layout/BottomBar';
 
 describe('BottomBar (render-only)', () => {
   it('should render stats and pager controls', () => {
@@ -13,9 +13,9 @@ describe('BottomBar (render-only)', () => {
         page={1}
         setPage={() => {}}
       />
-    )
+    );
 
-    expect(screen.getByTestId('stats')).toBeInTheDocument()
-    expect(screen.getByTestId('pager-controls')).toBeInTheDocument()
-  })
-})
+    expect(screen.getByTestId('stats')).toBeInTheDocument();
+    expect(screen.getByTestId('pager-controls')).toBeInTheDocument();
+  });
+});

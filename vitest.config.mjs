@@ -1,8 +1,8 @@
-import { defineConfig } from 'vitest/config'
-import { resolve } from 'path'
-import { fileURLToPath } from 'url'
+import { defineConfig } from 'vitest/config';
+import { resolve } from 'path';
+import { fileURLToPath } from 'url';
 
-const rootDir = fileURLToPath(new URL('.', import.meta.url))
+const rootDir = fileURLToPath(new URL('.', import.meta.url));
 
 export default defineConfig({
   test: {
@@ -17,37 +17,37 @@ export default defineConfig({
       exclude: [
         'tests/**',
         '**/*.{test,spec}.{ts,tsx,js,jsx}',
-        
+
         '**/*.config.js',
         '**/*.config.mjs',
         '**/*.config.ts',
         'vitest.config.mjs',
         'vite.config.mjs',
         'eslint.config.mjs',
-        
+
         '**/*.d.ts',
         'components.d.ts',
-        
+
         'dist/**',
         '**/assets/**',
-        
+
         'node_modules/**',
-        
+
         'public/**',
         '.github/**',
-        '*.md'
-      ]
-    }
+        '*.md',
+      ],
+    },
   },
   css: {
     modules: {
-      classNameStrategy: 'non-scoped'
-    }
+      classNameStrategy: 'non-scoped',
+    },
   },
   resolve: {
     alias: {
       '@': resolve(rootDir, './src'),
-      '@tests': resolve(rootDir, './tests')
+      '@tests': resolve(rootDir, './tests'),
     },
   },
-})
+});

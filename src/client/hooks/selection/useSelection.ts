@@ -84,5 +84,12 @@ export function useSelection(params: {
     setLastSelectedIndex(null);
   }, []);
 
-  return { selectedPaths, setSelectedPaths, lastSelectedIndex, onItemClick, onItemDoubleClick, clearSelection } as const;
+  return {
+    selectedPaths,
+    setSelectedPaths,
+    lastSelectedIndex,
+    onItemClick,
+    onItemDoubleClick,
+    clearSelection,
+  } as const;
 }

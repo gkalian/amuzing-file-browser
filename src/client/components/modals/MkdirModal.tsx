@@ -14,7 +14,12 @@ type Props = {
 function MkdirModalBase({ opened, name, setName, onCreate, onClose }: Props) {
   const { t } = useTranslation();
   return (
-    <Modal opened={opened} onClose={onClose} title={t('mkdir.title', { defaultValue: 'Create folder' })} centered>
+    <Modal
+      opened={opened}
+      onClose={onClose}
+      title={t('mkdir.title', { defaultValue: 'Create folder' })}
+      centered
+    >
       <Group>
         <TextInput
           placeholder={t('mkdir.placeholder', { defaultValue: 'Folder name' })}

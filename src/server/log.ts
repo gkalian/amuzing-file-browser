@@ -25,6 +25,9 @@ export function logAction(
   base: Record<string, unknown>,
   debugExtras?: Record<string, unknown>
 ) {
-  const payload = isLevelEnabled('debug') && debugExtras ? { action, ...base, ...debugExtras } : { action, ...base };
+  const payload =
+    isLevelEnabled('debug') && debugExtras
+      ? { action, ...base, ...debugExtras }
+      : { action, ...base };
   log('info', payload);
 }

@@ -10,27 +10,30 @@ export function useFileList(cwd: string) {
   const [items, setItems] = useState<UiFsItem[] | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const loadList = useCallback(async (path: string) => {
-    setLoading(true);
-    try {
-      const data = await api.list(path);
-      const enriched: UiFsItem[] = data.items
-        .slice()
-        .sort(
-          (a, b) =>
-            Number(b.isDir) - Number(a.isDir) ||
-            a.name.localeCompare(b.name, undefined, { numeric: true })
-        )
-        .map((it) => ({
-          ...it,
-          displaySize: it.isDir ? '-' : numberFmt.format(it.size),
-          displayMtime: new Date(it.mtimeMs).toLocaleString(),
-        }));
-      setItems(enriched);
-    } finally {
-      setLoading(false);
-    }
-  }, [numberFmt]);
+  const loadList = useCallback(
+    async (path: string) => {
+      setLoading(true);
+      try {
+        const data = await api.list(path);
+        const enriched: UiFsItem[] = data.items
+          .slice()
+          .sort(
+            (a, b) =>
+              Number(b.isDir) - Number(a.isDir) ||
+              a.name.localeCompare(b.name, undefined, { numeric: true })
+          )
+          .map((it) => ({
+            ...it,
+            displaySize: it.isDir ? '-' : numberFmt.format(it.size),
+            displayMtime: new Date(it.mtimeMs).toLocaleString(),
+          }));
+        setItems(enriched);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [numberFmt]
+  );
 
   useEffect(() => {
     setItems(null);

@@ -15,7 +15,12 @@ type Props = {
 function MoveModalBase({ opened, dest, setDest, options, onMove, onClose }: Props) {
   const { t } = useTranslation();
   return (
-    <Modal opened={opened} onClose={onClose} title={t('bulk.moveTitle', { defaultValue: 'Move selected files' })} centered>
+    <Modal
+      opened={opened}
+      onClose={onClose}
+      title={t('bulk.moveTitle', { defaultValue: 'Move selected files' })}
+      centered
+    >
       <Group align="end" wrap="nowrap">
         <Autocomplete
           style={{ flex: 1 }}

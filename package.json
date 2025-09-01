@@ -18,9 +18,9 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@mantine/core": "^8.2.7",
-    "@mantine/hooks": "^8.2.7",
-    "@mantine/notifications": "^8.2.7",
+    "@mantine/core": "^8.2.8",
+    "@mantine/hooks": "^8.2.8",
+    "@mantine/notifications": "^8.2.8",
     "@tabler/icons-react": "^3.34.1",
     "express": "^5.1.0",
     "i18next": "^25.4.2",
@@ -39,7 +39,7 @@
     "@semantic-release/exec": "^7.1.0",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^11.0.5",
-    "@semantic-release/npm": "^11.0.2",
+    "@semantic-release/npm": "^12.0.2",
     "@semantic-release/release-notes-generator": "^14.0.3",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.3.0",
@@ -63,7 +63,7 @@
     "semantic-release": "^24.2.7",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2",
-    "vite": "^7.1.3",
+    "vite": "^7.1.4",
     "vitest": "^3.2.4"
   },
   "release": {

@@ -25,7 +25,6 @@ export function FileBrowserPane(props: {
     selectedPaths,
     onItemClick,
     onItemDoubleClick,
-    onDeselect,
     showPreview,
     isNarrow,
     split,
@@ -65,7 +64,6 @@ export function FileBrowserPane(props: {
             width: showImagePreview ? `${split}%` : '100%',
           }}
         >
-          
           {loading && (
             <Group style={{ position: 'absolute', top: 8, left: 8, zIndex: 2 }}>
               <Loader size="sm" />
@@ -96,7 +94,10 @@ export function FileBrowserPane(props: {
         )}
 
         {showImagePreview && (
-          <Box style={{ width: `${100 - split}%`, paddingLeft: 10, height: '100%' }} data-testid="preview-pane">
+          <Box
+            style={{ width: `${100 - split}%`, paddingLeft: 10, height: '100%' }}
+            data-testid="preview-pane"
+          >
             <PreviewPanel item={selectedItem} onDeselect={() => setHidePreview(true)} />
           </Box>
         )}

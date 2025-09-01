@@ -14,5 +14,19 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('scheduler')) return 'react-vendor';
+            if (id.includes('@mantine')) return 'mantine';
+            if (id.includes('i18next')) return 'i18n';
+            if (id.includes('@tabler/icons-react')) return 'icons';
+            if (id.includes('react-virtuoso')) return 'virtuoso';
+            return 'vendor';
+          }
+        },
+      },
+    },
   },
 });

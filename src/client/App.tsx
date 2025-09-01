@@ -1,5 +1,5 @@
 // App root component: orchestrates layout, state, API calls, and wiring between UI parts
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import { AppShell, Box, Group, Button } from '@mantine/core';
 import type { FsItem } from './core/types';
 import pkg from '../../package.json';
@@ -106,7 +106,7 @@ function AppBase() {
   });
 
   // filesystem operations
-  const { mkdir, remove, rename } = useFileSystemOps({ cwd, t, loadList });
+  const { mkdir, rename } = useFileSystemOps({ cwd, t, loadList });
 
   // filter and pagination derived data (used by click handlers)
   const filtered = useMemo(() => {
@@ -119,22 +119,24 @@ function AppBase() {
   const { paged, totalPages } = usePageSlice(filtered as any[], page, Number(pageSize));
 
   // selection logic extracted to hook
-  const { selectedPaths, setSelectedPaths, onItemClick, onItemDoubleClick, clearSelection } = useSelection({
-    paged: paged as any,
-    cwd,
-    onOpenDir: (path) => setCwd(path),
-  });
+  const { selectedPaths, setSelectedPaths, onItemClick, onItemDoubleClick, clearSelection } =
+    useSelection({
+      paged: paged as any,
+      cwd,
+      onOpenDir: (path) => setCwd(path),
+    });
 
   // bulk operations extracted to hook
   const { bulkDelete, bulkMove } = useBulkOps({ cwd, items, loadList });
 
-
   const handleMkdir = useCallback(async () => {
     if (!mkdirName.trim()) return;
-    await mkdir(mkdirName.trim()).then(() => {
-      setMkdirName('');
-      setMkdirOpen(false);
-    }).catch(() => {});
+    await mkdir(mkdirName.trim())
+      .then(() => {
+        setMkdirName('');
+        setMkdirOpen(false);
+      })
+      .catch(() => {});
   }, [mkdirName, mkdir]);
 
   // inline delete via table is removed; bulk delete is available via toolbar
@@ -143,15 +145,17 @@ function AppBase() {
   const handleRename = useCallback(async () => {
     if (!renameTarget) return;
     if (!renameName.trim()) return;
-    await rename(renameTarget, renameName.trim()).then(() => {
-      setRenameOpen(false);
-      setRenameTarget(null);
-      setSelectedPaths((prev) => {
-        const next = new Set(prev);
-        next.delete(renameTarget.path);
-        return next;
-      });
-    }).catch(() => {});
+    await rename(renameTarget, renameName.trim())
+      .then(() => {
+        setRenameOpen(false);
+        setRenameTarget(null);
+        setSelectedPaths((prev) => {
+          const next = new Set(prev);
+          next.delete(renameTarget.path);
+          return next;
+        });
+      })
+      .catch(() => {});
   }, [rename, renameTarget, renameName]);
 
   // no editor modal anymore; only preview panel
@@ -224,7 +228,15 @@ function AppBase() {
 
       <AppShell.Main style={{ overflowX: 'auto' }}>
         <Box style={{ minWidth: 700 }}>
-          <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 8 }}>
+          <Box
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 12,
+              marginBottom: 8,
+            }}
+          >
             <BreadcrumbsBar
               crumbs={crumbs}
               cwd={cwd}
@@ -233,13 +245,32 @@ function AppBase() {
             />
             {selectedPaths.size > 0 && (
               <Group gap="xs" wrap="nowrap">
-                <Button size="xs" variant="light" onClick={onRenameSelected} disabled={selectedPaths.size !== 1 || bulkWorking}>
+                <Button
+                  size="xs"
+                  variant="light"
+                  onClick={onRenameSelected}
+                  disabled={selectedPaths.size !== 1 || bulkWorking}
+                >
                   Rename
                 </Button>
-                <Button size="xs" variant="light" color="red" onClick={handleBulkDelete} disabled={bulkWorking}>
+                <Button
+                  size="xs"
+                  variant="light"
+                  color="red"
+                  onClick={handleBulkDelete}
+                  disabled={bulkWorking}
+                >
                   Delete
                 </Button>
-                <Button size="xs" variant="light" onClick={() => { setMoveDest(cwd); setMoveOpen(true); }} disabled={bulkWorking}>
+                <Button
+                  size="xs"
+                  variant="light"
+                  onClick={() => {
+                    setMoveDest(cwd);
+                    setMoveOpen(true);
+                  }}
+                  disabled={bulkWorking}
+                >
                   Move
                 </Button>
                 <Button size="xs" variant="subtle" onClick={clearSelection} disabled={bulkWorking}>

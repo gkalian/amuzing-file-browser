@@ -27,8 +27,19 @@ export const api = {
       ignoreNames?: string[];
       theme: 'light' | 'dark';
     }>(`/api/config`),
-  setConfig: (payload: { root?: string; maxUploadMB?: number; allowedTypes?: string; theme?: 'light' | 'dark' }) =>
-    json<{ ok: true; root: string; maxUploadMB: number; allowedTypes?: string; theme: 'light' | 'dark' }>(`/api/config`, {
+  setConfig: (payload: {
+    root?: string;
+    maxUploadMB?: number;
+    allowedTypes?: string;
+    theme?: 'light' | 'dark';
+  }) =>
+    json<{
+      ok: true;
+      root: string;
+      maxUploadMB: number;
+      allowedTypes?: string;
+      theme: 'light' | 'dark';
+    }>(`/api/config`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),

@@ -21,10 +21,12 @@ function UploadQueueBase({ uploading, items, uploadedBytes = 0, totalBytes = 0 }
   if (!uploading || !items?.length) return null;
 
   // Show only the current item: first 'uploading', otherwise first 'pending'
-  const current = items.find((i) => i.status === 'uploading') || items.find((i) => i.status === 'pending');
+  const current =
+    items.find((i) => i.status === 'uploading') || items.find((i) => i.status === 'pending');
   if (!current) return null;
 
-  const pctTotal = totalBytes > 0 ? Math.round((Math.min(uploadedBytes, totalBytes) / totalBytes) * 100) : null;
+  const pctTotal =
+    totalBytes > 0 ? Math.round((Math.min(uploadedBytes, totalBytes) / totalBytes) * 100) : null;
   const pct =
     pctTotal != null
       ? pctTotal
@@ -39,7 +41,12 @@ function UploadQueueBase({ uploading, items, uploadedBytes = 0, totalBytes = 0 }
         {current.name}
       </Text>
       <Group gap={6} justify="space-between" wrap="nowrap" align="center">
-        <Progress value={current.status === 'error' ? 100 : pct} color={color} size="xs" style={{ width: 180 }} />
+        <Progress
+          value={current.status === 'error' ? 100 : pct}
+          color={color}
+          size="xs"
+          style={{ width: 180 }}
+        />
         <Text size="xs" c="dimmed" style={{ width: 40, textAlign: 'right' }}>
           {current.status === 'done' ? '100%' : `${pct}%`}
         </Text>

@@ -46,7 +46,12 @@
   "table": {
     "headers": { "name": "Name", "size": "Size", "modified": "Modified" },
     "tooltips": { "openFolder": "Open folder", "selectDeselect": "Select/Deselect" },
-    "aria": { "download": "download", "rename": "rename", "getLink": "get-link", "delete": "delete" }
+    "aria": {
+      "download": "download",
+      "rename": "rename",
+      "getLink": "get-link",
+      "delete": "delete"
+    }
   },
   "bottom": {
     "stats": "{{dirs}} folders • {{files}} files • {{size}} total"
@@ -62,7 +67,13 @@
   "preview": {
     "selectFile": "Select a file to preview",
     "folder": "Folder",
-    "labels": { "name": "Name:", "dimensions": "Dimensions:", "size": "Size:", "type": "Type:", "modified": "Modified:" },
+    "labels": {
+      "name": "Name:",
+      "dimensions": "Dimensions:",
+      "size": "Size:",
+      "type": "Type:",
+      "modified": "Modified:"
+    },
     "textPreview": "Text preview",
     "noPreview": "No preview available"
   },

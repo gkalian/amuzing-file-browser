@@ -19,10 +19,15 @@ export function useFileSystemOps(params: {
       try {
         const resp = await api.mkdir(joinPath(cwd, trimmed));
         const shown = resp?.name || trimmed;
-        notifySuccess(t('notifications.mkdirSuccess', { defaultValue: 'Folder created: {{name}}', name: shown }));
+        notifySuccess(
+          t('notifications.mkdirSuccess', { defaultValue: 'Folder created: {{name}}', name: shown })
+        );
         await loadList(cwd);
       } catch (e: any) {
-        notifyError(String(e?.message || e), t('notifications.mkdirFailed', { defaultValue: 'Create Folder failed' }));
+        notifyError(
+          String(e?.message || e),
+          t('notifications.mkdirFailed', { defaultValue: 'Create Folder failed' })
+        );
         throw e;
       }
     },
@@ -33,10 +38,15 @@ export function useFileSystemOps(params: {
     async (item: FsItem) => {
       try {
         await api.delete(item.path);
-        notifySuccess(t('notifications.deleteSuccess', { defaultValue: 'Deleted: {{name}}', name: item.name }));
+        notifySuccess(
+          t('notifications.deleteSuccess', { defaultValue: 'Deleted: {{name}}', name: item.name })
+        );
         await loadList(cwd);
       } catch (e: any) {
-        notifyError(String(e?.message || e), t('notifications.deleteFailed', { defaultValue: 'Delete failed' }));
+        notifyError(
+          String(e?.message || e),
+          t('notifications.deleteFailed', { defaultValue: 'Delete failed' })
+        );
         throw e;
       }
     },
@@ -50,10 +60,15 @@ export function useFileSystemOps(params: {
       try {
         const to = joinPath(parentPath(item.path), trimmed);
         await api.rename(item.path, to);
-        notifySuccess(t('notifications.renameSuccess', { defaultValue: 'Renamed to: {{name}}', name: trimmed }));
+        notifySuccess(
+          t('notifications.renameSuccess', { defaultValue: 'Renamed to: {{name}}', name: trimmed })
+        );
         await loadList(cwd);
       } catch (e: any) {
-        notifyError(String(e?.message || e), t('notifications.renameFailed', { defaultValue: 'Rename failed' }));
+        notifyError(
+          String(e?.message || e),
+          t('notifications.renameFailed', { defaultValue: 'Rename failed' })
+        );
         throw e;
       }
     },

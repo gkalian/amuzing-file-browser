@@ -26,31 +26,34 @@ export function createApp() {
 
   // Upload
   const upload = createMulter();
-  app.post(
-    '/api/fs/upload',
-    preUploadLimitCheck(),
-    upload.array('files'),
-    async (req, res) => {
-      const files =
-        (req.files as Express.Multer.File[] | undefined)?.map((f) => ({
-          originalname: f.originalname,
-          filename: path.basename(f.path),
-          size: f.size,
-          path: toApiPath(f.path),
-        })) || [];
+  app.post('/api/fs/upload', preUploadLimitCheck(), upload.array('files'), async (req, res) => {
+    const files =
+      (req.files as Express.Multer.File[] | undefined)?.map((f) => ({
+        originalname: f.originalname,
+        filename: path.basename(f.path),
+        size: f.size,
+        path: toApiPath(f.path),
+      })) || [];
 
-      const totalBytes = files.reduce((acc, f) => acc + (typeof f.size === 'number' ? f.size : 0), 0);
-      const dest = String((req.query as any).path || '/');
-      // Action log (base at info, extras at debug)
-      logAction(
-        'upload',
-        { count: files.length, totalBytes, dest },
-        { files: files.map((f) => ({ name: f.originalname, saved: f.filename, size: f.size, path: f.path })) || '' }
-      );
+    const totalBytes = files.reduce((acc, f) => acc + (typeof f.size === 'number' ? f.size : 0), 0);
+    const dest = String((req.query as any).path || '/');
+    // Action log (base at info, extras at debug)
+    logAction(
+      'upload',
+      { count: files.length, totalBytes, dest },
+      {
+        files:
+          files.map((f) => ({
+            name: f.originalname,
+            saved: f.filename,
+            size: f.size,
+            path: f.path,
+          })) || '',
+      }
+    );
 
-      res.json({ ok: true, files });
-    }
-  );
+    res.json({ ok: true, files });
+  });
 
   // Production: serve client
   if (process.env.NODE_ENV === 'production') {

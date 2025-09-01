@@ -29,7 +29,9 @@ export const DEFAULT_ALLOWED_TYPES = 'jpg, jpeg, gif, png, webp, 7z, zip';
 const state = {
   port: process.env.PORT ? Number(process.env.PORT) : 8080,
   root: path.resolve(process.env.FILEBROWSER_ROOT || path.join(process.cwd(), 'data')),
-  maxUploadMB: process.env.FILEBROWSER_MAX_UPLOAD_MB ? Number(process.env.FILEBROWSER_MAX_UPLOAD_MB) : 50,
+  maxUploadMB: process.env.FILEBROWSER_MAX_UPLOAD_MB
+    ? Number(process.env.FILEBROWSER_MAX_UPLOAD_MB)
+    : 50,
   allowedTypes: undefined as string | undefined,
   ignoreNames: ['.settings.json'] as string[],
   logLevel: normalizeLogLevel(process.env.LOG_LEVEL),
