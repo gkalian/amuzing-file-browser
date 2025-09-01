@@ -1,3 +1,12 @@
+## [1.3.2](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.1...v1.3.2) (2025-09-01)
+
+
+### Bug Fixes
+
+* basic hook tests ([624b979](https://github.com/gkalian/amuzing-file-browser/commit/624b97961bfd47cbbcf7ec605f7631d289a5c8cf))
+* basic ui tests and vitest config ([bd12481](https://github.com/gkalian/amuzing-file-browser/commit/bd1248183b9922706ec3a2d142013f97c5798c26))
+* change order for semrel in workflow ([aba9244](https://github.com/gkalian/amuzing-file-browser/commit/aba92448f9ccb297dc53aa79d5f63327fbcaed16))
+
 ## [1.3.1](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.0...v1.3.1) (2025-08-31)
 
 
