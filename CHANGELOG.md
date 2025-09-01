@@ -1,3 +1,10 @@
+## [1.3.4](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.3...v1.3.4) (2025-09-01)
+
+
+### Bug Fixes
+
+* move tests into new folder ([d7dcacf](https://github.com/gkalian/amuzing-file-browser/commit/d7dcacfb6d8f843294d447a1f2ef3747b4fe42ca))
+
 ## [1.3.3](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.2...v1.3.3) (2025-09-01)
 
 
