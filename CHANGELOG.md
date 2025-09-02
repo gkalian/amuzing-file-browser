@@ -1,3 +1,10 @@
+## [1.3.23](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.22...v1.3.23) (2025-09-02)
+
+
+### Bug Fixes
+
+* update vite config with alias ([4d3a900](https://github.com/gkalian/amuzing-file-browser/commit/4d3a90079bcc6e809f28eaf593292305e951a552))
+
 ## [1.3.22](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.21...v1.3.22) (2025-09-02)
 
 
