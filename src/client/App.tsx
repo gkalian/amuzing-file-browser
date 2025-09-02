@@ -1,5 +1,4 @@
 // App root component: orchestrates layout, state, API calls, and wiring between UI parts
-import React from 'react';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { AppShell, Box, Group, Button } from '@mantine/core';
 import type { FsItem } from './core/types';
