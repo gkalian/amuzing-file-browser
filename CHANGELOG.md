@@ -1,3 +1,10 @@
+## [1.3.16](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.15...v1.3.16) (2025-09-02)
+
+
+### Bug Fixes
+
+* update vite config with sourcemap ([0ed05b9](https://github.com/gkalian/amuzing-file-browser/commit/0ed05b980fc6e1183e078a57a223a198e9d77f14))
+
 ## [1.3.15](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.14...v1.3.15) (2025-09-02)
 
 
