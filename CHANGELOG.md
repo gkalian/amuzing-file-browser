@@ -1,3 +1,10 @@
+## [1.3.8](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.7...v1.3.8) (2025-09-02)
+
+
+### Bug Fixes
+
+* update helm chart and values ([fc18c1c](https://github.com/gkalian/amuzing-file-browser/commit/fc18c1c1431b213f730e80786e7b353b12e4ba36))
+
 ## [1.3.7](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.6...v1.3.7) (2025-09-02)
 
 
