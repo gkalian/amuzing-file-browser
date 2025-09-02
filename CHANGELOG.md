@@ -1,3 +1,10 @@
+## [1.3.27](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.26...v1.3.27) (2025-09-02)
+
+
+### Bug Fixes
+
+* change securityContext in deployment ([e39a79e](https://github.com/gkalian/amuzing-file-browser/commit/e39a79e32823ac0d3cd301cd280c44253abdd52b))
+
 ## [1.3.26](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.25...v1.3.26) (2025-09-02)
 
 
