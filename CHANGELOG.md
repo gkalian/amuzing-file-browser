@@ -1,3 +1,10 @@
+## [1.3.25](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.24...v1.3.25) (2025-09-02)
+
+
+### Bug Fixes
+
+* restore modals and remove chunks ([0a35009](https://github.com/gkalian/amuzing-file-browser/commit/0a350094632555e26cf111621833935f3726e644))
+
 ## [1.3.24](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.23...v1.3.24) (2025-09-02)
 
 
