@@ -1,3 +1,10 @@
+## [1.3.7](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.6...v1.3.7) (2025-09-02)
+
+
+### Bug Fixes
+
+* update helm with hostpath ([40cb8e0](https://github.com/gkalian/amuzing-file-browser/commit/40cb8e02d4421c7aca5fac6b514d7ae90ef28585))
+
 ## [1.3.6](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.5...v1.3.6) (2025-09-01)
 
 
