@@ -4,12 +4,13 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
-    include: ['react', 'react-dom']
+    include: ['react', 'react-dom', 'use-callback-ref']
   },
   resolve: {
     dedupe: ['react', 'react-dom'],
     alias: {
-      '@': '/src'
+      '@': '/src',
+      'use-callback-ref': 'use-callback-ref/dist/es2019/index.js'
     }
   },
   server: {
