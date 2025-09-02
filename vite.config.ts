@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
-    include: ['react', 'react-dom']
+    include: ['react', 'react-dom', 'use-callback-ref']
   },
   resolve: {
     dedupe: ['react', 'react-dom'],
@@ -27,13 +27,12 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
+    commonjsOptions: {
+      include: [/node_modules/],
+      transformMixedEsModules: true
+    },
     rollupOptions: {
-      external: [],
       output: {
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM'
-        },
         manualChunks(id) {
           if (id.includes('node_modules')) {
             if (id.includes('react') || id.includes('scheduler')) return 'react-vendor';
