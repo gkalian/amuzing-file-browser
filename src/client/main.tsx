@@ -1,5 +1,4 @@
 // Client entry point: mounts React app with Mantine theme and notifications
-import './polyfills';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import '@mantine/core/styles.css';

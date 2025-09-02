@@ -1,22 +1,16 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-// @ts-ignore
-import { reactGlobalPlugin } from './vite-react-global-plugin.js';
 
 export default defineConfig({
-  plugins: [react(), reactGlobalPlugin()],
+  plugins: [react()],
   optimizeDeps: {
-    include: ['react', 'react-dom', 'use-callback-ref']
+    include: ['react', 'react-dom']
   },
   resolve: {
     dedupe: ['react', 'react-dom'],
     alias: {
       '@': '/src'
     }
-  },
-  define: {
-    global: 'globalThis',
-    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
   },
   server: {
     port: 3500,
@@ -30,11 +24,6 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
-    minify: false,
-    commonjsOptions: {
-      include: [/node_modules/],
-      transformMixedEsModules: true
-    },
     rollupOptions: {
       output: {
         manualChunks(id) {

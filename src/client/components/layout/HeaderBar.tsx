@@ -27,7 +27,7 @@ function HeaderBarBase({
 }: Props) {
   const { t } = useTranslation();
   const logoSrc = theme === 'dark' ? '/document-light.png' : '/document-dark.png';
-  const resetRef = useRef<() => void>(null);
+  const resetRef = useRef<() => void>(() => {});
   return (
     <Group justify="space-between" px="md" h="100%">
       <Group wrap="nowrap" gap="md">
