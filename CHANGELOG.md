@@ -1,3 +1,10 @@
+## [1.3.19](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.18...v1.3.19) (2025-09-02)
+
+
+### Bug Fixes
+
+* optimizeDeps and dedupe in vite config ([938e516](https://github.com/gkalian/amuzing-file-browser/commit/938e516e06f1a71ebde0e3c57bdfd21e0c5fbd30))
+
 ## [1.3.18](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.17...v1.3.18) (2025-09-02)
 
 
