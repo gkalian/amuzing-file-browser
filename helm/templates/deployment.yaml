@@ -19,10 +19,21 @@ spec:
         app.kubernetes.io/name: {{ include "amuzing-filebrowser.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+{{- if .Values.podSecurityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.podSecurityContext.fsGroup }}
+        fsGroupChangePolicy: {{ .Values.podSecurityContext.fsGroupChangePolicy | quote }}
+{{- end }}
       containers:
         - name: app
           image: '{{ .Values.image.repository }}:{{ .Values.image.tag }}'
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{- if .Values.securityContext.enabled }}
+          securityContext:
+            runAsNonRoot: {{ .Values.securityContext.runAsNonRoot }}
+            allowPrivilegeEscalation: {{ .Values.securityContext.allowPrivilegeEscalation }}
+            readOnlyRootFilesystem: {{ .Values.securityContext.readOnlyRootFilesystem }}
+{{- end }}
           env:
             - name: FILEBROWSER_ROOT
               value: {{ .Values.env.FILEBROWSER_ROOT | quote }}

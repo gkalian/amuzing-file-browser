@@ -108,10 +108,32 @@ export const api = {
       xhr.onload = () => {
         if (xhr.status >= 200 && xhr.status < 300) {
           // Some browsers may not fill response when responseType json from node; fallback
-          const data = xhr.response || JSON.parse(xhr.responseText || '{}');
+          // Avoid accessing responseText when responseType is 'json' (InvalidStateError)
+          let data: any = null;
+          if (xhr.response !== null && xhr.response !== undefined) {
+            data = xhr.response;
+          } else if (xhr.responseType === '' || xhr.responseType === 'text') {
+            try {
+              data = JSON.parse(xhr.responseText || '{}');
+            } catch {
+              data = {};
+            }
+          }
           resolve(data as any);
         } else {
-          reject(new Error(xhr.responseText || `Upload failed: ${xhr.status}`));
+          // Build a meaningful error message without violating responseType constraints
+          let msg = `Upload failed: ${xhr.status}`;
+          try {
+            if (xhr.responseType === 'json' && xhr.response) {
+              const r: any = xhr.response as any;
+              msg = (r && (r.error || r.message)) || msg;
+            } else if (xhr.responseType === '' || xhr.responseType === 'text') {
+              msg = xhr.responseText || msg;
+            }
+          } catch {
+            // Ignore parsing/access errors and use default msg
+          }
+          reject(new Error(msg));
         }
       };
       xhr.send(fd);
