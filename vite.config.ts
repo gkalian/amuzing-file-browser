@@ -1,8 +1,10 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+// @ts-ignore
+import { reactGlobalPlugin } from './vite-react-global-plugin.js';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), reactGlobalPlugin()],
   optimizeDeps: {
     include: ['react', 'react-dom', 'use-callback-ref']
   },
@@ -14,6 +16,7 @@ export default defineConfig({
   },
   define: {
     global: 'globalThis',
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
   },
   server: {
     port: 3500,
@@ -27,6 +30,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
+    minify: false,
     commonjsOptions: {
       include: [/node_modules/],
       transformMixedEsModules: true
