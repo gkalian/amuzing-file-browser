@@ -1,3 +1,10 @@
+## [1.3.20](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.19...v1.3.20) (2025-09-02)
+
+
+### Bug Fixes
+
+* setup globals for vite ([df148b4](https://github.com/gkalian/amuzing-file-browser/commit/df148b43a48dc53869a8a5931b8ffe8db7bcbd4b))
+
 ## [1.3.19](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.18...v1.3.19) (2025-09-02)
 
 
