@@ -1,3 +1,10 @@
+## [1.3.15](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.14...v1.3.15) (2025-09-02)
+
+
+### Bug Fixes
+
+* update api route in prod ([bbb3ca3](https://github.com/gkalian/amuzing-file-browser/commit/bbb3ca3a773c5035f6064401b0b8e4c921ce9995))
+
 ## [1.3.14](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.13...v1.3.14) (2025-09-02)
 
 
