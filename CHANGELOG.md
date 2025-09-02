@@ -1,3 +1,10 @@
+## [1.3.24](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.23...v1.3.24) (2025-09-02)
+
+
+### Bug Fixes
+
+* disable model and add interop setting ([603debb](https://github.com/gkalian/amuzing-file-browser/commit/603debb29df5f34dec1493d549c37cf684ac79ae))
+
 ## [1.3.23](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.22...v1.3.23) (2025-09-02)
 
 
