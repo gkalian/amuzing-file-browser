@@ -311,49 +311,6 @@ function AppBase() {
         <AppFooter version={pkg.version} />
       </AppShell.Footer>
 
-      {/* Mkdir modal */}
-      <MkdirModal
-        opened={mkdirOpen}
-        name={mkdirName}
-        setName={setMkdirName}
-        onCreate={handleMkdir}
-        onClose={() => setMkdirOpen(false)}
-      />
-
-      {/* Rename modal */}
-      <RenameModal
-        opened={renameOpen}
-        name={renameName}
-        setName={setRenameName}
-        onRename={handleRename}
-        onClose={() => setRenameOpen(false)}
-      />
-
-      {/* Settings modal */}
-      <SettingsModal
-        opened={settingsOpen}
-        onClose={() => setSettingsOpen(false)}
-        cfgRoot={cfgRoot}
-        setCfgRoot={setCfgRoot}
-        cfgMaxUpload={cfgMaxUpload}
-        setCfgMaxUpload={setCfgMaxUpload}
-        cfgAllowedTypes={cfgAllowedTypes}
-        setCfgAllowedTypes={setCfgAllowedTypes}
-        theme={theme}
-        setTheme={setTheme}
-        showPreview={showPreview}
-        setShowPreview={setShowPreview}
-      />
-
-      {/* Move modal */}
-      <MoveModal
-        opened={moveOpen}
-        dest={moveDest}
-        setDest={setMoveDest}
-        options={moveOptions}
-        onMove={handleBulkMove}
-        onClose={() => setMoveOpen(false)}
-      />
     </AppShell>
   );
 }
