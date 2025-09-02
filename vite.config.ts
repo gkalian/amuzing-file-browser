@@ -12,6 +12,9 @@ export default defineConfig({
       '@': '/src'
     }
   },
+  define: {
+    global: 'globalThis',
+  },
   server: {
     port: 3500,
     proxy: {
@@ -25,7 +28,12 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: true,
     rollupOptions: {
+      external: [],
       output: {
+        globals: {
+          react: 'React',
+          'react-dom': 'ReactDOM'
+        },
         manualChunks(id) {
           if (id.includes('node_modules')) {
             if (id.includes('react') || id.includes('scheduler')) return 'react-vendor';
