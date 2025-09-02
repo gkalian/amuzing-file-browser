@@ -1,3 +1,11 @@
+## [1.3.22](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.21...v1.3.22) (2025-09-02)
+
+
+### Bug Fixes
+
+* restore config and simplify settings ([fa50ba1](https://github.com/gkalian/amuzing-file-browser/commit/fa50ba1c9b2afbd6070ef74c62a60a4222f28e87))
+* vite plugin to fix useref callback ([3d055fd](https://github.com/gkalian/amuzing-file-browser/commit/3d055fd7ce54bc234742121f700a219f0a29090d))
+
 ## [1.3.21](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.20...v1.3.21) (2025-09-02)
 
 
