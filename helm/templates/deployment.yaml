@@ -31,6 +31,12 @@ spec:
 {{- if .Values.securityContext.enabled }}
           securityContext:
             runAsNonRoot: {{ .Values.securityContext.runAsNonRoot }}
+{{- if hasKey .Values.securityContext "runAsUser" }}
+            runAsUser: {{ .Values.securityContext.runAsUser }}
+{{- end }}
+{{- if hasKey .Values.securityContext "runAsGroup" }}
+            runAsGroup: {{ .Values.securityContext.runAsGroup }}
+{{- end }}
             allowPrivilegeEscalation: {{ .Values.securityContext.allowPrivilegeEscalation }}
             readOnlyRootFilesystem: {{ .Values.securityContext.readOnlyRootFilesystem }}
 {{- end }}
