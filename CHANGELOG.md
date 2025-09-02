@@ -1,3 +1,10 @@
+## [1.3.21](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.20...v1.3.21) (2025-09-02)
+
+
+### Bug Fixes
+
+* try polyfill approach ([a4bfd23](https://github.com/gkalian/amuzing-file-browser/commit/a4bfd239bf87125fd21c6801e8c7cfe88af439fd))
+
 ## [1.3.20](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.19...v1.3.20) (2025-09-02)
 
 
