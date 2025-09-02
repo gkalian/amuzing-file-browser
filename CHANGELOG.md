@@ -1,3 +1,10 @@
+## [1.3.13](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.12...v1.3.13) (2025-09-02)
+
+
+### Bug Fixes
+
+* update stage in image ([bac1fe4](https://github.com/gkalian/amuzing-file-browser/commit/bac1fe440ed97eedca0e29645a1c4f61b004cae4))
+
 ## [1.3.12](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.11...v1.3.12) (2025-09-02)
 
 
