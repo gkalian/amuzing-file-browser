@@ -19,10 +19,10 @@ ENV PORT=8080
 ENV FILEBROWSER_ROOT=/data
 
 # Create non-root user and data dir
-RUN addgroup -S -g 1000 app \
- && adduser -S -D -H -u 1000 -G app app \
+RUN addgroup -S -g 1001 app \
+ && adduser -S -D -H -u 1001 -G app app \
  && mkdir -p /data \
- && chown -R 1000:1000 /data /app
+ && chown -R 1001:1001 /data /app
 USER app
 
 EXPOSE 8080
