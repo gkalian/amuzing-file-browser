@@ -30,11 +30,20 @@ ingress:
 
 persistence:
   enabled: true
+  # type can be "pvc" or "hostPath"
+  type: pvc
+  # PVC settings (used when type: pvc)
   size: 10Gi
   storageClass: ''
   accessModes:
     - ReadWriteOnce
+  # Common mount path inside the container
   mountPath: /data
+  # hostPath settings (used when type: hostPath)
+  hostPath:
+    path: /srv/amuzing-filebrowser/data
+    # One of: DirectoryOrCreate, Directory, FileOrCreate, File, Socket, CharDevice, BlockDevice
+    type: DirectoryOrCreate
 
 env:
   FILEBROWSER_ROOT: /data

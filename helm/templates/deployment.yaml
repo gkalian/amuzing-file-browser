@@ -50,5 +50,11 @@ spec:
               mountPath: { { .Values.persistence.mountPath } }
       volumes:
         - name: data
+{ {- if and .Values.persistence.enabled (eq .Values.persistence.type "hostPath") } }
+          hostPath:
+            path: { { .Values.persistence.hostPath.path } }
+            type: { { .Values.persistence.hostPath.type | default "Directory" } }
+{ {- else } }
           persistentVolumeClaim:
             claimName: { { include "amuzing-filebrowser.fullname" . } }
+{ {- end } }
