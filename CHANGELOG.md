@@ -1,3 +1,11 @@
+## [1.3.26](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.25...v1.3.26) (2025-09-02)
+
+
+### Bug Fixes
+
+* add security context and user group ([6217da5](https://github.com/gkalian/amuzing-file-browser/commit/6217da5be1ffa9a1c92e9272f8fe93b9b004bfac))
+* update group ([102d2ed](https://github.com/gkalian/amuzing-file-browser/commit/102d2ed803b477028cf2836782d7ca2ab949bd86))
+
 ## [1.3.25](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.24...v1.3.25) (2025-09-02)
 
 
