@@ -1,3 +1,10 @@
+## [1.3.14](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.13...v1.3.14) (2025-09-02)
+
+
+### Bug Fixes
+
+* disable prune command ([8f96315](https://github.com/gkalian/amuzing-file-browser/commit/8f963159cd5808fafe0d03ad447c102c2c735d32))
+
 ## [1.3.13](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.12...v1.3.13) (2025-09-02)
 
 
