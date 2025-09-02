@@ -11,7 +11,7 @@ COPY . .
 RUN npm run build
 
 # Remove dev dependencies to slim runtime
-RUN npm prune --omit=dev --no-audit --no-fund && npm cache clean --force
+# RUN npm prune --omit=dev --no-audit --no-fund && npm cache clean --force
 
 # Runtime env
 ENV NODE_ENV=production
