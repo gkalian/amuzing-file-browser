@@ -1,21 +1,27 @@
 # --- Build stage ---
 FROM node:22-alpine AS build
+
 WORKDIR /app
+
 COPY package.json package-lock.json* ./
-RUN npm ci --no-audit --no-fund
+RUN npm ci
 COPY . .
 RUN npm run build
 
 # --- Runtime stage ---
 FROM node:22-alpine AS runner
+
 ENV NODE_ENV=production
 ENV PORT=8080
-
-# default root inside container; mount volume here
 ENV FILEBROWSER_ROOT=/data
+
 WORKDIR /app
+
 RUN addgroup -S app && adduser -S app -G app
+
 COPY --from=build /app/package.json ./package.json
+COPY --from=build /app/package-lock.json ./package-lock.json
+RUN npm ci --omit=dev --no-audit --no-fund
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/dist-server ./dist-server
 
