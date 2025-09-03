@@ -1,3 +1,10 @@
+## [1.3.29](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.28...v1.3.29) (2025-09-03)
+
+
+### Bug Fixes
+
+* healthcheck added ([8482f44](https://github.com/gkalian/amuzing-file-browser/commit/8482f442cb9a29cf9f11a21783e79bb5ae54fc6f))
+
 ## [1.3.28](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.27...v1.3.28) (2025-09-03)
 
 
