@@ -19,6 +19,9 @@ export function hostGate() {
   const hasRules = Boolean(adminDomain || mediaDomain);
 
   return function (req: Request, res: Response, next: NextFunction) {
+    // Always allow kubelet probes regardless of host
+    if (req.method === 'GET' && req.path === '/api/health') return next();
+
     if (!hasRules) return next(); // local/dev: no host restrictions
 
     const host = normalizeHost(req.get('host'));
