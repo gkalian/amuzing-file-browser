@@ -1,3 +1,10 @@
+## [1.3.31](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.30...v1.3.31) (2025-09-03)
+
+
+### Bug Fixes
+
+* only direct urls are allowed ([2f5abc1](https://github.com/gkalian/amuzing-file-browser/commit/2f5abc1adc171d91eb083e7e468dad768cba9e3a))
+
 ## [1.3.30](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.29...v1.3.30) (2025-09-03)
 
 
