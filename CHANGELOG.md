@@ -1,3 +1,10 @@
+## [1.3.30](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.29...v1.3.30) (2025-09-03)
+
+
+### Bug Fixes
+
+* use media domain in direct urls ([c0b4cf9](https://github.com/gkalian/amuzing-file-browser/commit/c0b4cf99b8cc3504594769e00982e77da7287b97))
+
 ## [1.3.29](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.28...v1.3.29) (2025-09-03)
 
 
