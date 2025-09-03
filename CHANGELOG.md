@@ -1,3 +1,10 @@
+## [1.3.28](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.27...v1.3.28) (2025-09-03)
+
+
+### Bug Fixes
+
+* add splitted confg ([2f302c9](https://github.com/gkalian/amuzing-file-browser/commit/2f302c9278acfd9ff82eeea2056771212104ce07))
+
 ## [1.3.27](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.26...v1.3.27) (2025-09-02)
 
 
