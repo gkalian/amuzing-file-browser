@@ -1,5 +1,5 @@
 // Host-based access control middleware
-// - filesDomain: only allow GET requests to /files/*, /api/fs/preview, /api/fs/download, /api/health
+// - filesDomain: only allow GET requests to /files/* and /api/health (others: 403)
 // - adminDomain: full access (UI + API)
 // - if domains are not set (local dev), no restrictions are applied
 import type { Request, Response, NextFunction } from 'express';
@@ -27,19 +27,14 @@ export function hostGate() {
     const host = normalizeHost(req.get('host'));
 
     if (mediaDomain && host === mediaDomain) {
-      // Only allow GETs to file-serving endpoints
+      // Only allow GETs to direct file-serving endpoint
       if (req.method !== 'GET') {
         return res.status(405).json({ error: 'Method not allowed' });
       }
       const p = req.path;
-      const ok =
-        p === '/api/health' ||
-        p.startsWith('/files/') ||
-        p === '/api/fs/preview' ||
-        p === '/api/fs/download';
-      if (!ok) {
-        return res.status(404).json({ error: 'Not found' });
-      }
+      // Allow only health and direct file links like /files/<name>
+      const ok = p === '/api/health' || p.startsWith('/files/');
+      if (!ok) return res.status(403).json({ error: 'Forbidden' });
       return next();
     }
 

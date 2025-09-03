@@ -17,7 +17,7 @@ export function registerFsRoutes(app: express.Application) {
       const rel = req.path.slice('/files'.length) || '/';
       const target = safeJoinRoot(rel);
       const st = await fsp.stat(target);
-      if (st.isDirectory()) return res.status(400).json({ error: 'Path is a directory' });
+      if (st.isDirectory()) return res.status(403).json({ error: 'Forbidden' });
       const type = mime.lookup(target) || 'application/octet-stream';
       res.setHeader('Content-Type', String(type));
       return res.sendFile(target);
