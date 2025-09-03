@@ -31,14 +31,16 @@ tolerations: []
 affinity: {}
 
 ingress:
-  enabled: false
+  enabled: true
   className: ''
-  annotations: {}
-  hosts:
-    - host: filebrowser.local
-      paths:
-        - path: /
-          pathType: Prefix
+  admin:
+    enabled: true
+    host: my-custom-domain.domain.com
+    annotations: {}
+  media:
+    enabled: true
+    host: media.domain.com
+    annotations: {}
   tls: []
 
 persistence:
@@ -62,3 +64,5 @@ env:
   FILEBROWSER_ROOT: /data
   PORT: '8080'
   LOG_LEVEL: 'info'
+  ADMIN_DOMAIN: ''
+  MEDIA_DOMAIN: ''

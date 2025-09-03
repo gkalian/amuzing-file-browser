@@ -36,6 +36,8 @@ const state = {
   ignoreNames: ['.settings.json'] as string[],
   logLevel: normalizeLogLevel(process.env.LOG_LEVEL),
   theme: 'light' as 'light' | 'dark',
+  adminDomain: String(process.env.ADMIN_DOMAIN || ''),
+  mediaDomain: String(process.env.MEDIA_DOMAIN || ''),
 };
 
 // Accessors
@@ -59,6 +61,14 @@ export function getLogLevel(): LogLevel {
 }
 export function getTheme(): 'light' | 'dark' {
   return state.theme;
+}
+
+// Domains (used by host-based routing)
+export function getAdminDomain() {
+  return state.adminDomain;
+}
+export function getMediaDomain() {
+  return state.mediaDomain;
 }
 
 // Returns true when the requested level is enabled according to current LOG_LEVEL
@@ -87,6 +97,13 @@ export function setLogLevel(v: string | LogLevel) {
 export function setTheme(v: string | 'light' | 'dark') {
   const x = String(v || '').toLowerCase();
   state.theme = x === 'dark' ? 'dark' : 'light';
+}
+
+export function setAdminDomain(v: string) {
+  state.adminDomain = String(v || '');
+}
+export function setMediaDomain(v: string) {
+  state.mediaDomain = String(v || '');
 }
 
 // Settings helpers (.settings.json lives under current root)

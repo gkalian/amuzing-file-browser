@@ -1,9 +1,9 @@
-{{- if .Values.ingress.enabled }}
+{{- if and .Values.ingress.enabled .Values.ingress.admin.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "amuzing-filebrowser.fullname" . }}
-  {{- with .Values.ingress.annotations }}
+  name: {{ include "amuzing-filebrowser.fullname" . }}-admin
+  {{- with .Values.ingress.admin.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
@@ -12,20 +12,61 @@ spec:
   ingressClassName: {{ .Values.ingress.className }}
   {{- end }}
   rules:
-    {{- range .Values.ingress.hosts }}
-    - host: {{ .host }}
+    - host: {{ .Values.ingress.admin.host | quote }}
       http:
         paths:
-          {{- range .paths }}
-          - path: {{ .path }}
-            pathType: {{ .pathType }}
+          - path: /
+            pathType: Prefix
             backend:
               service:
-                name: {{ include "amuzing-filebrowser.fullname" $ }}
+                name: {{ include "amuzing-filebrowser.fullname" . }}
                 port:
                   name: http
-          {{- end }}
-    {{- end }}
+  {{- if .Values.ingress.tls }}
+  tls:
+    {{- toYaml .Values.ingress.tls | nindent 4 }}
+  {{- end }}
+---
+{{- end }}
+
+{{- if and .Values.ingress.enabled .Values.ingress.media.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "amuzing-filebrowser.fullname" . }}-media
+  {{- with .Values.ingress.media.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.ingress.className }}
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.ingress.media.host | quote }}
+      http:
+        paths:
+          - path: /files
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "amuzing-filebrowser.fullname" . }}
+                port:
+                  name: http
+          - path: /api/fs/preview
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "amuzing-filebrowser.fullname" . }}
+                port:
+                  name: http
+          - path: /api/fs/download
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "amuzing-filebrowser.fullname" . }}
+                port:
+                  name: http
   {{- if .Values.ingress.tls }}
   tls:
     {{- toYaml .Values.ingress.tls | nindent 4 }}

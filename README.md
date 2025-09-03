@@ -51,6 +51,30 @@ docker run -p 8080:8080 \
   amuzing-file-browser
 ```
 
+## Domain separation (admin vs media)
+
+You can split access by hostnames:
+
+- Admin UI and full API: `my-custom-domain.domain.com`
+- Public media (read-only): `media.domain.com`
+
+The server enforces this via host-based middleware:
+- On admin host: full access
+- On media host: only GET to `/files/*`, `/api/fs/preview`, `/api/fs/download`, and `/api/health`
+- If domains are unset (local dev), no restrictions are applied
+
+Configure:
+
+- Local/Docker env vars
+  ```bash
+  # Linux/macOS
+  export ADMIN_DOMAIN=my-custom-domain.domain.com
+  export MEDIA_DOMAIN=media.domain.com
+  # Windows PowerShell
+  $env:ADMIN_DOMAIN='my-custom-domain.domain.com'
+  $env:MEDIA_DOMAIN='media.domain.com'
+  ```
+
 ## Kubernetes
 
 Will be done when helm chart will be published in this repo.

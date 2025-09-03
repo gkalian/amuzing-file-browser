@@ -3,6 +3,7 @@
 import express from 'express';
 import path from 'path';
 import { registerLogger } from './middleware/logger.js';
+import { hostGate } from './middleware/hostGate.js';
 import { registerConfigRoutes } from './routes/configRoutes.js';
 import { registerHealthRoutes } from './routes/healthRoutes.js';
 import { registerFsRoutes } from './routes/fsRoutes.js';
@@ -18,6 +19,9 @@ export function createApp() {
 
   // Logger
   registerLogger(app);
+
+  // Host-based access control (media vs admin domains)
+  app.use(hostGate());
 
   // Routes
   registerHealthRoutes(app);
