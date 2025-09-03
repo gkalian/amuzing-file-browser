@@ -40,7 +40,7 @@ function FileTableBase({ items, onItemClick, onItemDoubleClick, selectedPaths }:
 
   const onGetLink = useCallback(
     async (it: Item) => {
-      const url = new URL('/files' + it.path, window.location.origin).toString();
+      const url = await api.publicFileUrl(it.path);
       try {
         await navigator.clipboard.writeText(url);
         notifySuccess(t('notifications.linkCopied', { defaultValue: 'Link copied: {{url}}', url }));

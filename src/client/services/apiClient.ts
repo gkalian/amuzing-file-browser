@@ -18,15 +18,25 @@ async function json<T>(input: RequestInfo, init?: RequestInit) {
   return (await res.json()) as T;
 }
 
+type ServerConfig = {
+  root: string;
+  maxUploadMB: number;
+  allowedTypes?: string;
+  ignoreNames?: string[];
+  theme: 'light' | 'dark';
+  adminDomain?: string;
+  mediaDomain?: string;
+};
+
+let cfgCache: ServerConfig | null = null;
+async function loadConfigCached() {
+  if (cfgCache) return cfgCache;
+  cfgCache = await json<ServerConfig>(`/api/config`);
+  return cfgCache;
+}
+
 export const api = {
-  getConfig: () =>
-    json<{
-      root: string;
-      maxUploadMB: number;
-      allowedTypes?: string;
-      ignoreNames?: string[];
-      theme: 'light' | 'dark';
-    }>(`/api/config`),
+  getConfig: () => json<ServerConfig>(`/api/config`),
   setConfig: (payload: {
     root?: string;
     maxUploadMB?: number;
@@ -140,6 +150,13 @@ export const api = {
     }),
   downloadUrl: (path: string) => `/api/fs/download?path=${encodeURIComponent(path)}`,
   previewUrl: (path: string) => `/api/fs/preview?path=${encodeURIComponent(path)}`,
+  publicFileUrl: async (path: string) => {
+    const cfg = await loadConfigCached();
+    const base = cfg.mediaDomain
+      ? `${window.location.protocol}//${cfg.mediaDomain}`
+      : window.location.origin;
+    return new URL('/files' + path, base).toString();
+  },
 };
 
 export type { ListResponse, FsItem };

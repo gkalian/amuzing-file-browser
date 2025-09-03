@@ -8,6 +8,8 @@ import {
   getAllowedTypes,
   getIgnoreNames,
   getTheme,
+  getAdminDomain,
+  getMediaDomain,
   setRoot,
   setMaxUploadMB,
   setAllowedTypes,
@@ -27,6 +29,8 @@ export function registerConfigRoutes(app: express.Application) {
       allowedTypes: getAllowedTypes() || DEFAULT_ALLOWED_TYPES,
       ignoreNames: getIgnoreNames(),
       theme: getTheme(),
+      adminDomain: getAdminDomain(),
+      mediaDomain: getMediaDomain(),
     });
   });
 
@@ -86,6 +90,8 @@ export function registerConfigRoutes(app: express.Application) {
         allowedTypes: getAllowedTypes() || DEFAULT_ALLOWED_TYPES,
         ignoreNames: getIgnoreNames(),
         theme: getTheme(),
+        adminDomain: getAdminDomain(),
+        mediaDomain: getMediaDomain(),
       });
     } catch (e: any) {
       res.status(400).json({ error: e.message });
