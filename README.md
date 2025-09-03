@@ -34,7 +34,26 @@ set FILEBROWSER_ROOT=c:\\path\\to\\serve in Settings
 
 ## Docker
 
+Build and run the application using Docker:
+
+```bash
+# Build the image
+docker build -t amuzing-file-browser .
+
+# Run with default settings (serves /data directory)
+docker run -p 8080:8080 -v /path/to/your/files:/data amuzing-file-browser
+
+# Run with custom environment variables
+docker run -p 8080:8080 \
+  -v /path/to/your/files:/data \
+  -e FILEBROWSER_ROOT=/data \
+  -e LOG_LEVEL=debug \
+  amuzing-file-browser
+```
+
 ## Kubernetes
+
+Will be done when helm chart will be published in this repo.
 
 ## Credits
 
