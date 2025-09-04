@@ -1,3 +1,10 @@
+## [1.3.32](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.31...v1.3.32) (2025-09-04)
+
+
+### Bug Fixes
+
+* caching headers and minor code changes ([8b411df](https://github.com/gkalian/amuzing-file-browser/commit/8b411df01734d5381ecc5d17b001a0bdd99e20ea))
+
 ## [1.3.31](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.30...v1.3.31) (2025-09-03)
 
 
