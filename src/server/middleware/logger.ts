@@ -8,7 +8,7 @@ export function registerLogger(app: express.Application) {
   app.use((req, res, next) => {
     const start = Date.now();
     const { method } = req;
-    const url = (req as any).originalUrl || req.url;
+    const url = req.originalUrl || req.url;
     const ua = req.get('user-agent') || '';
     res.on('finish', () => {
       const durationMs = Date.now() - start;

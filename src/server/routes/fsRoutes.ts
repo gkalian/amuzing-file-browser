@@ -18,6 +18,23 @@ export function registerFsRoutes(app: express.Application) {
       const target = safeJoinRoot(rel);
       const st = await fsp.stat(target);
       if (st.isDirectory()) return res.status(403).json({ error: 'Forbidden' });
+
+      // Caching headers
+      const mtime = new Date(st.mtimeMs);
+      const etag = `W/"${st.size}-${Number(st.mtimeMs).toString(16)}"`;
+      res.setHeader('Last-Modified', mtime.toUTCString());
+      res.setHeader('ETag', etag);
+
+      // Conservative cache; adjust if files are immutable by name
+      res.setHeader('Cache-Control', 'public, max-age=86400');
+
+      const inm = req.headers['if-none-match'];
+      const ims = req.headers['if-modified-since'];
+
+      if ((typeof inm === 'string' && inm === etag) || (typeof ims === 'string' && new Date(ims).getTime() >= mtime.getTime())) {
+        return res.status(304).end();
+      }
+      
       const type = mime.lookup(target) || 'application/octet-stream';
       res.setHeader('Content-Type', String(type));
       return res.sendFile(target);
