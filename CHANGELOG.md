@@ -1,3 +1,11 @@
+## [1.3.34](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.33...v1.3.34) (2025-09-05)
+
+
+### Bug Fixes
+
+* added symlink-safe and block ops with root ([e08db89](https://github.com/gkalian/amuzing-file-browser/commit/e08db89f4298be963184af9fad91aebc12b43b42))
+* filename sanitaze ([7b09a42](https://github.com/gkalian/amuzing-file-browser/commit/7b09a420c1b290ae50744a4b87b6ffce158c803b))
+
 ## [1.3.33](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.32...v1.3.33) (2025-09-05)
 
 
