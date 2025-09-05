@@ -11,40 +11,8 @@ import { getIgnoreNames } from '../config.js';
 import { logAction } from '../log.js';
 
 export function registerFsRoutes(app: express.Application) {
-  // Pretty public file URL: /files/<path within root> (regex avoids path-to-regexp edge cases)
-  app.get(/^\/files\/.+$/, async (req, res) => {
-    try {
-      const rel = req.path.slice('/files'.length) || '/';
-      const target = safeJoinRoot(rel);
-      const st = await fsp.stat(target);
-      if (st.isDirectory()) return res.status(403).json({ error: 'Forbidden' });
-
-      // Caching headers
-      const mtime = new Date(st.mtimeMs);
-      const etag = `W/"${st.size}-${Number(st.mtimeMs).toString(16)}"`;
-      res.setHeader('Last-Modified', mtime.toUTCString());
-      res.setHeader('ETag', etag);
-
-      // Conservative cache; adjust if files are immutable by name
-      res.setHeader('Cache-Control', 'public, max-age=86400');
-
-      const inm = req.headers['if-none-match'];
-      const ims = req.headers['if-modified-since'];
-
-      if ((typeof inm === 'string' && inm === etag) || (typeof ims === 'string' && new Date(ims).getTime() >= mtime.getTime())) {
-        return res.status(304).end();
-      }
-      
-      const type = mime.lookup(target) || 'application/octet-stream';
-      res.setHeader('Content-Type', String(type));
-      return res.sendFile(target);
-    } catch (e: any) {
-      return res.status(404).json({ error: e.message });
-    }
-  });
-
   // List directory
-  app.get('/api/fs/list', async (req, res) => {
+  app.get('/api/fs/list', async (req, res, next) => {
     try {
       const target = safeJoinRoot(String(req.query.path || '/'));
       const entries = await fsp.readdir(target, { withFileTypes: true });
@@ -67,12 +35,13 @@ export function registerFsRoutes(app: express.Application) {
       );
       res.json({ path: toApiPath(target), items: list });
     } catch (e: any) {
-      res.status(400).json({ error: e.message });
+      (e as any).status = (e as any).status || 400;
+      next(e);
     }
   });
 
   // Stat
-  app.get('/api/fs/stat', async (req, res) => {
+  app.get('/api/fs/stat', async (req, res, next) => {
     try {
       const target = safeJoinRoot(String(req.query.path || '/'));
       const st = await fsp.stat(target);
@@ -83,17 +52,22 @@ export function registerFsRoutes(app: express.Application) {
         mtimeMs: st.mtimeMs,
       });
     } catch (e: any) {
-      res.status(400).json({ error: e.message });
+      (e as any).status = (e as any).status || 400;
+      next(e);
     }
   });
 
   // Download
-  app.get('/api/fs/download', async (req, res) => {
+  app.get('/api/fs/download', async (req, res, next) => {
     try {
       const target = safeJoinRoot(String(req.query.path || '/'));
       const st = await fsp.stat(target);
-      if (st.isDirectory())
-        return res.status(400).json({ error: 'Download for directories is not supported' });
+      if (st.isDirectory()) {
+        const err = new Error('Download for directories is not supported');
+        (err as any).status = 400;
+        (err as any).appCode = 'not_supported';
+        throw err;
+      }
       // Action log: download
       logAction(
         'download',
@@ -102,16 +76,22 @@ export function registerFsRoutes(app: express.Application) {
       );
       res.download(target);
     } catch (e: any) {
-      res.status(400).json({ error: e.message });
+      (e as any).status = (e as any).status || 400;
+      next(e);
     }
   });
 
   // Preview (text/image including webp)
-  app.get('/api/fs/preview', async (req, res) => {
+  app.get('/api/fs/preview', async (req, res, next) => {
     try {
       const target = safeJoinRoot(String(req.query.path || '/'));
       const st = await fsp.stat(target);
-      if (st.isDirectory()) return res.status(400).json({ error: 'Cannot preview a directory' });
+      if (st.isDirectory()) {
+        const err = new Error('Cannot preview a directory');
+        (err as any).status = 400;
+        (err as any).appCode = 'invalid_operation';
+        throw err;
+      }
       const type = mime.lookup(target) || false; // Determine mime to decide text vs binary handling
       if (isTextLike(type)) {
         const content = await fsp.readFile(target, 'utf8');
@@ -132,15 +112,19 @@ export function registerFsRoutes(app: express.Application) {
         res.type((type as string) || 'application/octet-stream');
         fs.createReadStream(target).pipe(res);
       } else {
-        res.status(415).json({ error: 'Unsupported preview type' });
+        const err = new Error('Unsupported preview type');
+        (err as any).status = 415;
+        (err as any).appCode = 'unsupported_type';
+        throw err;
       }
     } catch (e: any) {
-      res.status(400).json({ error: e.message });
+      (e as any).status = (e as any).status || 400;
+      next(e);
     }
   });
 
   // Mkdir
-  app.post('/api/fs/mkdir', async (req, res) => {
+  app.post('/api/fs/mkdir', async (req, res, next) => {
     try {
       const { path: p } = req.body as { path: string };
       const target0 = safeJoinRoot(p);
@@ -172,12 +156,13 @@ export function registerFsRoutes(app: express.Application) {
       logAction('mkdir', { path: apiPath, name: finalName }, { ua: req.get('user-agent') || '' });
       res.json({ ok: true, path: apiPath, name: finalName });
     } catch (e: any) {
-      res.status(400).json({ error: e.message });
+      (e as any).status = (e as any).status || 400;
+      next(e);
     }
   });
 
   // Rename/Move
-  app.post('/api/fs/rename', async (req, res) => {
+  app.post('/api/fs/rename', async (req, res, next) => {
     try {
       const { from, to } = req.body as { from: string; to: string };
       const src = safeJoinRoot(from);
@@ -191,12 +176,13 @@ export function registerFsRoutes(app: express.Application) {
       );
       res.json({ ok: true });
     } catch (e: any) {
-      res.status(400).json({ error: e.message });
+      (e as any).status = (e as any).status || 400;
+      next(e);
     }
   });
 
   // Delete (file or directory)
-  app.post('/api/fs/delete', async (req, res) => {
+  app.post('/api/fs/delete', async (req, res, next) => {
     try {
       const { path: p } = req.body as { path: string };
       const target = safeJoinRoot(p);
@@ -214,12 +200,13 @@ export function registerFsRoutes(app: express.Application) {
       );
       res.json({ ok: true });
     } catch (e: any) {
-      res.status(400).json({ error: e.message });
+      (e as any).status = (e as any).status || 400;
+      next(e);
     }
   });
 
   // Write text file
-  app.put('/api/fs/write', async (req, res) => {
+  app.put('/api/fs/write', async (req, res, next) => {
     try {
       const { path: p, content } = req.body as { path: string; content: string };
       const target = safeJoinRoot(p);
@@ -232,7 +219,8 @@ export function registerFsRoutes(app: express.Application) {
       );
       res.json({ ok: true });
     } catch (e: any) {
-      res.status(400).json({ error: e.message });
+      (e as any).status = (e as any).status || 400;
+      next(e);
     }
   });
 }

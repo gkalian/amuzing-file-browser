@@ -1,17 +1,8 @@
-// Runtime configuration and settings persistence for the server.
-// Holds mutable state (root, upload limits, ignore list, log level),
-// reads/writes .settings.json, and exposes helpers like isLevelEnabled(LOG_LEVEL).
+// Runtime configuration for the server: holds mutable state (root, limits, ignore list, log level)
+// and exposes getters/setters and helpers like isLevelEnabled(LOG_LEVEL). Settings persistence is moved to lib/settings.
 import fs from 'fs';
-import fsp from 'fs/promises';
 import path from 'path';
-
-export type SettingsDoc = {
-  root?: string;
-  maxUploadMB?: number;
-  allowedTypes?: string;
-  ignoreNames?: string[];
-  theme?: 'light' | 'dark';
-} | null;
+import { loadSettings } from './lib/settings.js';
 
 export type LogLevel = 'error' | 'warn' | 'info' | 'debug';
 
@@ -104,44 +95,6 @@ export function setAdminDomain(v: string) {
 }
 export function setMediaDomain(v: string) {
   state.mediaDomain = String(v || '');
-}
-
-// Settings helpers (.settings.json lives under current root)
-export function settingsPath(dir: string) {
-  return path.join(dir, '.settings.json');
-}
-
-export async function loadSettings(dir: string): Promise<SettingsDoc> {
-  try {
-    const p = settingsPath(dir);
-    const exists = fs.existsSync(p);
-    if (!exists) return null;
-    const txt = await fsp.readFile(p, 'utf8');
-    const data = JSON.parse(txt) as SettingsDoc;
-    return data || null;
-  } catch {
-    return null;
-  }
-}
-
-export async function saveSettings(dir: string, data: Required<NonNullable<SettingsDoc>>) {
-  try {
-    const p = settingsPath(dir);
-    const doc = JSON.stringify(
-      {
-        root: data.root,
-        maxUploadMB: data.maxUploadMB,
-        allowedTypes: data.allowedTypes,
-        ignoreNames: data.ignoreNames,
-        theme: data.theme,
-      },
-      null,
-      2
-    );
-    await fsp.writeFile(p, doc, 'utf8');
-  } catch (e) {
-    console.warn('Failed to write settings:', e);
-  }
 }
 
 export function ensureRootExists() {

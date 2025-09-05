@@ -6,6 +6,7 @@ import multer from 'multer';
 import express from 'express';
 import { getMaxUploadMB, getAllowedTypes } from './config.js';
 import { safeJoinRoot } from './paths.js';
+import { isAllowedType } from './lib/fsSafe.js';
 
 // Generate a unique filename in dir by appending " (2)", "(3)", ... before extension
 function resolveUniqueName(dir: string, original: string): string {
@@ -60,16 +61,9 @@ export function createMulter() {
     cb: multer.FileFilterCallback
   ) => {
     try {
-      const allowed = String(getAllowedTypes() || '')
-        .split(',')
-        .map((s) => s.trim().toLowerCase())
-        .filter(Boolean);
-      if (allowed.length === 0) return cb(null, true);
-      const name = file.originalname || '';
-      const dot = name.lastIndexOf('.');
-      const ext = dot >= 0 ? name.slice(dot + 1).toLowerCase() : '';
-      if (allowed.includes(ext)) return cb(null, true);
-      return cb(new Error(`Not allowed format: ${name}`));
+      const allowed = getAllowedTypes();
+      if (isAllowedType(file.originalname, allowed)) return cb(null, true);
+      return cb(new Error(`Not allowed format: ${file.originalname || ''}`));
     } catch (e) {
       return cb(e as Error);
     }

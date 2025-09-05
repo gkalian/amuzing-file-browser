@@ -7,9 +7,11 @@ import { hostGate } from './middleware/hostGate.js';
 import { registerConfigRoutes } from './routes/configRoutes.js';
 import { registerHealthRoutes } from './routes/healthRoutes.js';
 import { registerFsRoutes } from './routes/fsRoutes.js';
+import { registerFilesRoutes } from './routes/files.js';
 import { createMulter, preUploadLimitCheck } from './upload.js';
 import { toApiPath } from './paths.js';
 import { logAction } from './log.js';
+import { errorHandler } from './middleware/errorHandler.js';
 
 export function createApp() {
   const app = express();
@@ -27,6 +29,7 @@ export function createApp() {
   registerHealthRoutes(app);
   registerConfigRoutes(app);
   registerFsRoutes(app);
+  registerFilesRoutes(app);
 
   // Upload
   const upload = createMulter();
@@ -67,6 +70,9 @@ export function createApp() {
       res.sendFile(path.join(dist, 'index.html'));
     });
   }
+
+  // Centralized error handler (must be last)
+  app.use(errorHandler());
 
   return app;
 }

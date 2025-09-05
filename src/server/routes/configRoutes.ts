@@ -15,8 +15,9 @@ import {
   setAllowedTypes,
   setIgnoreNames,
   setTheme,
-  saveSettings,
+  DEFAULT_ALLOWED_TYPES,
 } from '../config.js';
+import { saveSettings } from '../lib/settings.js';
 import { logAction } from '../log.js';
 
 export function registerConfigRoutes(app: express.Application) {
@@ -25,7 +26,7 @@ export function registerConfigRoutes(app: express.Application) {
     res.json({
       root: getRoot(),
       maxUploadMB: getMaxUploadMB(),
-      allowedTypes: getAllowedTypes(),
+      allowedTypes: getAllowedTypes() || DEFAULT_ALLOWED_TYPES,
       ignoreNames: getIgnoreNames(),
       theme: getTheme(),
       adminDomain: getAdminDomain(),
@@ -65,7 +66,7 @@ export function registerConfigRoutes(app: express.Application) {
       await saveSettings(getRoot(), {
         root: getRoot(),
         maxUploadMB: getMaxUploadMB(),
-        allowedTypes: getAllowedTypes(),
+        allowedTypes: getAllowedTypes() || DEFAULT_ALLOWED_TYPES,
         ignoreNames: getIgnoreNames(),
         theme: getTheme(),
       });
@@ -75,7 +76,7 @@ export function registerConfigRoutes(app: express.Application) {
         {
           root: getRoot(),
           maxUploadMB: getMaxUploadMB(),
-          allowedTypes: getAllowedTypes(),
+          allowedTypes: getAllowedTypes() || DEFAULT_ALLOWED_TYPES,
           ignoreNames: getIgnoreNames(),
           theme: getTheme(),
         },
@@ -86,7 +87,7 @@ export function registerConfigRoutes(app: express.Application) {
         ok: true,
         root: getRoot(),
         maxUploadMB: getMaxUploadMB(),
-        allowedTypes: getAllowedTypes(),
+        allowedTypes: getAllowedTypes() || DEFAULT_ALLOWED_TYPES,
         ignoreNames: getIgnoreNames(),
         theme: getTheme(),
         adminDomain: getAdminDomain(),

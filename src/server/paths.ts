@@ -6,9 +6,7 @@ export function safeJoinRoot(p: string) {
   const ROOT = getRoot();
   const rel = p.replaceAll('\\', '/');
   const target = path.resolve(ROOT, '.' + (rel.startsWith('/') ? rel : '/' + rel));
-  const inside = path.relative(ROOT, target);
-  
-  if (inside.startsWith('..') || path.isAbsolute(inside)) {
+  if (!target.startsWith(ROOT)) {
     throw new Error('Path traversal detected');
   }
   return target;
