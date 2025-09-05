@@ -1,3 +1,10 @@
+## [1.3.33](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.32...v1.3.33) (2025-09-05)
+
+
+### Bug Fixes
+
+* extract settings I/O to lib, add X-Request-Id in logs/errors, and use isAllowedType for uploads + supertest added ([4e96dcc](https://github.com/gkalian/amuzing-file-browser/commit/4e96dccc3f54d6cea90e1a51bdcd0b2f1f028f55))
+
 ## [1.3.32](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.31...v1.3.32) (2025-09-04)
 
 
