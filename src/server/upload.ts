@@ -6,7 +6,7 @@ import multer from 'multer';
 import express from 'express';
 import { getMaxUploadMB, getAllowedTypes } from './config.js';
 import { safeJoinRoot } from './paths.js';
-import { isAllowedType } from './lib/fsSafe.js';
+import { isAllowedType, sanitizeFilename } from './lib/fsSafe.js';
 
 // Generate a unique filename in dir by appending " (2)", "(3)", ... before extension
 function resolveUniqueName(dir: string, original: string): string {
@@ -47,7 +47,8 @@ export function createMulter() {
     filename: (req, file, cb) => {
       try {
         const dest = safeJoinRoot(String((req as any).query.path || '/'));
-        const name = resolveUniqueName(dest, file.originalname);
+        const safeName = sanitizeFilename(file.originalname);
+        const name = resolveUniqueName(dest, safeName);
         cb(null, name);
       } catch (e) {
         cb(e as Error, file.originalname);
@@ -68,7 +69,10 @@ export function createMulter() {
       return cb(e as Error);
     }
   };
-  return multer({ storage, fileFilter });
+  // Limits: cap per-file size and number of files per request
+  const fileSize = getMaxUploadMB() * 1024 * 1024;
+  const files = 100; // reasonable default; can be made configurable later
+  return multer({ storage, fileFilter, limits: { fileSize, files } });
 }
 
 // Pre-check content-length against dynamic limit
