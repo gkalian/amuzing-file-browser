@@ -1,15 +1,43 @@
 // Path helpers based on current configured root
 import path from 'path';
 import { getRoot } from './config.js';
+import fs from 'fs';
 
 export function safeJoinRoot(p: string) {
   const ROOT = getRoot();
-  const rel = p.replaceAll('\\', '/');
-  const target = path.resolve(ROOT, '.' + (rel.startsWith('/') ? rel : '/' + rel));
-  if (!target.startsWith(ROOT)) {
-    throw new Error('Path traversal detected');
+  // Resolve actual ROOT real path to guard against external symlinks
+  const ROOT_REAL = fs.realpathSync(ROOT);
+  const rel = String(p || '/').replaceAll('\\', '/');
+  const combined = path.resolve(ROOT_REAL, '.' + (rel.startsWith('/') ? rel : '/' + rel));
+
+  try {
+    // If the target exists, verify its realpath is inside ROOT
+    const real = fs.realpathSync(combined);
+    const inside = path.relative(ROOT_REAL, real);
+    if (inside.startsWith('..') || path.isAbsolute(inside)) {
+      const err = new Error('Path traversal detected');
+      (err as any).status = 403;
+      (err as any).appCode = 'forbidden';
+      throw err;
+    }
+    return real;
+  } catch (e: any) {
+    if (e && e.code === 'ENOENT') {
+      // Target may not exist yet (e.g., upload or new file). Validate parent dir.
+      const parent = path.dirname(combined);
+      const base = path.basename(combined);
+      const parentReal = fs.realpathSync(parent);
+      const inside = path.relative(ROOT_REAL, parentReal);
+      if (inside.startsWith('..') || path.isAbsolute(inside)) {
+        const err = new Error('Path traversal detected');
+        (err as any).status = 403;
+        (err as any).appCode = 'forbidden';
+        throw err;
+      }
+      return path.join(parentReal, base);
+    }
+    throw e;
   }
-  return target;
 }
 
 export function toApiPath(abs: string) {
