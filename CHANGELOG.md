@@ -1,3 +1,10 @@
+## [1.3.34](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.33...v1.3.34) (2025-09-07)
+
+
+### Bug Fixes
+
+* root path, fs safe helpers and tests ([48645bf](https://github.com/gkalian/amuzing-file-browser/commit/48645bf8988a1f5a058d2702486f6c9aaa17947a))
+
 ## [1.3.33](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.32...v1.3.33) (2025-09-05)
 
 
