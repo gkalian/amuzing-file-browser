@@ -3,6 +3,15 @@
 
 ### Bug Fixes
 
+* correct version in npm ([1d2e3b5](https://github.com/gkalian/amuzing-file-browser/commit/1d2e3b570c823150f9534437d96ea2efa4e09991))
+* no txt preview, add caching an pagination ([f32cbe4](https://github.com/gkalian/amuzing-file-browser/commit/f32cbe4fcea34f0ffce924d7f1903ca1039bea32))
+* root path, fs safe helpers and tests ([48645bf](https://github.com/gkalian/amuzing-file-browser/commit/48645bf8988a1f5a058d2702486f6c9aaa17947a))
+
+## [1.3.34](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.33...v1.3.34) (2025-09-07)
+
+
+### Bug Fixes
+
 * root path, fs safe helpers and tests ([48645bf](https://github.com/gkalian/amuzing-file-browser/commit/48645bf8988a1f5a058d2702486f6c9aaa17947a))
 
 ## [1.3.33](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.32...v1.3.33) (2025-09-05)
