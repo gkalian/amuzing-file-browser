@@ -1,3 +1,10 @@
+## [1.3.35](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.34...v1.3.35) (2025-09-08)
+
+
+### Bug Fixes
+
+* run linter ([7279ea8](https://github.com/gkalian/amuzing-file-browser/commit/7279ea80a91bcad90d2a138caf0e385c857000d0))
+
 ## [1.3.34](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.33...v1.3.34) (2025-09-07)
 
 
