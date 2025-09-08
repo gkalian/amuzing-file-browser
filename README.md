@@ -59,6 +59,7 @@ You can split access by hostnames:
 - Public media (read-only): `media.domain.com`
 
 The server enforces this via host-based middleware:
+
 - On admin host: full access
 - On media host: only GET to `/files/*`, `/api/fs/preview`, `/api/fs/download`, and `/api/health`
 - If domains are unset (local dev), no restrictions are applied

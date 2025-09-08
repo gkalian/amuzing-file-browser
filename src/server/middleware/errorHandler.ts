@@ -4,7 +4,12 @@ import type { Request, Response, NextFunction } from 'express';
 import { isLevelEnabled, type LogLevel } from '../config.js';
 import { log } from '../log.js';
 
-function statusFromError(err: any): { status: number; code: string; message: string; details?: unknown } {
+function statusFromError(err: any): {
+  status: number;
+  code: string;
+  message: string;
+  details?: unknown;
+} {
   // Zod validation (duck-typing: no hard dependency required here)
   const isZod = err && (err.name === 'ZodError' || Array.isArray(err.issues));
   if (isZod) {
@@ -48,7 +53,10 @@ function statusFromError(err: any): { status: number; code: string; message: str
 
 export function errorHandler() {
   return (err: any, req: Request, res: Response, _next: NextFunction) => {
-    const requestId = ((res.locals as any)?.requestId as string) || (req.headers['x-request-id'] as string) || undefined;
+    const requestId =
+      ((res.locals as any)?.requestId as string) ||
+      (req.headers['x-request-id'] as string) ||
+      undefined;
     if (requestId) res.setHeader('X-Request-Id', requestId);
     const { status, code, message, details } = statusFromError(err);
 

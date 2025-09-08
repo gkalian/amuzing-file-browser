@@ -24,7 +24,9 @@ export function registerFsRoutes(app: express.Application) {
 
       const pageNum = Math.max(1, Math.floor(Number(pageRaw)) || 1);
       const limitNum = Math.min(1000, Math.max(1, Math.floor(Number(limitRaw)) || 100));
-      const sortKey = ['name', 'mtime', 'size'].includes(sortRaw) ? (sortRaw as 'name' | 'mtime' | 'size') : 'name';
+      const sortKey = ['name', 'mtime', 'size'].includes(sortRaw)
+        ? (sortRaw as 'name' | 'mtime' | 'size')
+        : 'name';
       const order = orderRaw === 'desc' ? 'desc' : 'asc';
 
       const entries = await fsp.readdir(target, { withFileTypes: true });

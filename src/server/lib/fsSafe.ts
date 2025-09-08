@@ -6,12 +6,10 @@
  * @param filename original filename (may include extension)
  * @param allowed list of allowed extensions, either as comma-separated string or array of strings
  */
-export function isAllowedType(
-  filename: string,
-  allowed: string | string[] | undefined
-): boolean {
-  const list = (Array.isArray(allowed) ? allowed : String(allowed || '')
-    .split(',')).map((s) => s.trim().toLowerCase()).filter(Boolean);
+export function isAllowedType(filename: string, allowed: string | string[] | undefined): boolean {
+  const list = (Array.isArray(allowed) ? allowed : String(allowed || '').split(','))
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
   if (list.length === 0) return true; // empty list means allow all
   const name = filename || '';
   const dot = name.lastIndexOf('.');
@@ -30,7 +28,9 @@ export function isAllowedType(
  */
 export function sanitizeFilename(input: string): string {
   const MAX_LEN = 120;
-  const normalized = String(input || '').normalize('NFKC').trim();
+  const normalized = String(input || '')
+    .normalize('NFKC')
+    .trim();
 
   // Remove any path components; we only want a base name
   const justName = normalized.split(/[\\/]+/).pop() || '';

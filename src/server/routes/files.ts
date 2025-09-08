@@ -30,7 +30,10 @@ export function registerFilesRoutes(app: express.Application) {
 
       const inm = req.headers['if-none-match'];
       const ims = req.headers['if-modified-since'];
-      if ((typeof inm === 'string' && inm === etag) || (typeof ims === 'string' && new Date(ims).getTime() >= mtime.getTime())) {
+      if (
+        (typeof inm === 'string' && inm === etag) ||
+        (typeof ims === 'string' && new Date(ims).getTime() >= mtime.getTime())
+      ) {
         return res.status(304).end();
       }
 
@@ -72,7 +75,13 @@ export function registerFilesRoutes(app: express.Application) {
         } else {
           start = Number(startStr);
           end = endStr ? Number(endStr) : st.size - 1;
-          if (Number.isNaN(start) || Number.isNaN(end) || start > end || start < 0 || end >= st.size) {
+          if (
+            Number.isNaN(start) ||
+            Number.isNaN(end) ||
+            start > end ||
+            start < 0 ||
+            end >= st.size
+          ) {
             res.setHeader('Content-Range', `bytes */${st.size}`);
             return res.status(416).end();
           }
@@ -83,14 +92,22 @@ export function registerFilesRoutes(app: express.Application) {
         res.setHeader('Content-Range', `bytes ${start}-${end}/${st.size}`);
         res.setHeader('Content-Length', String(chunkSize));
         // Action log (partial)
-        logAction('files_serve', { path: toApiPath(target), bytes: chunkSize, range: `${start}-${end}` }, { ua: req.get('user-agent') || '' });
+        logAction(
+          'files_serve',
+          { path: toApiPath(target), bytes: chunkSize, range: `${start}-${end}` },
+          { ua: req.get('user-agent') || '' }
+        );
         return fs.createReadStream(target, { start, end }).pipe(res);
       }
 
       // Full response
       res.setHeader('Content-Length', String(st.size));
       // Action log (download-like access but via files URL)
-      logAction('files_serve', { path: toApiPath(target), bytes: st.size }, { ua: req.get('user-agent') || '' });
+      logAction(
+        'files_serve',
+        { path: toApiPath(target), bytes: st.size },
+        { ua: req.get('user-agent') || '' }
+      );
       return fs.createReadStream(target).pipe(res);
     } catch (e) {
       next(e);

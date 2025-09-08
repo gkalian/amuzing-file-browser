@@ -29,10 +29,7 @@ beforeEach(async () => {
 
 describe('security: path traversal and root protection', () => {
   it('rejects .. traversal (stat)', async () => {
-    const res = await request(app)
-      .get('/api/fs/stat')
-      .query({ path: '/../secret' })
-      .expect(403);
+    const res = await request(app).get('/api/fs/stat').query({ path: '/../secret' }).expect(403);
     expect(res.body?.error).toBeDefined();
   });
 
@@ -92,10 +89,7 @@ describe('security: symlink escape (optional)', () => {
       return;
     }
 
-    const res = await request(app)
-      .get('/api/fs/stat')
-      .query({ path: '/link-out' })
-      .expect(403);
+    const res = await request(app).get('/api/fs/stat').query({ path: '/link-out' }).expect(403);
     expect(res.body?.error).toBeDefined();
   });
 });

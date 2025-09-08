@@ -5,14 +5,14 @@ export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
     include: ['react', 'react-dom', 'use-callback-ref'],
-    needsInterop: ['use-callback-ref']
+    needsInterop: ['use-callback-ref'],
   },
   resolve: {
     dedupe: ['react', 'react-dom'],
     alias: {
       '@': '/src',
-      'use-callback-ref': 'use-callback-ref/dist/es2019/index.js'
-    }
+      'use-callback-ref': 'use-callback-ref/dist/es2019/index.js',
+    },
   },
   server: {
     port: 3500,
@@ -25,6 +25,6 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true
+    sourcemap: true,
   },
 });
