@@ -78,12 +78,6 @@ export const api = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ path }),
     }),
-  write: (path: string, content: string) =>
-    json<{ ok: true }>(`/api/fs/write`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ path, content }),
-    }),
   upload: async (dirPath: string, files: File[]) => {
     const fd = new FormData();
     files.forEach((f) => fd.append('files', f, f.name));

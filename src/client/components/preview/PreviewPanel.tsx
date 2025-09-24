@@ -96,28 +96,6 @@ function PreviewPanelBase({ item, onDeselect }: { item: FsItem | null; onDeselec
       </Box>
     );
   }
-  if (
-    (item.mime || '').startsWith('text/') ||
-    ['application/json', 'application/xml'].includes(item.mime || '')
-  ) {
-    return (
-      <Box style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-        <iframe
-          title={t('preview.textPreview', { defaultValue: 'Text preview' })}
-          src={api.previewUrl(item.path)}
-          loading="lazy"
-          style={{ width: '100%', height: '100%', border: '1px solid #eee' }}
-        />
-        {onDeselect && (
-          <Group justify="flex-end" mt="sm">
-            <Button variant="light" size="xs" onClick={onDeselect}>
-              {t('preview.close', { defaultValue: 'Close' })}
-            </Button>
-          </Group>
-        )}
-      </Box>
-    );
-  }
   return <Text c="dimmed">{t('preview.noPreview', { defaultValue: 'No preview available' })}</Text>;
 }
 

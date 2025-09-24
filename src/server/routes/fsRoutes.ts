@@ -317,22 +317,4 @@ export function registerFsRoutes(app: express.Application) {
     }
   });
 
-  // Write text file
-  app.put('/api/fs/write', async (req, res, next) => {
-    try {
-      const { path: p, content } = req.body as { path: string; content: string };
-      const target = safeJoinRoot(p);
-      await fsp.writeFile(target, content, 'utf8');
-      // Action log
-      logAction(
-        'write',
-        { path: toApiPath(target), bytes: Buffer.byteLength(content, 'utf8') },
-        { ua: req.get('user-agent') || '' }
-      );
-      res.json({ ok: true });
-    } catch (e: any) {
-      (e as any).status = (e as any).status || 400;
-      next(e);
-    }
-  });
 }
