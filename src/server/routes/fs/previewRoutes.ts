@@ -5,7 +5,7 @@ import fsp from 'fs/promises';
 import mime from 'mime-types';
 import { isImageLike } from '../../utils.js';
 import { safeJoinRoot, toApiPath } from '../../paths.js';
-import { logAction } from '../../log.js';
+import { logAction, makeActionMeta } from '../../log.js';
 
 export function fsPreviewRoutes(app: express.Application) {
   // Preview: images only
@@ -21,18 +21,7 @@ export function fsPreviewRoutes(app: express.Application) {
       }
       const type = mime.lookup(target) || false;
       if (isImageLike(type)) {
-        logAction(
-          'preview',
-          { path: toApiPath(target), bytes: st.size },
-          {
-            ua: req.get('user-agent') || '',
-            ip: req.ip,
-            xff: (req.headers['x-forwarded-for'] as string) || '',
-            host:
-              (req.headers['x-forwarded-host'] as string) || (req.headers['host'] as string) || '',
-            requestId: (res.locals as any)?.requestId,
-          }
-        );
+        logAction('preview', { path: toApiPath(target), bytes: st.size }, makeActionMeta(req, res));
         res.type((type as string) || 'application/octet-stream');
         fs.createReadStream(target).pipe(res);
       } else {

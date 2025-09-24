@@ -4,13 +4,13 @@ import express from 'express';
 import path from 'path';
 import { registerLogger } from './middleware/logger.js';
 import { hostGate } from './middleware/hostGate.js';
-import { configRoutes } from './routes/configRoutes.js';
-import { healthRoutes } from './routes/healthRoutes.js';
-import { fsRoutes } from './routes/fsRoutes.js';
-import { filesRoutes } from './routes/files.js';
+import { registerConfigRoutes } from './routes/configRoutes.js';
+import { registerHealthRoutes } from './routes/healthRoutes.js';
+import { registerFsRoutes } from './routes/fsRoutes.js';
+import { registerFilesRoutes } from './routes/files.js';
 import { createMulter, preUploadLimitCheck } from './upload.js';
 import { toApiPath } from './paths.js';
-import { logAction } from './log.js';
+import { logAction, makeActionMeta } from './log.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 export function createApp() {
@@ -21,6 +21,8 @@ export function createApp() {
 
   // Behind proxy: trust X-Forwarded-* so req.ip is correct
   app.set('trust proxy', true);
+  // Hide Express signature
+  app.disable('x-powered-by');
 
   // Logger
   registerLogger(app);
@@ -29,10 +31,10 @@ export function createApp() {
   app.use(hostGate());
 
   // Routes
-  healthRoutes(app);
-  configRoutes(app);
-  fsRoutes(app);
-  filesRoutes(app);
+  registerHealthRoutes(app);
+  registerConfigRoutes(app);
+  registerFsRoutes(app);
+  registerFilesRoutes(app);
 
   // Upload
   const upload = createMulter();
@@ -48,19 +50,16 @@ export function createApp() {
     const totalBytes = files.reduce((acc, f) => acc + (typeof f.size === 'number' ? f.size : 0), 0);
     const dest = String((req.query as any).path || '/');
     // Action log (base at info, extras at debug)
-    logAction(
-      'upload',
-      { count: files.length, totalBytes, dest },
-      {
-        files:
-          files.map((f) => ({
-            name: f.originalname,
-            saved: f.filename,
-            size: f.size,
-            path: f.path,
-          })) || '',
-      }
-    );
+    logAction('upload', { count: files.length, totalBytes, dest }, {
+      ...makeActionMeta(req, res),
+      files:
+        files.map((f) => ({
+          name: f.originalname,
+          saved: f.filename,
+          size: f.size,
+          path: f.path,
+        })) || '',
+    });
 
     res.json({ ok: true, files });
   });

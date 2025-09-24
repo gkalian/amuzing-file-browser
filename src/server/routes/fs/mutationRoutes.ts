@@ -5,7 +5,7 @@ import fs from 'fs';
 import fsp from 'fs/promises';
 import { safeJoinRoot, toApiPath } from '../../paths.js';
 import { getRoot } from '../../config.js';
-import { logAction } from '../../log.js';
+import { logAction, makeActionMeta } from '../../log.js';
 
 export function fsMutationRoutes(app: express.Application) {
   // Mkdir
@@ -38,17 +38,7 @@ export function fsMutationRoutes(app: express.Application) {
       await fsp.mkdir(target, { recursive: false });
       const apiPath = toApiPath(target);
       // Action log
-      logAction(
-        'mkdir',
-        { path: apiPath, name: finalName },
-        {
-          ua: req.get('user-agent') || '',
-          ip: req.ip,
-          xff: (req.headers['x-forwarded-for'] as string) || '',
-          host: (req.headers['x-forwarded-host'] as string) || (req.headers['host'] as string) || '',
-          requestId: (res.locals as any)?.requestId,
-        }
-      );
+      logAction('mkdir', { path: apiPath, name: finalName }, makeActionMeta(req, res));
       res.json({ ok: true, path: apiPath, name: finalName });
     } catch (e: any) {
       (e as any).status = (e as any).status || 400;
@@ -78,17 +68,7 @@ export function fsMutationRoutes(app: express.Application) {
       }
       await fsp.rename(src, dst);
       // Action log
-      logAction(
-        'rename',
-        { from: toApiPath(src), to: toApiPath(dst) },
-        {
-          ua: req.get('user-agent') || '',
-          ip: req.ip,
-          xff: (req.headers['x-forwarded-for'] as string) || '',
-          host: (req.headers['x-forwarded-host'] as string) || (req.headers['host'] as string) || '',
-          requestId: (res.locals as any)?.requestId,
-        }
-      );
+      logAction('rename', { from: toApiPath(src), to: toApiPath(dst) }, makeActionMeta(req, res));
       res.json({ ok: true });
     } catch (e: any) {
       (e as any).status = (e as any).status || 400;
@@ -119,13 +99,7 @@ export function fsMutationRoutes(app: express.Application) {
       logAction(
         'delete',
         { path: toApiPath(target), targetType: st.isDirectory() ? 'directory' : 'file' },
-        {
-          ua: req.get('user-agent') || '',
-          ip: req.ip,
-          xff: (req.headers['x-forwarded-for'] as string) || '',
-          host: (req.headers['x-forwarded-host'] as string) || (req.headers['host'] as string) || '',
-          requestId: (res.locals as any)?.requestId,
-        }
+        makeActionMeta(req, res)
       );
       res.json({ ok: true });
     } catch (e: any) {

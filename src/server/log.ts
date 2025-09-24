@@ -1,6 +1,7 @@
 // Centralized logging helpers: gate logs by LOG_LEVEL and provide a simple action logger.
 // Use log(level, data) for access/errors and logAction(action, base, debugExtras?) for structured actions.
 import { isLevelEnabled, type LogLevel } from './config.js';
+import type express from 'express';
 
 function nowISO() {
   return new Date().toISOString();
@@ -30,4 +31,16 @@ export function logAction(
       ? { action, ...base, ...debugExtras }
       : { action, ...base };
   log('info', payload);
+}
+
+// Build a standard debug extras object for action logs using request/response context
+// Includes: ua, ip, xff, host, requestId
+export function makeActionMeta(req: express.Request, res: express.Response) {
+  return {
+    ua: req.get('user-agent') || '',
+    ip: req.ip,
+    xff: (req.headers['x-forwarded-for'] as string) || '',
+    host: (req.headers['x-forwarded-host'] as string) || (req.headers['host'] as string) || '',
+    requestId: (res.locals as any)?.requestId,
+  } as const;
 }

@@ -2,7 +2,7 @@
 import express from 'express';
 import fsp from 'fs/promises';
 import { safeJoinRoot, toApiPath } from '../../paths.js';
-import { logAction } from '../../log.js';
+import { logAction, makeActionMeta } from '../../log.js';
 
 export function fsDownloadRoutes(app: express.Application) {
   // Download
@@ -17,17 +17,7 @@ export function fsDownloadRoutes(app: express.Application) {
         throw err;
       }
       // Action log: download
-      logAction(
-        'download',
-        { path: toApiPath(target), bytes: st.size },
-        {
-          ua: req.get('user-agent') || '',
-          ip: req.ip,
-          xff: (req.headers['x-forwarded-for'] as string) || '',
-          host: (req.headers['x-forwarded-host'] as string) || (req.headers['host'] as string) || '',
-          requestId: (res.locals as any)?.requestId,
-        }
-      );
+      logAction('download', { path: toApiPath(target), bytes: st.size }, makeActionMeta(req, res));
       res.download(target);
     } catch (e: any) {
       (e as any).status = (e as any).status || 400;

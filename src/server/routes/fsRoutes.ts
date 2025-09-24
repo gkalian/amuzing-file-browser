@@ -5,7 +5,7 @@ import { fsPreviewRoutes } from './fs/previewRoutes.js';
 import { fsDownloadRoutes } from './fs/downloadRoutes.js';
 import { fsMutationRoutes } from './fs/mutationRoutes.js';
 
-export function fsRoutes(app: express.Application) {
+export function registerFsRoutes(app: express.Application) {
   fsListRoutes(app);
   fsPreviewRoutes(app);
   fsDownloadRoutes(app);
