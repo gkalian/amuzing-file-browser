@@ -45,8 +45,8 @@
   },
   "table": {
     "headers": { "name": "Name", "size": "Size", "modified": "Modified" },
-    "tooltips": { 
-      "openFolder": "Open folder", 
+    "tooltips": {
+      "openFolder": "Open folder",
       "selectDeselect": "Select/Deselect",
       "symlinkBroken": "Broken symbolic link",
       "symlinkUnsafe": "Unsafe symbolic link (points outside root)"
@@ -87,7 +87,8 @@
       "modified": "Modified:"
     },
     "textPreview": "Text preview",
-    "noPreview": "No preview available"
+    "noPreview": "No preview available",
+    "close": "Close"
   },
   "aria": {
     "clear": "clear",

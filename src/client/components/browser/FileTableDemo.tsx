@@ -82,10 +82,18 @@ export function FileTableDemo() {
       <h3>Symlink UI Demo</h3>
       <p>This demo shows how different types of files and symlinks appear in the table:</p>
       <ul>
-        <li><strong>Regular files/folders</strong> - clickable, with download/link buttons</li>
-        <li><strong>Good symlinks</strong> - blue badge, not clickable, no action buttons</li>
-        <li><strong>Broken symlinks</strong> - red badge with tooltip, not clickable</li>
-        <li><strong>Unsafe symlinks</strong> - orange badge with tooltip, not clickable</li>
+        <li>
+          <strong>Regular files/folders</strong> - clickable, with download/link buttons
+        </li>
+        <li>
+          <strong>Good symlinks</strong> - blue badge, not clickable, no action buttons
+        </li>
+        <li>
+          <strong>Broken symlinks</strong> - red badge with tooltip, not clickable
+        </li>
+        <li>
+          <strong>Unsafe symlinks</strong> - orange badge with tooltip, not clickable
+        </li>
       </ul>
       <FileTable
         items={mockItems}

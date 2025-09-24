@@ -58,27 +58,33 @@ function FileTableBase({ items, onItemClick, onItemDoubleClick, selectedPaths }:
   const itemContent = useCallback(
     (idx: number, it: Item) => {
       const isSelected = selectedPaths.has(it.path);
-      const selStyle = isSelected ? { background: 'var(--mantine-color-blue-0)' } : undefined;
+      const selStyle = isSelected
+        ? { background: 'light-dark(var(--mantine-color-blue-0), var(--mantine-color-dark-4))' }
+        : undefined;
       const isSymlink = it.isSymlink;
       const isBroken = it.isBroken;
       const isUnsafe = it.isUnsafe;
-      
+
       // Determine tooltip for symlink badge
-      const symlinkTooltip = isBroken 
+      const symlinkTooltip = isBroken
         ? t('table.tooltips.symlinkBroken', { defaultValue: 'Broken symbolic link' })
-        : isUnsafe 
-          ? t('table.tooltips.symlinkUnsafe', { defaultValue: 'Unsafe symbolic link (points outside root)' })
+        : isUnsafe
+          ? t('table.tooltips.symlinkUnsafe', {
+              defaultValue: 'Unsafe symbolic link (points outside root)',
+            })
           : undefined;
-      
+
       return (
         <>
           <Table.Td
             style={{ cursor: isSymlink ? 'default' : 'pointer', ...selStyle }}
             data-selected={isSelected || undefined}
             onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
-            onDoubleClick={isSymlink ? undefined : (e: React.MouseEvent) => onItemDoubleClick(it, idx, e)}
+            onDoubleClick={
+              isSymlink ? undefined : (e: React.MouseEvent) => onItemDoubleClick(it, idx, e)
+            }
             title={
-              isSymlink 
+              isSymlink
                 ? undefined
                 : it.isDir
                   ? t('table.tooltips.openFolder', { defaultValue: 'Double-click to open' })
@@ -93,15 +99,18 @@ function FileTableBase({ items, onItemClick, onItemDoubleClick, selectedPaths }:
                 onClick={isSymlink ? undefined : (e: any) => onItemClick(it, idx, e)}
                 onDoubleClick={isSymlink ? undefined : (e: any) => onItemDoubleClick(it, idx, e)}
                 data-testid="item-open"
-                style={{ cursor: isSymlink ? 'default' : 'pointer', textDecoration: isSymlink ? 'none' : undefined }}
+                style={{
+                  cursor: isSymlink ? 'default' : 'pointer',
+                  textDecoration: isSymlink ? 'none' : undefined,
+                }}
               >
                 {it.name}
               </Anchor>
               {isSymlink && (
                 <Tooltip label={symlinkTooltip} disabled={!symlinkTooltip}>
-                  <Badge 
-                    size="xs" 
-                    variant="light" 
+                  <Badge
+                    size="xs"
+                    variant="light"
                     color={isBroken ? 'red' : isUnsafe ? 'orange' : 'blue'}
                   >
                     {t('table.badges.symlink', { defaultValue: 'symlink' })}
@@ -113,9 +122,11 @@ function FileTableBase({ items, onItemClick, onItemDoubleClick, selectedPaths }:
           <Table.Td
             style={{ cursor: isSymlink ? 'default' : 'pointer', ...selStyle }}
             onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
-            onDoubleClick={isSymlink ? undefined : (e: React.MouseEvent) => onItemDoubleClick(it, idx, e)}
+            onDoubleClick={
+              isSymlink ? undefined : (e: React.MouseEvent) => onItemDoubleClick(it, idx, e)
+            }
             title={
-              isSymlink 
+              isSymlink
                 ? undefined
                 : it.isDir
                   ? t('table.tooltips.openFolder', { defaultValue: 'Double-click to open' })
@@ -129,9 +140,11 @@ function FileTableBase({ items, onItemClick, onItemDoubleClick, selectedPaths }:
           <Table.Td
             style={{ cursor: isSymlink ? 'default' : 'pointer', ...selStyle }}
             onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
-            onDoubleClick={isSymlink ? undefined : (e: React.MouseEvent) => onItemDoubleClick(it, idx, e)}
+            onDoubleClick={
+              isSymlink ? undefined : (e: React.MouseEvent) => onItemDoubleClick(it, idx, e)
+            }
             title={
-              isSymlink 
+              isSymlink
                 ? undefined
                 : it.isDir
                   ? t('table.tooltips.openFolder', { defaultValue: 'Double-click to open' })
@@ -145,9 +158,11 @@ function FileTableBase({ items, onItemClick, onItemDoubleClick, selectedPaths }:
           <Table.Td
             style={{ ...selStyle, textAlign: 'right' }}
             onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
-            onDoubleClick={isSymlink ? undefined : (e: React.MouseEvent) => onItemDoubleClick(it, idx, e)}
+            onDoubleClick={
+              isSymlink ? undefined : (e: React.MouseEvent) => onItemDoubleClick(it, idx, e)
+            }
             title={
-              isSymlink 
+              isSymlink
                 ? undefined
                 : it.isDir
                   ? t('table.tooltips.openFolder', { defaultValue: 'Double-click to open' })
