@@ -1,5 +1,8 @@
-// Filesystem safety helpers: allowed-types check and (future) filename/path sanitization.
-// Exposes isAllowedType(name, allowed) and can be extended with sanitizeFilename/safeJoin variants later.
+// Filesystem safety helpers: allowed-types check, path validation, and symlink protection.
+// Exposes utilities for safe file operations and path validation.
+
+import * as path from 'path';
+import * as fsp from 'fs/promises';
 
 /**
  * Check if a filename matches one of the allowed extensions.
@@ -84,5 +87,47 @@ export function sanitizeFilename(input: string): string {
   return candidate;
 }
 
-// Placeholder for future helpers:
-// export function safeJoin(root: string, rel: string): string { ... }
+/**
+ * Check if a path is a symlink and resolve it to its real path if it is.
+ * @param path The path to check
+ * @returns Object with { isSymlink: boolean, realPath: string }
+ */
+export async function resolveSymlinkSafe(
+  path: string
+): Promise<{ isSymlink: boolean; realPath: string; isBroken: boolean }> {
+  try {
+    const stats = await fsp.lstat(path);
+    if (stats.isSymbolicLink()) {
+      try {
+        const realPath = await fsp.realpath(path);
+        return { isSymlink: true, realPath, isBroken: false };
+      } catch (err: unknown) {
+        // Broken symlink: report as symlink but mark broken, keep original path as fallback realPath
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        console.warn(`Broken symlink ${path}: ${errorMessage}`);
+        return { isSymlink: true, realPath: path, isBroken: true };
+      }
+    }
+    return { isSymlink: false, realPath: path, isBroken: false };
+  } catch (error: unknown) {
+    // If there's an error (e.g., broken symlink), treat it as a non-symlink
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.warn(`Error resolving symlink ${path}: ${errorMessage}`);
+    return { isSymlink: false, realPath: path, isBroken: false };
+  }
+}
+
+/**
+ * Check if a path is within the allowed root directory
+ * @param filePath The path to check
+ * @param root The root directory
+ * @returns boolean indicating if the path is safe
+ */
+export function isPathSafe(filePath: string, root: string): boolean {
+  // Resolve both paths to handle relative paths and normalize them
+  const resolvedPath = path.resolve(filePath);
+  const resolvedRoot = path.resolve(root);
+
+  // Check if the resolved path starts with the root path
+  return resolvedPath.startsWith(resolvedRoot + path.sep) || resolvedPath === resolvedRoot;
+}

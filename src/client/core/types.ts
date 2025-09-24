@@ -6,6 +6,10 @@ export type FsItem = {
   size: number;
   mtimeMs: number;
   mime: string | null;
+  // Optional flags provided by the server for symlink handling
+  isSymlink?: boolean;
+  isBroken?: boolean;
+  isUnsafe?: boolean; // symlink pointing outside ROOT
 };
 
 export type ListResponse = { path: string; items: FsItem[] };

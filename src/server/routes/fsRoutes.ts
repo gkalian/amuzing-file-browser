@@ -5,10 +5,11 @@ import path from 'path';
 import fs from 'fs';
 import fsp from 'fs/promises';
 import mime from 'mime-types';
-import { isTextLike, isImageLike } from '../utils.js';
+import { isImageLike } from '../utils.js';
 import { safeJoinRoot, toApiPath } from '../paths.js';
 import { getIgnoreNames, getRoot } from '../config.js';
 import { logAction } from '../log.js';
+import { resolveSymlinkSafe, isPathSafe } from '../lib/fsSafe.js';
 
 export function registerFsRoutes(app: express.Application) {
   // List directory (with pagination and sorting)
@@ -37,12 +38,54 @@ export function registerFsRoutes(app: express.Application) {
       const allItems = await Promise.all(
         visible.map(async (ent) => {
           const abs = path.join(target, ent.name);
-          const st = await fsp.stat(abs);
-          const mimeType = ent.isFile() ? mime.lookup(ent.name) || false : false;
+
+          // Check if the path is a symlink and resolve it
+          const { isSymlink, realPath, isBroken } = await resolveSymlinkSafe(abs);
+
+          // If symlink is broken or points outside ROOT, return minimal metadata
+          if (isSymlink && (isBroken || !isPathSafe(realPath, getRoot()))) {
+            // Return minimal info for unsafe symlinks
+            return {
+              name: ent.name,
+              path: toApiPath(abs),
+              isDir: false,
+              isSymlink: true,
+              isBroken: Boolean(isBroken),
+              isUnsafe: true,
+              size: 0,
+              mtimeMs: 0,
+              mime: null,
+            };
+          }
+
+          // For safe paths or non-symlinks, get full stats (based on resolved target)
+          let st: fs.Stats;
+          try {
+            st = await fsp.stat(isSymlink ? realPath : abs);
+          } catch {
+            // In case of race condition (deleted after readdir), return minimal
+            return {
+              name: ent.name,
+              path: toApiPath(abs),
+              isDir: false,
+              isSymlink: Boolean(isSymlink),
+              isBroken: true,
+              isUnsafe: false,
+              size: 0,
+              mtimeMs: 0,
+              mime: null,
+            };
+          }
+          const isDir = st.isDirectory();
+          const mimeType = !isDir ? mime.lookup(ent.name) || false : false;
+
           return {
             name: ent.name,
             path: toApiPath(abs),
-            isDir: ent.isDirectory(),
+            isDir,
+            isSymlink,
+            isBroken: false,
+            isUnsafe: false,
             size: st.size,
             mtimeMs: st.mtimeMs,
             mime: mimeType || null,
