@@ -1,3 +1,11 @@
+## [1.3.36](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.35...v1.3.36) (2025-09-24)
+
+
+### Bug Fixes
+
+* symlinks protection ([bab94a4](https://github.com/gkalian/amuzing-file-browser/commit/bab94a4a9ec63733561e24c2e16016593c2e58ee))
+* ui tweaks to show symlinks ([51b310c](https://github.com/gkalian/amuzing-file-browser/commit/51b310ce4fa5bc7f9cb4c431d31982efc5fcc429))
+
 ## [1.3.35](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.34...v1.3.35) (2025-09-08)
 
 
