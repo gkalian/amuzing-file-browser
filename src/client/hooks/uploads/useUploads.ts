@@ -3,6 +3,7 @@
 import { useCallback, useState } from 'react';
 import { api } from '../../services/apiClient';
 import { notifyError, notifySuccess } from '../../core/notify';
+import { formatErrorMessage } from '../../core/errorUtils';
 import type { UploadItem } from '../../components/upload/UploadQueue';
 
 export function useUploads(params: {
@@ -90,7 +91,7 @@ export function useUploads(params: {
             );
           } catch (e: any) {
             notifyError(
-              `${f.name}: ${String(e?.message || e)}`,
+              `${f.name}: ${formatErrorMessage(e, t('notifications.uploadFailed', { defaultValue: 'Upload failed' }))}`,
               t('notifications.uploadFailed', { defaultValue: 'Upload failed' }),
               true
             );
@@ -98,7 +99,16 @@ export function useUploads(params: {
             setUploadedBytes(base);
             setUploadItems((prev) =>
               prev.map((it, i) =>
-                i === idx ? { ...it, status: 'error', error: String(e?.message || e) } : it
+                i === idx
+                  ? {
+                      ...it,
+                      status: 'error',
+                      error: formatErrorMessage(
+                        e,
+                        t('notifications.uploadFailed', { defaultValue: 'Upload failed' })
+                      ),
+                    }
+                  : it
               )
             );
             continue;

@@ -23,8 +23,14 @@ import { logAction } from '../log.js';
 export function registerConfigRoutes(app: express.Application) {
   // GET /api/config
   app.get('/api/config', (_req, res) => {
+    const maskRoot =
+      process.env.NODE_ENV === 'production' && String(process.env.FILEBROWSER_EXPOSE_ROOT) !== 'true';
+    const rootMasked = maskRoot ? true : false;
+    const rootOut = maskRoot ? '/' : getRoot();
+
     res.json({
-      root: getRoot(),
+      root: rootOut,
+      rootMasked,
       maxUploadMB: getMaxUploadMB(),
       allowedTypes: getAllowedTypes() || DEFAULT_ALLOWED_TYPES,
       ignoreNames: getIgnoreNames(),
@@ -35,7 +41,7 @@ export function registerConfigRoutes(app: express.Application) {
   });
 
   // POST /api/config
-  app.post('/api/config', async (req, res) => {
+  app.post('/api/config', async (req, res, next) => {
     try {
       const { root, maxUploadMB, allowedTypes, ignoreNames, theme } = req.body as {
         root?: string;
@@ -83,9 +89,16 @@ export function registerConfigRoutes(app: express.Application) {
         { ua: req.get('user-agent') || '' }
       );
 
+      // Apply the same masking logic as GET /api/config
+      const maskRoot =
+        process.env.NODE_ENV === 'production' && String(process.env.FILEBROWSER_EXPOSE_ROOT) !== 'true';
+      const rootMasked = maskRoot ? true : false;
+      const rootOut = maskRoot ? '/' : getRoot();
+
       res.json({
         ok: true,
-        root: getRoot(),
+        root: rootOut,
+        rootMasked,
         maxUploadMB: getMaxUploadMB(),
         allowedTypes: getAllowedTypes() || DEFAULT_ALLOWED_TYPES,
         ignoreNames: getIgnoreNames(),
@@ -94,7 +107,11 @@ export function registerConfigRoutes(app: express.Application) {
         mediaDomain: getMediaDomain(),
       });
     } catch (e: any) {
-      res.status(400).json({ error: e.message });
+      // Normalize error to go through centralized error handler
+      const err = e instanceof Error ? e : new Error(String(e));
+      (err as any).status = (err as any).status || 400;
+      (err as any).appCode = (err as any).appCode || 'invalid_config';
+      next(err);
     }
   });
 }

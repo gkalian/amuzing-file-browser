@@ -19,6 +19,9 @@ export function createApp() {
   // Body parsing
   app.use(express.json({ limit: '5mb' }));
 
+  // Behind proxy: trust X-Forwarded-* so req.ip is correct
+  app.set('trust proxy', true);
+
   // Logger
   registerLogger(app);
 

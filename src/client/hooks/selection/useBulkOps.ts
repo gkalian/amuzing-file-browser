@@ -4,6 +4,7 @@ import { api } from '../../services/apiClient';
 import type { FsItem } from '../../core/types';
 import { joinPath } from '../../core/utils';
 import { notifyError, notifySuccess } from '../../core/notify';
+import { formatErrorMessage } from '../../core/errorUtils';
 
 export function useBulkOps(params: {
   cwd: string;
@@ -55,7 +56,10 @@ export function useBulkOps(params: {
         await api.mkdir(dest);
         return true;
       } catch (e: any) {
-        notifyError(String(e?.message || e), 'Create destination failed');
+        notifyError(
+          formatErrorMessage(e, 'Create destination failed'),
+          'Create destination failed'
+        );
         return false;
       }
     }
@@ -73,7 +77,7 @@ export function useBulkOps(params: {
           ok++;
         } catch (e: any) {
           fail++;
-          notifyError(`${p}: ${String(e?.message || e)}`, 'Delete failed');
+          notifyError(`${p}: ${formatErrorMessage(e, 'Delete failed')}`, 'Delete failed');
         }
       }
       await loadList(cwd);
@@ -111,7 +115,7 @@ export function useBulkOps(params: {
           ok++;
         } catch (e: any) {
           fail++;
-          notifyError(`${it.name}: ${String(e?.message || e)}`, 'Move failed');
+          notifyError(`${it.name}: ${formatErrorMessage(e, 'Move failed')}`, 'Move failed');
         }
       }
       await loadList(cwd);

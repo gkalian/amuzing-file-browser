@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { api } from '../../services/apiClient';
 import { notifyError, notifySuccess } from '../../core/notify';
+import { formatErrorMessage } from '../../core/errorUtils';
 
 export function useSettings(params: {
   defaultAllowedTypes: string;
@@ -66,7 +67,10 @@ export function useSettings(params: {
         notifySuccess(t('notifications.settingsSaved', { defaultValue: 'Settings saved' }));
       } catch (e) {
         notifyError(
-          String(e),
+          formatErrorMessage(
+            e,
+            t('notifications.settingsSaveFailed', { defaultValue: 'Settings save failed' })
+          ),
           t('notifications.settingsSaveFailed', { defaultValue: 'Settings save failed' })
         );
       }

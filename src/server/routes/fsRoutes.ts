@@ -171,7 +171,13 @@ export function registerFsRoutes(app: express.Application) {
       logAction(
         'download',
         { path: toApiPath(target), bytes: st.size },
-        { ua: req.get('user-agent') || '' }
+        {
+          ua: req.get('user-agent') || '',
+          ip: req.ip,
+          xff: (req.headers['x-forwarded-for'] as string) || '',
+          host: (req.headers['x-forwarded-host'] as string) || (req.headers['host'] as string) || '',
+          requestId: (res.locals as any)?.requestId,
+        }
       );
       res.download(target);
     } catch (e: any) {
@@ -180,7 +186,7 @@ export function registerFsRoutes(app: express.Application) {
     }
   });
 
-  // Preview: только изображения (включая webp). Текстовый предпросмотр убран.
+  // Preview: only images (including webp). Text preview removed.
   app.get('/api/fs/preview', async (req, res, next) => {
     try {
       const target = safeJoinRoot(String(req.query.path || '/'));
@@ -191,13 +197,20 @@ export function registerFsRoutes(app: express.Application) {
         (err as any).appCode = 'invalid_operation';
         throw err;
       }
-      const type = mime.lookup(target) || false; // Определяем mime для выбора режима отдачи
+      const type = mime.lookup(target) || false; // Determine mime for serving
       if (isImageLike(type)) {
         // Stream images directly to the client
         logAction(
           'preview',
           { path: toApiPath(target), bytes: st.size },
-          { ua: req.get('user-agent') || '' }
+          {
+            ua: req.get('user-agent') || '',
+            ip: req.ip,
+            xff: (req.headers['x-forwarded-for'] as string) || '',
+            host:
+              (req.headers['x-forwarded-host'] as string) || (req.headers['host'] as string) || '',
+            requestId: (res.locals as any)?.requestId,
+          }
         );
         res.type((type as string) || 'application/octet-stream');
         fs.createReadStream(target).pipe(res);
@@ -243,7 +256,17 @@ export function registerFsRoutes(app: express.Application) {
       await fsp.mkdir(target, { recursive: false });
       const apiPath = toApiPath(target);
       // Action log
-      logAction('mkdir', { path: apiPath, name: finalName }, { ua: req.get('user-agent') || '' });
+      logAction(
+        'mkdir',
+        { path: apiPath, name: finalName },
+        {
+          ua: req.get('user-agent') || '',
+          ip: req.ip,
+          xff: (req.headers['x-forwarded-for'] as string) || '',
+          host: (req.headers['x-forwarded-host'] as string) || (req.headers['host'] as string) || '',
+          requestId: (res.locals as any)?.requestId,
+        }
+      );
       res.json({ ok: true, path: apiPath, name: finalName });
     } catch (e: any) {
       (e as any).status = (e as any).status || 400;
@@ -276,7 +299,13 @@ export function registerFsRoutes(app: express.Application) {
       logAction(
         'rename',
         { from: toApiPath(src), to: toApiPath(dst) },
-        { ua: req.get('user-agent') || '' }
+        {
+          ua: req.get('user-agent') || '',
+          ip: req.ip,
+          xff: (req.headers['x-forwarded-for'] as string) || '',
+          host: (req.headers['x-forwarded-host'] as string) || (req.headers['host'] as string) || '',
+          requestId: (res.locals as any)?.requestId,
+        }
       );
       res.json({ ok: true });
     } catch (e: any) {
@@ -308,7 +337,13 @@ export function registerFsRoutes(app: express.Application) {
       logAction(
         'delete',
         { path: toApiPath(target), targetType: st.isDirectory() ? 'directory' : 'file' },
-        { ua: req.get('user-agent') || '' }
+        {
+          ua: req.get('user-agent') || '',
+          ip: req.ip,
+          xff: (req.headers['x-forwarded-for'] as string) || '',
+          host: (req.headers['x-forwarded-host'] as string) || (req.headers['host'] as string) || '',
+          requestId: (res.locals as any)?.requestId,
+        }
       );
       res.json({ ok: true });
     } catch (e: any) {
@@ -316,5 +351,4 @@ export function registerFsRoutes(app: express.Application) {
       next(e);
     }
   });
-
 }

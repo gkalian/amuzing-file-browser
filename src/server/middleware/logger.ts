@@ -20,12 +20,15 @@ export function registerLogger(app: express.Application) {
     const { method } = req;
     const url = (req as any).originalUrl || req.url;
     const ua = req.get('user-agent') || '';
+    const ip = req.ip;
+    const xff = (req.headers['x-forwarded-for'] as string) || '';
+    const host = (req.headers['x-forwarded-host'] as string) || (req.headers['host'] as string) || '';
     res.on('finish', () => {
       const durationMs = Date.now() - start;
       const status = res.statusCode;
       const length = res.getHeader('content-length') || '-';
       const requestId = (res.locals as any)?.requestId;
-      log('debug', { method, url, status, durationMs, length, ua, requestId });
+      log('debug', { method, url, status, durationMs, length, ua, ip, xff, host, requestId });
     });
     next();
   });

@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { api } from '../../services/apiClient';
 import type { FsItem } from '../../core/types';
 import { notifyError, notifySuccess } from '../../core/notify';
+import { formatErrorMessage, toErrorDetails } from '../../core/errorUtils';
 import { joinPath, parentPath } from '../../core/utils';
 
 export function useFileSystemOps(params: {
@@ -25,7 +26,10 @@ export function useFileSystemOps(params: {
         await loadList(cwd);
       } catch (e: any) {
         notifyError(
-          String(e?.message || e),
+          formatErrorMessage(
+            e,
+            t('notifications.mkdirFailed', { defaultValue: 'Create Folder failed' })
+          ),
           t('notifications.mkdirFailed', { defaultValue: 'Create Folder failed' })
         );
         throw e;
@@ -44,7 +48,7 @@ export function useFileSystemOps(params: {
         await loadList(cwd);
       } catch (e: any) {
         notifyError(
-          String(e?.message || e),
+          formatErrorMessage(e, t('notifications.deleteFailed', { defaultValue: 'Delete failed' })),
           t('notifications.deleteFailed', { defaultValue: 'Delete failed' })
         );
         throw e;
@@ -66,7 +70,7 @@ export function useFileSystemOps(params: {
         await loadList(cwd);
       } catch (e: any) {
         notifyError(
-          String(e?.message || e),
+          formatErrorMessage(e, t('notifications.renameFailed', { defaultValue: 'Rename failed' })),
           t('notifications.renameFailed', { defaultValue: 'Rename failed' })
         );
         throw e;
