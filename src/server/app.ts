@@ -4,10 +4,10 @@ import express from 'express';
 import path from 'path';
 import { registerLogger } from './middleware/logger.js';
 import { hostGate } from './middleware/hostGate.js';
-import { registerConfigRoutes } from './routes/configRoutes.js';
-import { registerHealthRoutes } from './routes/healthRoutes.js';
-import { registerFsRoutes } from './routes/fsRoutes.js';
-import { registerFilesRoutes } from './routes/files.js';
+import { configRoutes } from './routes/configRoutes.js';
+import { healthRoutes } from './routes/healthRoutes.js';
+import { fsRoutes } from './routes/fsRoutes.js';
+import { filesRoutes } from './routes/files.js';
 import { createMulter, preUploadLimitCheck } from './upload.js';
 import { toApiPath } from './paths.js';
 import { logAction } from './log.js';
@@ -29,10 +29,10 @@ export function createApp() {
   app.use(hostGate());
 
   // Routes
-  registerHealthRoutes(app);
-  registerConfigRoutes(app);
-  registerFsRoutes(app);
-  registerFilesRoutes(app);
+  healthRoutes(app);
+  configRoutes(app);
+  fsRoutes(app);
+  filesRoutes(app);
 
   // Upload
   const upload = createMulter();

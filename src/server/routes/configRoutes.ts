@@ -20,7 +20,7 @@ import {
 import { saveSettings } from '../lib/settings.js';
 import { logAction } from '../log.js';
 
-export function registerConfigRoutes(app: express.Application) {
+export function configRoutes(app: express.Application) {
   // GET /api/config
   app.get('/api/config', (_req, res) => {
     const maskRoot =

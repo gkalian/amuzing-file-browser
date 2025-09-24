@@ -7,7 +7,7 @@ import mime from 'mime-types';
 import { safeJoinRoot, toApiPath } from '../paths.js';
 import { logAction } from '../log.js';
 
-export function registerFilesRoutes(app: express.Application) {
+export function filesRoutes(app: express.Application) {
   // Pretty public file URL: /files/<path within root>
   app.get(/^\/files\/.+$/, async (req, res, next) => {
     try {
