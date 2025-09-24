@@ -1,3 +1,10 @@
+## [1.3.39](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.38...v1.3.39) (2025-09-24)
+
+
+### Bug Fixes
+
+* publish helm chart ([0c44de8](https://github.com/gkalian/amuzing-file-browser/commit/0c44de817541338a3f837c3d3b5ef033889c75c8))
+
 ## [1.3.38](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.37...v1.3.38) (2025-09-24)
 
 
