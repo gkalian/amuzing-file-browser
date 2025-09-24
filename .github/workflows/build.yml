@@ -8,7 +8,6 @@ on:
 permissions:
   contents: write
   packages: write
-  issues: write
 
 env:
   REGISTRY: ghcr.io
@@ -34,28 +33,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Compute next release version (dry-run)
-        id: nextver
-        uses: cycjimmy/semantic-release-action@v4
-        with:
-          dry_run: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Bump package.json to next version (no tag)
-        if: ${{ steps.nextver.outputs.new_release_version != '' }}
-        run: npm version ${{ steps.nextver.outputs.new_release_version }} --no-git-tag-version
-
-      - name: Determine version
-        id: version
-        run: |
-          if [ -n "${{ steps.nextver.outputs.new_release_version }}" ]; then
-            echo "version=${{ steps.nextver.outputs.new_release_version }}" >> $GITHUB_OUTPUT
-          else
-            VERSION=$(node -p "require('./package.json').version")
-            echo "version=$VERSION" >> $GITHUB_OUTPUT
-          fi
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -66,8 +43,48 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Run semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
+
+      - name: Read version
+        id: version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Using version $VERSION"
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.14.4
+
+      - name: Login to GHCR for Helm (OCI)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "$GITHUB_TOKEN" | helm registry login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Package Helm chart
+        env:
+          CHART_DIR: helm
+        run: |
+          helm lint "$CHART_DIR"
+          helm dependency update "$CHART_DIR" || true
+          helm package "$CHART_DIR" \
+            --version "${{ steps.version.outputs.version }}" \
+            --app-version "${{ steps.version.outputs.version }}" \
+            --destination .
+
+      - name: Push Helm chart to GHCR (OCI)
+        env:
+          CHART_NAME: amuzing-filebrowser
+        run: |
+          CHART_TGZ="${CHART_NAME}-${{ steps.version.outputs.version }}.tgz"
+          helm push "$CHART_TGZ" oci://ghcr.io/${{ github.repository_owner }}/charts
+
       - name: Build and push Docker image
-        if: ${{ steps.nextver.outputs.new_release_version != '' }}
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -75,10 +92,4 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:v${{ steps.version.outputs.version }}
-
-      - name: Run semantic-release (publish)
-        if: ${{ steps.nextver.outputs.new_release_version != '' }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.version }}
