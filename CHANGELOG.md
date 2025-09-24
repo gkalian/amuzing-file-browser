@@ -1,3 +1,13 @@
+## [1.3.38](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.37...v1.3.38) (2025-09-24)
+
+
+### Bug Fixes
+
+* cleanup code and move close btn in preview under meta block ([72e8e98](https://github.com/gkalian/amuzing-file-browser/commit/72e8e982fd88f32b96df76f16290be5d4635cc12))
+* mask root and extend logging ([9b28fbb](https://github.com/gkalian/amuzing-file-browser/commit/9b28fbbb34d869c809a8e78836df229d5cd34bae))
+* more centralized logging ([705d1e8](https://github.com/gkalian/amuzing-file-browser/commit/705d1e8491cee464c8c1d029645c10e5d427a123))
+* split fs routes into multiple files ([b3d918f](https://github.com/gkalian/amuzing-file-browser/commit/b3d918ffb213fae9b9d59c5cdccf1839a53ab5f3))
+
 ## [1.3.37](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.36...v1.3.37) (2025-09-24)
 
 
