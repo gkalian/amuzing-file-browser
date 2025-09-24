@@ -1,6 +1,6 @@
 // Virtualized file table listing with actions (open, rename, link, delete)
 import React, { memo, useCallback, useMemo } from 'react';
-import { Anchor, Group, Table, ActionIcon } from '@mantine/core';
+import { Anchor, Group, Table, ActionIcon, Badge, Tooltip } from '@mantine/core';
 import { IconFolder, IconFile, IconDownload, IconLink } from '@tabler/icons-react';
 import { api } from '../../services/apiClient';
 import type { FsItem } from '../../core/types';
@@ -59,56 +59,85 @@ function FileTableBase({ items, onItemClick, onItemDoubleClick, selectedPaths }:
     (idx: number, it: Item) => {
       const isSelected = selectedPaths.has(it.path);
       const selStyle = isSelected ? { background: 'var(--mantine-color-blue-0)' } : undefined;
+      const isSymlink = it.isSymlink;
+      const isBroken = it.isBroken;
+      const isUnsafe = it.isUnsafe;
+      
+      // Determine tooltip for symlink badge
+      const symlinkTooltip = isBroken 
+        ? t('table.tooltips.symlinkBroken', { defaultValue: 'Broken symbolic link' })
+        : isUnsafe 
+          ? t('table.tooltips.symlinkUnsafe', { defaultValue: 'Unsafe symbolic link (points outside root)' })
+          : undefined;
+      
       return (
         <>
           <Table.Td
-            style={{ cursor: 'pointer', ...selStyle }}
+            style={{ cursor: isSymlink ? 'default' : 'pointer', ...selStyle }}
             data-selected={isSelected || undefined}
             onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
-            onDoubleClick={(e: React.MouseEvent) => onItemDoubleClick(it, idx, e)}
+            onDoubleClick={isSymlink ? undefined : (e: React.MouseEvent) => onItemDoubleClick(it, idx, e)}
             title={
-              it.isDir
-                ? t('table.tooltips.openFolder', { defaultValue: 'Double-click to open' })
-                : (it.mime || '').startsWith('image/')
-                  ? t('table.tooltips.selectDeselect', { defaultValue: 'Select/Deselect' })
-                  : undefined
+              isSymlink 
+                ? undefined
+                : it.isDir
+                  ? t('table.tooltips.openFolder', { defaultValue: 'Double-click to open' })
+                  : (it.mime || '').startsWith('image/')
+                    ? t('table.tooltips.selectDeselect', { defaultValue: 'Select/Deselect' })
+                    : undefined
             }
           >
             <Group gap={6} wrap="nowrap">
               {it.isDir ? <IconFolder size={18} /> : <IconFile size={18} />}
               <Anchor
-                onClick={(e: any) => onItemClick(it, idx, e)}
-                onDoubleClick={(e: any) => onItemDoubleClick(it, idx, e)}
+                onClick={isSymlink ? undefined : (e: any) => onItemClick(it, idx, e)}
+                onDoubleClick={isSymlink ? undefined : (e: any) => onItemDoubleClick(it, idx, e)}
                 data-testid="item-open"
+                style={{ cursor: isSymlink ? 'default' : 'pointer', textDecoration: isSymlink ? 'none' : undefined }}
               >
                 {it.name}
               </Anchor>
+              {isSymlink && (
+                <Tooltip label={symlinkTooltip} disabled={!symlinkTooltip}>
+                  <Badge 
+                    size="xs" 
+                    variant="light" 
+                    color={isBroken ? 'red' : isUnsafe ? 'orange' : 'blue'}
+                  >
+                    {t('table.badges.symlink', { defaultValue: 'symlink' })}
+                  </Badge>
+                </Tooltip>
+              )}
             </Group>
           </Table.Td>
           <Table.Td
-            style={{ cursor: 'pointer', ...selStyle }}
+            style={{ cursor: isSymlink ? 'default' : 'pointer', ...selStyle }}
             onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
-            onDoubleClick={(e: React.MouseEvent) => onItemDoubleClick(it, idx, e)}
+            onDoubleClick={isSymlink ? undefined : (e: React.MouseEvent) => onItemDoubleClick(it, idx, e)}
             title={
-              it.isDir
-                ? t('table.tooltips.openFolder', { defaultValue: 'Double-click to open' })
-                : (it.mime || '').startsWith('image/')
-                  ? t('table.tooltips.selectDeselect', { defaultValue: 'Select/Deselect' })
-                  : undefined
+              isSymlink 
+                ? undefined
+                : it.isDir
+                  ? t('table.tooltips.openFolder', { defaultValue: 'Double-click to open' })
+                  : (it.mime || '').startsWith('image/')
+                    ? t('table.tooltips.selectDeselect', { defaultValue: 'Select/Deselect' })
+                    : undefined
             }
           >
             {it.isDir ? '-' : (it.displaySize ?? numberFmt.format(it.size))}
           </Table.Td>
           <Table.Td
-            style={{ cursor: 'pointer', ...selStyle }}
+            style={{ cursor: isSymlink ? 'default' : 'pointer', ...selStyle }}
             onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
-            onDoubleClick={(e: React.MouseEvent) => onItemDoubleClick(it, idx, e)}
+            onDoubleClick={isSymlink ? undefined : (e: React.MouseEvent) => onItemDoubleClick(it, idx, e)}
             title={
-              it.isDir
-                ? t('table.tooltips.openFolder', { defaultValue: 'Double-click to open' })
-                : (it.mime || '').startsWith('image/')
-                  ? t('table.tooltips.selectDeselect', { defaultValue: 'Select/Deselect' })
-                  : undefined
+              isSymlink 
+                ? undefined
+                : it.isDir
+                  ? t('table.tooltips.openFolder', { defaultValue: 'Double-click to open' })
+                  : (it.mime || '').startsWith('image/')
+                    ? t('table.tooltips.selectDeselect', { defaultValue: 'Select/Deselect' })
+                    : undefined
             }
           >
             {it.displayMtime ?? new Date(it.mtimeMs).toLocaleString()}
@@ -116,17 +145,19 @@ function FileTableBase({ items, onItemClick, onItemDoubleClick, selectedPaths }:
           <Table.Td
             style={{ ...selStyle, textAlign: 'right' }}
             onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
-            onDoubleClick={(e: React.MouseEvent) => onItemDoubleClick(it, idx, e)}
+            onDoubleClick={isSymlink ? undefined : (e: React.MouseEvent) => onItemDoubleClick(it, idx, e)}
             title={
-              it.isDir
-                ? t('table.tooltips.openFolder', { defaultValue: 'Double-click to open' })
-                : (it.mime || '').startsWith('image/')
-                  ? t('table.tooltips.selectDeselect', { defaultValue: 'Select/Deselect' })
-                  : undefined
+              isSymlink 
+                ? undefined
+                : it.isDir
+                  ? t('table.tooltips.openFolder', { defaultValue: 'Double-click to open' })
+                  : (it.mime || '').startsWith('image/')
+                    ? t('table.tooltips.selectDeselect', { defaultValue: 'Select/Deselect' })
+                    : undefined
             }
           >
             <Group gap={4} justify="flex-end">
-              {!it.isDir && (
+              {!it.isDir && !isSymlink && (
                 <ActionIcon
                   component="a"
                   href={api.downloadUrl(it.path)}
@@ -139,7 +170,7 @@ function FileTableBase({ items, onItemClick, onItemDoubleClick, selectedPaths }:
                   <IconDownload size={16} />
                 </ActionIcon>
               )}
-              {!it.isDir && (
+              {!it.isDir && !isSymlink && (
                 <ActionIcon
                   variant="light"
                   aria-label={t('table.actions.copyLink', { defaultValue: 'Copy permanent link' })}
@@ -158,7 +189,7 @@ function FileTableBase({ items, onItemClick, onItemDoubleClick, selectedPaths }:
         </>
       );
     },
-    [numberFmt, onItemClick, onGetLink, onItemDoubleClick, selectedPaths]
+    [numberFmt, onItemClick, onGetLink, onItemDoubleClick, selectedPaths, t]
   );
 
   return (

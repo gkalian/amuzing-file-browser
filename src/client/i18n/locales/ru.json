@@ -45,7 +45,19 @@
   },
   "table": {
     "headers": { "name": "Имя", "size": "Размер", "modified": "Изменён" },
-    "tooltips": { "openFolder": "Открыть папку", "selectDeselect": "Выбрать/Снять" },
+    "tooltips": { 
+      "openFolder": "Открыть папку", 
+      "selectDeselect": "Выбрать/Снять",
+      "symlinkBroken": "Сломанная символическая ссылка",
+      "symlinkUnsafe": "Небезопасная символическая ссылка (указывает за пределы корня)"
+    },
+    "badges": {
+      "symlink": "симлинк"
+    },
+    "actions": {
+      "download": "Скачать",
+      "copyLink": "Скопировать постоянную ссылку"
+    },
     "aria": {
       "download": "скачать",
       "rename": "переименовать",
