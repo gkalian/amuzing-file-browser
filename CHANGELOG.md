@@ -1,3 +1,10 @@
+## [1.3.37](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.36...v1.3.37) (2025-09-24)
+
+
+### Bug Fixes
+
+* move close btn lovwer under meta-data ([1fe03dc](https://github.com/gkalian/amuzing-file-browser/commit/1fe03dc6361d8764fe949d65b9ec451c8a045c9c))
+
 ## [1.3.36](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.35...v1.3.36) (2025-09-24)
 
 
