@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { api } from '../../services/apiClient';
 import type { FsItem } from '../../core/types';
 import { notifyError, notifySuccess } from '../../core/notify';
-import { formatErrorMessage, toErrorDetails } from '../../core/errorUtils';
+import { formatErrorMessage } from '../../core/errorUtils';
 import { joinPath, parentPath } from '../../core/utils';
 
 export function useFileSystemOps(params: {
