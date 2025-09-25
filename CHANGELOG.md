@@ -1,3 +1,10 @@
+## [1.4.3](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.2...v1.4.3) (2025-09-25)
+
+
+### Bug Fixes
+
+* no tag in helm values ([d538481](https://github.com/gkalian/amuzing-file-browser/commit/d53848120dc89943df53f43f131d7e1d00952caf))
+
 ## [1.4.2](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.1...v1.4.2) (2025-09-25)
 
 
