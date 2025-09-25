@@ -82,7 +82,7 @@ jobs:
           CHART_NAME: amuzing-filebrowser
         run: |
           CHART_TGZ="${CHART_NAME}-${{ steps.version.outputs.version }}.tgz"
-          helm push "$CHART_TGZ" oci://ghcr.io/${{ github.repository }}/charts
+          helm push "$CHART_TGZ" oci://ghcr.io/${{ github.repository_owner }}/charts
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
