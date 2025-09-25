@@ -21,7 +21,10 @@ export function NameCell(props: {
         onClick={isSymlink ? undefined : (e: any) => onItemClick(it, idx, e)}
         onDoubleClick={isSymlink ? undefined : (e: any) => onItemDoubleClick(it, idx, e)}
         data-testid="item-open"
-        style={{ cursor: isSymlink ? 'default' : 'pointer', textDecoration: isSymlink ? 'none' : undefined }}
+        style={{
+          cursor: isSymlink ? 'default' : 'pointer',
+          textDecoration: isSymlink ? 'none' : undefined,
+        }}
       >
         {it.name}
       </Anchor>

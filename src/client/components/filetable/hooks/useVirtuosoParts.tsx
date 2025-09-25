@@ -4,7 +4,10 @@ import { Table } from '@mantine/core';
 // Provides Virtuoso table parts. Accepts a function to clear row DnD highlight
 // when dragging over the background (tbody) instead of a folder cell.
 export function useVirtuosoParts(clearDragOverPath: () => void) {
-  const VirtTable = useCallback((props: any) => <Table {...props} highlightOnHover stickyHeader />, []);
+  const VirtTable = useCallback(
+    (props: any) => <Table {...props} highlightOnHover stickyHeader />,
+    []
+  );
   const VirtTableHead = Table.Thead;
   const VirtTableRow = Table.Tr as any;
   const VirtTableBody = useCallback(

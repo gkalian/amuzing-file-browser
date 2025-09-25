@@ -98,12 +98,13 @@ function AppBase() {
 
   const crumbs = useBreadcrumbs(cwd, t('breadcrumbs.root', { defaultValue: 'root' }));
   // uploads hook (keeps this file slim)
-  const { uploading, uploadedBytes, totalBytes, uploadItems, handleUpload, handleUploadTo } = useUploads({
-    cwd,
-    allowedTypes: cfgAllowedTypes,
-    t,
-    loadList,
-  });
+  const { uploading, uploadedBytes, totalBytes, uploadItems, handleUpload, handleUploadTo } =
+    useUploads({
+      cwd,
+      allowedTypes: cfgAllowedTypes,
+      t,
+      loadList,
+    });
 
   // filesystem operations
   const { mkdir, rename } = useFileSystemOps({ cwd, t, loadList });

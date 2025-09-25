@@ -141,5 +141,12 @@ export function useUploads(params: {
     [runUpload]
   );
 
-  return { uploading, uploadedBytes, totalBytes, uploadItems, handleUpload, handleUploadTo } as const;
+  return {
+    uploading,
+    uploadedBytes,
+    totalBytes,
+    uploadItems,
+    handleUpload,
+    handleUploadTo,
+  } as const;
 }

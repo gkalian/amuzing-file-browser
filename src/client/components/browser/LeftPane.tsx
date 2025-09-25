@@ -16,7 +16,8 @@ export function LeftPane(props: {
   const { items, loading, selectedPaths, onItemClick, onItemDoubleClick, onDropUpload } = props;
 
   const [isDragOver, setIsDragOver] = useState(false);
-  const hasFiles = (e: React.DragEvent) => Array.from(e.dataTransfer?.types || []).includes('Files');
+  const hasFiles = (e: React.DragEvent) =>
+    Array.from(e.dataTransfer?.types || []).includes('Files');
 
   return (
     <Box

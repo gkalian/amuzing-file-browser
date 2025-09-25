@@ -8,7 +8,9 @@ export function SymlinkBadge(props: { isBroken?: boolean; isUnsafe?: boolean }) 
   const tooltip = isBroken
     ? t('table.tooltips.symlinkBroken', { defaultValue: 'Broken symbolic link' })
     : isUnsafe
-      ? t('table.tooltips.symlinkUnsafe', { defaultValue: 'Unsafe symbolic link (points outside root)' })
+      ? t('table.tooltips.symlinkUnsafe', {
+          defaultValue: 'Unsafe symbolic link (points outside root)',
+        })
       : undefined;
   return (
     <Tooltip label={tooltip} disabled={!tooltip}>

@@ -22,7 +22,8 @@ export function registerLogger(app: express.Application) {
     const ua = req.get('user-agent') || '';
     const ip = req.ip;
     const xff = (req.headers['x-forwarded-for'] as string) || '';
-    const host = (req.headers['x-forwarded-host'] as string) || (req.headers['host'] as string) || '';
+    const host =
+      (req.headers['x-forwarded-host'] as string) || (req.headers['host'] as string) || '';
     res.on('finish', () => {
       const durationMs = Date.now() - start;
       const status = res.statusCode;

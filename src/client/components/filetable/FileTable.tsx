@@ -18,7 +18,13 @@ type Props = {
 
 // Virtuoso components provided by hook (includes custom tbody to clear DnD row highlight)
 
-const FileTableBase: React.FC<Props> = ({ items, onItemClick, onItemDoubleClick, selectedPaths, onDropUpload }) => {
+const FileTableBase: React.FC<Props> = ({
+  items,
+  onItemClick,
+  onItemDoubleClick,
+  selectedPaths,
+  onDropUpload,
+}) => {
   const numberFmt = useNumberFmt();
   const [dragOverPath, setDragOverPath] = useState<string | null>(null);
   // Memoized header and row renderer to minimize allocations
@@ -53,7 +59,9 @@ const FileTableBase: React.FC<Props> = ({ items, onItemClick, onItemDoubleClick,
   );
 
   // Virtuoso parts (with tbody that clears row highlight on background hover)
-  const { VirtTable, VirtTableHead, VirtTableRow, VirtTableBody } = useVirtuosoParts(() => setDragOverPath(null));
+  const { VirtTable, VirtTableHead, VirtTableRow, VirtTableBody } = useVirtuosoParts(() =>
+    setDragOverPath(null)
+  );
 
   return (
     <TableVirtuoso<Item>

@@ -6,7 +6,9 @@ import { useTranslation } from 'react-i18next';
 import { api } from '../../../services/apiClient';
 import { useGetLink } from '../hooks/useGetLink';
 
-export function ActionsCell(props: { it: FsItem & { path: string; isDir?: boolean; isSymlink?: boolean } }) {
+export function ActionsCell(props: {
+  it: FsItem & { path: string; isDir?: boolean; isSymlink?: boolean };
+}) {
   const { it } = props;
   const { t } = useTranslation();
   const getLink = useGetLink();

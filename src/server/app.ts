@@ -50,16 +50,20 @@ export function createApp() {
     const totalBytes = files.reduce((acc, f) => acc + (typeof f.size === 'number' ? f.size : 0), 0);
     const dest = String((req.query as any).path || '/');
     // Action log (base at info, extras at debug)
-    logAction('upload', { count: files.length, totalBytes, dest }, {
-      ...makeActionMeta(req, res),
-      files:
-        files.map((f) => ({
-          name: f.originalname,
-          saved: f.filename,
-          size: f.size,
-          path: f.path,
-        })) || '',
-    });
+    logAction(
+      'upload',
+      { count: files.length, totalBytes, dest },
+      {
+        ...makeActionMeta(req, res),
+        files:
+          files.map((f) => ({
+            name: f.originalname,
+            saved: f.filename,
+            size: f.size,
+            path: f.path,
+          })) || '',
+      }
+    );
 
     res.json({ ok: true, files });
   });

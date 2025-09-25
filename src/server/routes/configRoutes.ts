@@ -24,7 +24,8 @@ export function registerConfigRoutes(app: express.Application) {
   // GET /api/config
   app.get('/api/config', (_req, res) => {
     const maskRoot =
-      process.env.NODE_ENV === 'production' && String(process.env.FILEBROWSER_EXPOSE_ROOT) !== 'true';
+      process.env.NODE_ENV === 'production' &&
+      String(process.env.FILEBROWSER_EXPOSE_ROOT) !== 'true';
     const rootMasked = maskRoot ? true : false;
     const rootOut = maskRoot ? '/' : getRoot();
 
@@ -91,7 +92,8 @@ export function registerConfigRoutes(app: express.Application) {
 
       // Apply the same masking logic as GET /api/config
       const maskRoot =
-        process.env.NODE_ENV === 'production' && String(process.env.FILEBROWSER_EXPOSE_ROOT) !== 'true';
+        process.env.NODE_ENV === 'production' &&
+        String(process.env.FILEBROWSER_EXPOSE_ROOT) !== 'true';
       const rootMasked = maskRoot ? true : false;
       const rootOut = maskRoot ? '/' : getRoot();
 

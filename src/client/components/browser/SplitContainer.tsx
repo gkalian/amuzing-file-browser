@@ -37,7 +37,10 @@ export function SplitContainer(props: {
         )}
 
         {showRight && (
-          <Box style={{ width: `${100 - split}%`, paddingLeft: 10, height: '100%' }} data-testid="preview-pane">
+          <Box
+            style={{ width: `${100 - split}%`, paddingLeft: 10, height: '100%' }}
+            data-testid="preview-pane"
+          >
             {right}
           </Box>
         )}

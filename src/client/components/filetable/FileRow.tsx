@@ -56,7 +56,9 @@ export function FileRow(props: {
         data-selected={isSelected || undefined}
         data-dnd-folder={isFolderDnDTarget || undefined}
         onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
-        onDoubleClick={isSymlink ? undefined : (e: React.MouseEvent) => onItemDoubleClick(it, idx, e)}
+        onDoubleClick={
+          isSymlink ? undefined : (e: React.MouseEvent) => onItemDoubleClick(it, idx, e)
+        }
         onDragOver={(e) => {
           if (!isFolderDnDTarget) return;
           e.preventDefault();
@@ -121,7 +123,9 @@ export function FileRow(props: {
         }}
         data-dnd-folder={isFolderDnDTarget || undefined}
         onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
-        onDoubleClick={isSymlink ? undefined : (e: React.MouseEvent) => onItemDoubleClick(it, idx, e)}
+        onDoubleClick={
+          isSymlink ? undefined : (e: React.MouseEvent) => onItemDoubleClick(it, idx, e)
+        }
         onDragOver={(e) => {
           if (!isFolderDnDTarget) return;
           e.preventDefault();
@@ -175,7 +179,9 @@ export function FileRow(props: {
             : {}),
         }}
         onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
-        onDoubleClick={isSymlink ? undefined : (e: React.MouseEvent) => onItemDoubleClick(it, idx, e)}
+        onDoubleClick={
+          isSymlink ? undefined : (e: React.MouseEvent) => onItemDoubleClick(it, idx, e)
+        }
         onDragOver={(e) => {
           if (!isFolderDnDTarget) return;
           e.preventDefault();
@@ -229,7 +235,9 @@ export function FileRow(props: {
             : {}),
         }}
         onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
-        onDoubleClick={isSymlink ? undefined : (e: React.MouseEvent) => onItemDoubleClick(it, idx, e)}
+        onDoubleClick={
+          isSymlink ? undefined : (e: React.MouseEvent) => onItemDoubleClick(it, idx, e)
+        }
         title={
           isSymlink
             ? undefined
