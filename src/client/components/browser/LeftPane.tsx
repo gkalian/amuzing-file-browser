@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Box, Group, Loader } from '@mantine/core';
 import type { FsItem } from '../../core/types';
-import { FileTable } from './FileTable';
+import { FileTable } from '../filetable/FileTable';
 import { DropOverlay } from './DropOverlay';
 
 export function LeftPane(props: {
