@@ -1,6 +1,5 @@
 image:
   repository: ghcr.io/gkalian/amuzing-file-browser
-  tag: ""
   pullPolicy: IfNotPresent
 
 replicaCount: 1
