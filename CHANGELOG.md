@@ -1,3 +1,15 @@
+# [1.4.0](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.39...v1.4.0) (2025-09-25)
+
+
+### Bug Fixes
+
+* libs update and minor cleanup ([0e7373c](https://github.com/gkalian/amuzing-file-browser/commit/0e7373c196a1ae3bd43a8410919a66164d5dd14b))
+
+
+### Features
+
+* drag n drop for upload added ([b08f974](https://github.com/gkalian/amuzing-file-browser/commit/b08f97428294cf82829a94c321b0f85a67cd810a))
+
 ## [1.3.39](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.38...v1.3.39) (2025-09-24)
 
 
