@@ -1,3 +1,11 @@
+## [1.4.1](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.0...v1.4.1) (2025-09-25)
+
+
+### Bug Fixes
+
+* proper code style using prettier ([fbf326a](https://github.com/gkalian/amuzing-file-browser/commit/fbf326a9ca09033b518906db1c5a25ee2a27a082))
+* split filetable component ([3d86868](https://github.com/gkalian/amuzing-file-browser/commit/3d8686852fbc05c3a94a857cbca31c16c1547d10))
+
 # [1.4.0](https://github.com/gkalian/amuzing-file-browser/compare/v1.3.39...v1.4.0) (2025-09-25)
 
 
