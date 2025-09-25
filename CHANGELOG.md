@@ -1,3 +1,10 @@
+## [1.4.2](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.1...v1.4.2) (2025-09-25)
+
+
+### Bug Fixes
+
+* remove dbl clicking on folders ([323ed58](https://github.com/gkalian/amuzing-file-browser/commit/323ed58d0188840dc463445ec89b70b77c43e258))
+
 ## [1.4.1](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.0...v1.4.1) (2025-09-25)
 
 
