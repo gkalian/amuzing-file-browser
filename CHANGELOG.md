@@ -1,3 +1,10 @@
+## [1.4.4](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.3...v1.4.4) (2025-09-25)
+
+
+### Bug Fixes
+
+* helm repository path ([6a73df7](https://github.com/gkalian/amuzing-file-browser/commit/6a73df709d4b770ddfc46947e7d57e9dc26ab1df))
+
 ## [1.4.3](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.2...v1.4.3) (2025-09-25)
 
 
