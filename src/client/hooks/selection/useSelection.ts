@@ -31,11 +31,11 @@ export function useSelection(params: {
 
   const onItemClick = useCallback(
     (item: FsItem, index: number, e: React.MouseEvent) => {
-      // Directories: single selection only, do not open on single click
+      // Directories: open on single click; clear selection
       if (item.isDir) {
-        if (e.shiftKey || e.ctrlKey || e.metaKey) return; // no multi-select for folders
-        setSelectedPaths(new Set([item.path]));
-        setLastSelectedIndex(index);
+        onOpenDir(item.path);
+        setSelectedPaths(new Set());
+        setLastSelectedIndex(null);
         return;
       }
 

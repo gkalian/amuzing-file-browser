@@ -46,7 +46,7 @@
   "table": {
     "headers": { "name": "Name", "size": "Size", "modified": "Modified" },
     "tooltips": {
-      "openFolder": "Open folder",
+      "openFolder": "Click to open",
       "selectDeselect": "Select/Deselect",
       "symlinkBroken": "Broken symbolic link",
       "symlinkUnsafe": "Unsafe symbolic link (points outside root)"

@@ -46,7 +46,7 @@
   "table": {
     "headers": { "name": "Имя", "size": "Размер", "modified": "Изменён" },
     "tooltips": {
-      "openFolder": "Открыть папку",
+      "openFolder": "Нажмите для открытия",
       "selectDeselect": "Выбрать/Снять",
       "symlinkBroken": "Сломанная символическая ссылка",
       "symlinkUnsafe": "Небезопасная символическая ссылка (указывает за пределы корня)"

@@ -10,10 +10,9 @@ export function LeftPane(props: {
   loading: boolean;
   selectedPaths: Set<string>;
   onItemClick: (item: FsItem, index: number, e: React.MouseEvent) => void;
-  onItemDoubleClick: (item: FsItem, index: number, e: React.MouseEvent) => void;
   onDropUpload: (targetDir: string | null, files: File[]) => void;
 }) {
-  const { items, loading, selectedPaths, onItemClick, onItemDoubleClick, onDropUpload } = props;
+  const { items, loading, selectedPaths, onItemClick, onDropUpload } = props;
 
   const [isDragOver, setIsDragOver] = useState(false);
   const hasFiles = (e: React.DragEvent) =>
@@ -55,7 +54,6 @@ export function LeftPane(props: {
       <FileTable
         items={items}
         onItemClick={onItemClick}
-        onItemDoubleClick={onItemDoubleClick}
         selectedPaths={selectedPaths}
         onDropUpload={onDropUpload}
       />

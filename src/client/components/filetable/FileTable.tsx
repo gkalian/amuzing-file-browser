@@ -11,20 +11,13 @@ type Item = FsItem & { displaySize?: string; displayMtime?: string };
 type Props = {
   items: Item[];
   onItemClick: (item: FsItem, index: number, e: React.MouseEvent) => void;
-  onItemDoubleClick: (item: FsItem, index: number, e: React.MouseEvent) => void;
   selectedPaths: Set<string>;
   onDropUpload?: (targetDir: string | null, files: File[]) => void;
 };
 
 // Virtuoso components provided by hook (includes custom tbody to clear DnD row highlight)
 
-const FileTableBase: React.FC<Props> = ({
-  items,
-  onItemClick,
-  onItemDoubleClick,
-  selectedPaths,
-  onDropUpload,
-}) => {
+const FileTableBase: React.FC<Props> = ({ items, onItemClick, selectedPaths, onDropUpload }) => {
   const numberFmt = useNumberFmt();
   const [dragOverPath, setDragOverPath] = useState<string | null>(null);
   // Memoized header and row renderer to minimize allocations
@@ -49,13 +42,12 @@ const FileTableBase: React.FC<Props> = ({
           isFolderDnDTarget={isFolderDnDTarget}
           numberFmt={numberFmt}
           onItemClick={onItemClick}
-          onItemDoubleClick={onItemDoubleClick}
           onDropUpload={onDropUpload}
           setDragOverPath={setDragOverPath}
         />
       );
     },
-    [numberFmt, onItemClick, onItemDoubleClick, onDropUpload, selectedPaths, dragOverPath]
+    [numberFmt, onItemClick, onDropUpload, selectedPaths, dragOverPath]
   );
 
   // Virtuoso parts (with tbody that clears row highlight on background hover)
