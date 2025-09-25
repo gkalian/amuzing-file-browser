@@ -18,8 +18,8 @@ export function useUploads(params: {
   const [totalBytes, setTotalBytes] = useState(0);
   const [uploadItems, setUploadItems] = useState<UploadItem[]>([]);
 
-  const handleUpload = useCallback(
-    async (files: File[]) => {
+  const runUpload = useCallback(
+    async (targetDir: string, files: File[]) => {
       if (!files?.length) return;
       let arr = Array.from(files);
       // Parse allowed extensions (comma-separated); empty list means allow all
@@ -68,7 +68,7 @@ export function useUploads(params: {
             prev.map((it, i) => (i === idx ? { ...it, status: 'uploading' } : it))
           );
           try {
-            const resp = await api.uploadWithProgress(cwd, [f], (loaded, _tot) => {
+            const resp = await api.uploadWithProgress(targetDir, [f], (loaded, _tot) => {
               const current = base + Math.min(loaded, f.size || 0);
               setUploadedBytes(current);
               setUploadItems((prev) =>
@@ -114,6 +114,7 @@ export function useUploads(params: {
             continue;
           }
         }
+        // Refresh current working directory list (table shows cwd)
         await loadList(cwd);
       } finally {
         setUploading(false);
@@ -128,5 +129,17 @@ export function useUploads(params: {
     [cwd, allowedTypes, t, loadList]
   );
 
-  return { uploading, uploadedBytes, totalBytes, uploadItems, handleUpload } as const;
+  // Backward-compatible handler: upload into the current working directory
+  const handleUpload = useCallback(
+    async (files: File[]) => runUpload(cwd, files),
+    [runUpload, cwd]
+  );
+
+  // New handler: upload into a specific directory (used for folder drop)
+  const handleUploadTo = useCallback(
+    async (dirPath: string, files: File[]) => runUpload(dirPath, files),
+    [runUpload]
+  );
+
+  return { uploading, uploadedBytes, totalBytes, uploadItems, handleUpload, handleUploadTo } as const;
 }

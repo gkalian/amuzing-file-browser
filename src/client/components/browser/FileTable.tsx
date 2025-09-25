@@ -1,5 +1,5 @@
 // Virtualized file table listing with actions (open, rename, link, delete)
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import { Anchor, Group, Table, ActionIcon, Badge, Tooltip } from '@mantine/core';
 import { IconFolder, IconFile, IconDownload, IconLink } from '@tabler/icons-react';
 import { api } from '../../services/apiClient';
@@ -14,17 +14,18 @@ type Props = {
   onItemClick: (item: FsItem, index: number, e: React.MouseEvent) => void;
   onItemDoubleClick: (item: FsItem, index: number, e: React.MouseEvent) => void;
   selectedPaths: Set<string>;
+  onDropUpload?: (targetDir: string | null, files: File[]) => void;
 };
 
 // Hoisted Virtuoso components to avoid re-creating them on each render
 const VirtTable = (props: any) => <Table {...props} highlightOnHover stickyHeader />;
 const VirtTableHead = Table.Thead;
 const VirtTableRow = Table.Tr as any;
-const VirtTableBody = (props: any) => <Table.Tbody {...props} data-testid="table-body" />;
 
-function FileTableBase({ items, onItemClick, onItemDoubleClick, selectedPaths }: Props) {
+const FileTableBase: React.FC<Props> = ({ items, onItemClick, onItemDoubleClick, selectedPaths, onDropUpload }) => {
   const { t } = useTranslation();
   const numberFmt = useMemo(() => new Intl.NumberFormat(), []);
+  const [dragOverPath, setDragOverPath] = useState<string | null>(null);
   // Memoized header and row renderer to minimize allocations
   const headerContent = useCallback(
     () => (
@@ -64,6 +65,8 @@ function FileTableBase({ items, onItemClick, onItemDoubleClick, selectedPaths }:
       const isSymlink = it.isSymlink;
       const isBroken = it.isBroken;
       const isUnsafe = it.isUnsafe;
+      const isFolderDnDTarget = it.isDir && !isSymlink;
+      const isRowDragOver = dragOverPath === it.path;
 
       // Determine tooltip for symlink badge
       const symlinkTooltip = isBroken
@@ -77,12 +80,50 @@ function FileTableBase({ items, onItemClick, onItemDoubleClick, selectedPaths }:
       return (
         <>
           <Table.Td
-            style={{ cursor: isSymlink ? 'default' : 'pointer', ...selStyle }}
+            style={{
+              cursor: isSymlink ? 'default' : 'pointer',
+              ...(selStyle || {}),
+              ...(isRowDragOver
+                ? {
+                    boxShadow: 'inset 0 0 0 2px var(--mantine-color-blue-5)',
+                    borderRadius: 4,
+                  }
+                : {}),
+            }}
             data-selected={isSelected || undefined}
+            data-dnd-folder={isFolderDnDTarget || undefined}
             onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
             onDoubleClick={
               isSymlink ? undefined : (e: React.MouseEvent) => onItemDoubleClick(it, idx, e)
             }
+            onDragOver={(e) => {
+              if (!isFolderDnDTarget) return;
+              e.preventDefault();
+              e.stopPropagation();
+              if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
+              setDragOverPath(it.path);
+            }}
+            onDragEnter={(e) => {
+              if (!isFolderDnDTarget) return;
+              e.preventDefault();
+              e.stopPropagation();
+              setDragOverPath(it.path);
+            }}
+            onDragLeave={(e) => {
+              if (!isFolderDnDTarget) return;
+              e.preventDefault();
+              e.stopPropagation();
+              // Do not clear here to avoid flicker when moving between child elements
+            }}
+            onDrop={(e) => {
+              if (!isFolderDnDTarget) return;
+              e.preventDefault();
+              e.stopPropagation();
+              const files = Array.from(e.dataTransfer.files || []);
+              if (!files.length) return;
+              setDragOverPath(null);
+              onDropUpload && onDropUpload(it.path, files);
+            }}
             title={
               isSymlink
                 ? undefined
@@ -120,11 +161,49 @@ function FileTableBase({ items, onItemClick, onItemDoubleClick, selectedPaths }:
             </Group>
           </Table.Td>
           <Table.Td
-            style={{ cursor: isSymlink ? 'default' : 'pointer', ...selStyle }}
+            style={{
+              cursor: isSymlink ? 'default' : 'pointer',
+              ...(selStyle || {}),
+              ...(isRowDragOver
+                ? {
+                    boxShadow: 'inset 0 0 0 2px var(--mantine-color-blue-5)',
+                    borderRadius: 4,
+                  }
+                : {}),
+            }}
+            data-dnd-folder={isFolderDnDTarget || undefined}
             onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
             onDoubleClick={
               isSymlink ? undefined : (e: React.MouseEvent) => onItemDoubleClick(it, idx, e)
             }
+            onDragOver={(e) => {
+              if (!isFolderDnDTarget) return;
+              e.preventDefault();
+              e.stopPropagation();
+              if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
+              setDragOverPath(it.path);
+            }}
+            onDragEnter={(e) => {
+              if (!isFolderDnDTarget) return;
+              e.preventDefault();
+              e.stopPropagation();
+              setDragOverPath(it.path);
+            }}
+            onDragLeave={(e) => {
+              if (!isFolderDnDTarget) return;
+              e.preventDefault();
+              e.stopPropagation();
+              // Do not clear here to avoid flicker when moving between child elements
+            }}
+            onDrop={(e) => {
+              if (!isFolderDnDTarget) return;
+              e.preventDefault();
+              e.stopPropagation();
+              const files = Array.from(e.dataTransfer.files || []);
+              if (!files.length) return;
+              setDragOverPath(null);
+              onDropUpload && onDropUpload(it.path, files);
+            }}
             title={
               isSymlink
                 ? undefined
@@ -138,11 +217,48 @@ function FileTableBase({ items, onItemClick, onItemDoubleClick, selectedPaths }:
             {it.isDir ? '-' : (it.displaySize ?? numberFmt.format(it.size))}
           </Table.Td>
           <Table.Td
-            style={{ cursor: isSymlink ? 'default' : 'pointer', ...selStyle }}
+            style={{
+              cursor: isSymlink ? 'default' : 'pointer',
+              ...(selStyle || {}),
+              ...(isRowDragOver
+                ? {
+                    boxShadow: 'inset 0 0 0 2px var(--mantine-color-blue-5)',
+                    borderRadius: 4,
+                  }
+                : {}),
+            }}
             onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
             onDoubleClick={
               isSymlink ? undefined : (e: React.MouseEvent) => onItemDoubleClick(it, idx, e)
             }
+            onDragOver={(e) => {
+              if (!isFolderDnDTarget) return;
+              e.preventDefault();
+              e.stopPropagation();
+              if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
+              setDragOverPath(it.path);
+            }}
+            onDragEnter={(e) => {
+              if (!isFolderDnDTarget) return;
+              e.preventDefault();
+              e.stopPropagation();
+              setDragOverPath(it.path);
+            }}
+            onDragLeave={(e) => {
+              if (!isFolderDnDTarget) return;
+              e.preventDefault();
+              e.stopPropagation();
+              // Do not clear here to avoid flicker when moving between child elements
+            }}
+            onDrop={(e) => {
+              if (!isFolderDnDTarget) return;
+              e.preventDefault();
+              e.stopPropagation();
+              const files = Array.from(e.dataTransfer.files || []);
+              if (!files.length) return;
+              setDragOverPath(null);
+              onDropUpload && onDropUpload(it.path, files);
+            }}
             title={
               isSymlink
                 ? undefined
@@ -156,7 +272,16 @@ function FileTableBase({ items, onItemClick, onItemDoubleClick, selectedPaths }:
             {it.displayMtime ?? new Date(it.mtimeMs).toLocaleString()}
           </Table.Td>
           <Table.Td
-            style={{ ...selStyle, textAlign: 'right' }}
+            style={{
+              ...(selStyle || {}),
+              textAlign: 'right',
+              ...(isRowDragOver
+                ? {
+                    boxShadow: 'inset 0 0 0 2px var(--mantine-color-blue-5)',
+                    borderRadius: 4,
+                  }
+                : {}),
+            }}
             onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
             onDoubleClick={
               isSymlink ? undefined : (e: React.MouseEvent) => onItemDoubleClick(it, idx, e)
@@ -204,7 +329,31 @@ function FileTableBase({ items, onItemClick, onItemDoubleClick, selectedPaths }:
         </>
       );
     },
-    [numberFmt, onItemClick, onGetLink, onItemDoubleClick, selectedPaths, t]
+    [numberFmt, onItemClick, onGetLink, onItemDoubleClick, selectedPaths, t, dragOverPath]
+  );
+
+  // Custom tbody to clear folder highlight when cursor moves over background
+  const VirtTableBody = useCallback(
+    (props: any) => (
+      <Table.Tbody
+        {...props}
+        data-testid="table-body"
+        onDragOver={(e: React.DragEvent) => {
+          // If dragging over tbody but not over any folder cell, clear highlight
+          const el = e.target as Element | null;
+          if (el && !el.closest('[data-dnd-folder="true"]')) {
+            setDragOverPath(null);
+          }
+        }}
+        onDragEnter={(e: React.DragEvent) => {
+          const el = e.target as Element | null;
+          if (el && !el.closest('[data-dnd-folder="true"]')) {
+            setDragOverPath(null);
+          }
+        }}
+      />
+    ),
+    []
   );
 
   return (
@@ -223,6 +372,6 @@ function FileTableBase({ items, onItemClick, onItemDoubleClick, selectedPaths }:
       itemContent={itemContent}
     />
   );
-}
+};
 
-export const FileTable = memo(FileTableBase);
+export const FileTable = memo(FileTableBase) as React.MemoExoticComponent<React.FC<Props>>;

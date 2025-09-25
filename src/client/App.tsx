@@ -98,7 +98,7 @@ function AppBase() {
 
   const crumbs = useBreadcrumbs(cwd, t('breadcrumbs.root', { defaultValue: 'root' }));
   // uploads hook (keeps this file slim)
-  const { uploading, uploadedBytes, totalBytes, uploadItems, handleUpload } = useUploads({
+  const { uploading, uploadedBytes, totalBytes, uploadItems, handleUpload, handleUploadTo } = useUploads({
     cwd,
     allowedTypes: cfgAllowedTypes,
     t,
@@ -204,6 +204,18 @@ function AppBase() {
     setRenameOpen(true);
   }, [selectedPaths, items]);
 
+  // Drag-and-drop destination routing
+  const onDropUpload = useCallback(
+    (targetDir: string | null, files: File[]) => {
+      if (!files || files.length === 0) return;
+      if (targetDir && targetDir !== cwd) {
+        return void handleUploadTo(targetDir, files);
+      }
+      return void handleUpload(files);
+    },
+    [cwd, handleUpload, handleUploadTo]
+  );
+
   return (
     <AppShell header={{ height: 72 }} footer={{ height: 56 }} padding="md">
       <AppShell.Header>
@@ -294,6 +306,7 @@ function AppBase() {
             split={split}
             setDragging={setDragging}
             splitRef={splitRef}
+            onDropUpload={onDropUpload}
           />
 
           <BottomBar

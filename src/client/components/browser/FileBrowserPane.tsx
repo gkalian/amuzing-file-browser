@@ -1,10 +1,10 @@
-// File browser pane: composes FileTable and optional PreviewPanel with a draggable split.
-import { Box, Group, Loader } from '@mantine/core';
+// File browser pane: composes LeftPane (table) and optional PreviewPane with a draggable split.
 import type { FsItem } from '../../core/types';
-import { FileTable } from './FileTable';
-import { PreviewPanel } from '../preview/PreviewPanel';
 import type { RefObject, MouseEvent as ReactMouseEvent } from 'react';
 import { useEffect, useMemo, useState } from 'react';
+import { SplitContainer } from './SplitContainer';
+import { LeftPane } from './LeftPane';
+import { PreviewPane } from './PreviewPane';
 
 export function FileBrowserPane(props: {
   items: FsItem[];
@@ -18,6 +18,7 @@ export function FileBrowserPane(props: {
   split: number;
   setDragging: (v: boolean) => void;
   splitRef: RefObject<HTMLDivElement | null>;
+  onDropUpload: (targetDir: string | null, files: File[]) => void;
 }) {
   const {
     items,
@@ -30,6 +31,7 @@ export function FileBrowserPane(props: {
     split,
     setDragging,
     splitRef,
+    onDropUpload,
   } = props;
 
   // Determine preview item: only when exactly one image file is selected
@@ -52,56 +54,26 @@ export function FileBrowserPane(props: {
   const showImagePreview = showPreview && !isNarrow && !!selectedItem && !hidePreview;
 
   return (
-    <Box style={{ position: 'relative' }}>
-      <Box
-        ref={splitRef}
-        style={{ display: 'flex', gap: 0, height: 'calc(100vh - 72px - 56px - 120px)' }}
-        data-testid="split-container"
-      >
-        <Box
-          style={{
-            position: 'relative',
-            width: showImagePreview ? `${split}%` : '100%',
-          }}
-        >
-          {loading && (
-            <Group style={{ position: 'absolute', top: 8, left: 8, zIndex: 2 }}>
-              <Loader size="sm" />
-            </Group>
-          )}
-          <FileTable
-            items={items}
-            onItemClick={onItemClick}
-            onItemDoubleClick={onItemDoubleClick}
-            selectedPaths={selectedPaths}
-          />
-        </Box>
-
-        {showImagePreview && (
-          <Box
-            data-testid="split-resizer"
-            style={{
-              width: 6,
-              cursor: 'col-resize',
-              background: 'var(--mantine-color-default-border)',
-              userSelect: 'none',
-            }}
-            onMouseDown={(e) => {
-              e.preventDefault();
-              setDragging(true);
-            }}
-          />
-        )}
-
-        {showImagePreview && (
-          <Box
-            style={{ width: `${100 - split}%`, paddingLeft: 10, height: '100%' }}
-            data-testid="preview-pane"
-          >
-            <PreviewPanel item={selectedItem} onDeselect={() => setHidePreview(true)} />
-          </Box>
-        )}
-      </Box>
-    </Box>
+    <SplitContainer
+      splitRef={splitRef}
+      split={split}
+      setDragging={setDragging}
+      showRight={showImagePreview}
+      left={
+        <LeftPane
+          items={items}
+          loading={loading}
+          selectedPaths={selectedPaths}
+          onItemClick={onItemClick}
+          onItemDoubleClick={onItemDoubleClick}
+          onDropUpload={onDropUpload}
+        />
+      }
+      right={
+        selectedItem ? (
+          <PreviewPane item={selectedItem} onDeselect={() => setHidePreview(true)} />
+        ) : null
+      }
+    />
   );
 }
