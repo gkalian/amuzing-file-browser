@@ -1,3 +1,10 @@
+## [1.4.5](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.4...v1.4.5) (2025-09-25)
+
+
+### Bug Fixes
+
+* restore chart folder ([5ab8eb0](https://github.com/gkalian/amuzing-file-browser/commit/5ab8eb0148c8106fc77c41049fbe2a8c1b9ca0c6))
+
 ## [1.4.4](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.3...v1.4.4) (2025-09-25)
 
 
