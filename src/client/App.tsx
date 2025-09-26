@@ -312,10 +312,17 @@ function AppBase() {
           <BottomBar
             totals={totals}
             pageSize={pageSize}
-            setPageSize={(v) => setPageSize(v)}
+            setPageSize={(v) => {
+              setPageSize(v);
+              setPage(1);
+              clearSelection();
+            }}
             totalPages={totalPages}
             page={page}
-            setPage={setPage}
+            setPage={(n) => {
+              setPage(n);
+              clearSelection();
+            }}
           />
         </Box>
       </AppShell.Main>
