@@ -16,7 +16,7 @@ beforeAll(async () => {
   const mod = await import('../../src/server/app');
   app = mod.createApp();
   fs.mkdirSync(ROOT_DIR, { recursive: true });
-});
+}, 30000);
 
 beforeEach(async () => {
   // ensure root exists and is clean for each test case

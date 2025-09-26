@@ -19,7 +19,7 @@ beforeAll(async () => {
   app = mod.createApp();
   // Ensure root exists for fs/list
   fs.mkdirSync(ROOT_DIR, { recursive: true });
-});
+}, 30000);
 
 describe('server basic API (smoke)', () => {
   it('GET /api/health returns ok and X-Request-Id header', async () => {

@@ -120,7 +120,7 @@ function AppBase() {
   const { paged, totalPages } = usePageSlice(filtered as any[], page, Number(pageSize));
 
   // selection logic extracted to hook
-  const { selectedPaths, setSelectedPaths, onItemClick, onItemDoubleClick, clearSelection } =
+  const { selectedPaths, setSelectedPaths, onItemClick, clearSelection } =
     useSelection({
       paged: paged as any,
       cwd,
@@ -298,7 +298,6 @@ function AppBase() {
             loading={loading}
             selectedPaths={selectedPaths}
             onItemClick={onItemClick}
-            onItemDoubleClick={onItemDoubleClick}
             onDeselect={() => {
               clearSelection();
             }}
