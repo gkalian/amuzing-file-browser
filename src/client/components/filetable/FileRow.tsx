@@ -53,6 +53,12 @@ export function FileRow(props: {
         }}
         data-selected={isSelected || undefined}
         data-dnd-folder={isFolderDnDTarget || undefined}
+        onMouseDown={(e: React.MouseEvent) => {
+          // Prevent brief text selection highlight during multi-select clicks
+          if (!isSymlink && (e.ctrlKey || e.metaKey || e.shiftKey)) {
+            e.preventDefault();
+          }
+        }}
         onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
         onDragOver={(e) => {
           if (!isFolderDnDTarget) return;
@@ -116,6 +122,11 @@ export function FileRow(props: {
             : {}),
         }}
         data-dnd-folder={isFolderDnDTarget || undefined}
+        onMouseDown={(e: React.MouseEvent) => {
+          if (!isSymlink && (e.ctrlKey || e.metaKey || e.shiftKey)) {
+            e.preventDefault();
+          }
+        }}
         onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
         onDragOver={(e) => {
           if (!isFolderDnDTarget) return;
@@ -169,6 +180,11 @@ export function FileRow(props: {
               }
             : {}),
         }}
+        onMouseDown={(e: React.MouseEvent) => {
+          if (!isSymlink && (e.ctrlKey || e.metaKey || e.shiftKey)) {
+            e.preventDefault();
+          }
+        }}
         onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
         onDragOver={(e) => {
           if (!isFolderDnDTarget) return;
@@ -221,6 +237,11 @@ export function FileRow(props: {
                 borderRadius: 4,
               }
             : {}),
+        }}
+        onMouseDown={(e: React.MouseEvent) => {
+          if (!isSymlink && (e.ctrlKey || e.metaKey || e.shiftKey)) {
+            e.preventDefault();
+          }
         }}
         onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
         title={

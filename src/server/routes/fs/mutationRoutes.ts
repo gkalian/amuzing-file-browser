@@ -3,7 +3,7 @@ import express from 'express';
 import path from 'path';
 import fs from 'fs';
 import fsp from 'fs/promises';
-import { safeJoinRoot, toApiPath } from '../../paths.js';
+import { safeJoinRoot, safeJoinRootNoFollow, toApiPath } from '../../paths.js';
 import { getRoot } from '../../config.js';
 import { logAction, makeActionMeta } from '../../log.js';
 
@@ -80,7 +80,8 @@ export function fsMutationRoutes(app: express.Application) {
   app.post('/api/fs/delete', async (req, res, next) => {
     try {
       const { path: p } = req.body as { path: string };
-      const target = safeJoinRoot(p);
+      // Use no-follow to operate on the link itself if it is a symlink
+      const target = safeJoinRootNoFollow(p);
       // Protect root: forbid deleting the root directory
       const ROOT_REAL = fs.realpathSync(getRoot());
       if (target === ROOT_REAL || toApiPath(target) === '/') {
@@ -89,8 +90,10 @@ export function fsMutationRoutes(app: express.Application) {
         (err as any).appCode = 'forbidden_root_operation';
         throw err;
       }
-      const st = await fsp.stat(target);
-      if (st.isDirectory()) {
+      const st = await fsp.lstat(target);
+      if (st.isSymbolicLink()) {
+        await fsp.unlink(target);
+      } else if (st.isDirectory()) {
         await fsp.rm(target, { recursive: true, force: true });
       } else {
         await fsp.unlink(target);
