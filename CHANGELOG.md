@@ -1,3 +1,13 @@
+## [1.4.6](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.5...v1.4.6) (2025-09-26)
+
+
+### Bug Fixes
+
+* correct symlink deletion and text selection on row ([cbd10c2](https://github.com/gkalian/amuzing-file-browser/commit/cbd10c202112ee1da598c4b06b391d0906332913))
+* reset calling preview whole changing pages ([52c8e73](https://github.com/gkalian/amuzing-file-browser/commit/52c8e73f93b3e1236017559a8e88e8fc12da3405))
+* tests for browser component ([f2cceac](https://github.com/gkalian/amuzing-file-browser/commit/f2cceac529c8ee049122291b8c047e8a43e7ebc0))
+* tests for fs added [skip ci] ([6ef07d3](https://github.com/gkalian/amuzing-file-browser/commit/6ef07d3effeb565af3d9d0b5987c60873cdab960))
+
 ## [1.4.5](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.4...v1.4.5) (2025-09-25)
 
 
