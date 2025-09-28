@@ -1,3 +1,10 @@
+## [1.4.10](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.9...v1.4.10) (2025-09-28)
+
+
+### Bug Fixes
+
+* load settings before starting server ([246f8e1](https://github.com/gkalian/amuzing-file-browser/commit/246f8e13acec26280ac0477aa0808e2731d09c33))
+
 ## [1.4.9](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.8...v1.4.9) (2025-09-28)
 
 
