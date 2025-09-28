@@ -117,7 +117,8 @@ export function setRoot(newRoot: string) {
   state.root = candidateReal;
 }
 export function setMaxUploadMB(n: number) {
-  state.maxUploadMB = Math.min(Math.max(1, Math.floor(n)), 1024); // clamp 1..1024 MB
+  // Allow arbitrary large values; keep a minimal lower bound at 1MB
+  state.maxUploadMB = Math.max(1, Math.floor(n));
 }
 export function setAllowedTypes(v: string | undefined) {
   state.allowedTypes = v;
