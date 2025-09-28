@@ -31,6 +31,20 @@ const state = {
   mediaDomain: String(process.env.MEDIA_DOMAIN || ''),
 };
 
+// Capture the initial root at startup and resolve its real path. We will use this
+// to ensure that any runtime changes to the root cannot escape outside the
+// originally mounted directory tree (e.g., container volume at /data).
+const INITIAL_ROOT = state.root;
+let INITIAL_ROOT_REAL: string;
+try {
+  // Ensure the initial root exists so realpathSync succeeds (created later as well)
+  fs.mkdirSync(INITIAL_ROOT, { recursive: true });
+  INITIAL_ROOT_REAL = fs.realpathSync(INITIAL_ROOT);
+} catch {
+  // Fallback to resolved initial root if realpath fails for any reason
+  INITIAL_ROOT_REAL = path.resolve(INITIAL_ROOT);
+}
+
 // Accessors
 export function getPort() {
   return state.port;
@@ -71,7 +85,36 @@ export function isLevelEnabled(level: LogLevel) {
 
 // Mutators
 export function setRoot(newRoot: string) {
-  state.root = path.resolve(newRoot);
+  const candidate = path.resolve(newRoot);
+  // Ensure the candidate exists (or at least its parent) to obtain a stable realpath
+  try {
+    fs.mkdirSync(candidate, { recursive: true });
+  } catch {
+    // ignore mkdir errors; realpath may still work if it already exists
+  }
+  let candidateReal = candidate;
+  try {
+    candidateReal = fs.realpathSync(candidate);
+  } catch {
+    // If realpath fails (e.g., path does not exist yet), validate using its parent
+    try {
+      const parentReal = fs.realpathSync(path.dirname(candidate));
+      candidateReal = path.join(parentReal, path.basename(candidate));
+    } catch {
+      // As a last resort, keep the resolved candidate
+      candidateReal = candidate;
+    }
+  }
+  // Validate: candidateReal must be inside INITIAL_ROOT_REAL (or equal)
+  const rel = path.relative(INITIAL_ROOT_REAL, candidateReal);
+  const inside = rel === '' || (!rel.startsWith('..') && !path.isAbsolute(rel));
+  if (!inside) {
+    const err: any = new Error('New root must be inside the initially configured root');
+    err.status = 403;
+    err.appCode = 'forbidden_root_change';
+    throw err;
+  }
+  state.root = candidateReal;
 }
 export function setMaxUploadMB(n: number) {
   state.maxUploadMB = Math.min(Math.max(1, Math.floor(n)), 1024); // clamp 1..1024 MB
