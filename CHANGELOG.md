@@ -1,3 +1,10 @@
+## [1.4.8](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.7...v1.4.8) (2025-09-28)
+
+
+### Bug Fixes
+
+* correct root saving in the settings ([b82c263](https://github.com/gkalian/amuzing-file-browser/commit/b82c2638c33decb9adf0febde302da1494942470))
+
 ## [1.4.7](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.6...v1.4.7) (2025-09-28)
 
 
