@@ -1,3 +1,10 @@
+## [1.4.9](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.8...v1.4.9) (2025-09-28)
+
+
+### Bug Fixes
+
+* remove size limit to set it properly from settings ([e40b9e9](https://github.com/gkalian/amuzing-file-browser/commit/e40b9e9cee926498b9191205647a4349be0923c0))
+
 ## [1.4.8](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.7...v1.4.8) (2025-09-28)
 
 
