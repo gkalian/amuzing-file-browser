@@ -22,6 +22,7 @@ export function useSettings(params: {
     allowedTypes: string;
     theme: 'light' | 'dark';
   } | null>(null);
+  const rootMaskedRef = useRef<boolean>(false);
 
   // initial load
   useEffect(() => {
@@ -31,6 +32,7 @@ export function useSettings(params: {
       const allowed = c.allowedTypes ?? defaultAllowedTypes;
       setCfgAllowedTypes(allowed);
       setCfgTheme(c.theme);
+      rootMaskedRef.current = Boolean((c as any).rootMasked);
       configLoadedRef.current = true;
       lastSavedRef.current = {
         root: c.root,
@@ -45,25 +47,33 @@ export function useSettings(params: {
   useEffect(() => {
     const h = setTimeout(async () => {
       if (!configLoadedRef.current) return;
-      const current = {
-        root: cfgRoot,
-        maxUploadMB: cfgMaxUpload,
-        allowedTypes: cfgAllowedTypes,
-        theme: cfgTheme,
-      };
+      // Build minimal payload: only include changed fields; avoid sending masked root back.
       const last = lastSavedRef.current;
-      if (
-        last &&
-        last.root === current.root &&
-        last.maxUploadMB === current.maxUploadMB &&
-        last.allowedTypes === current.allowedTypes &&
-        last.theme === current.theme
-      ) {
-        return;
+      const payload: any = {};
+      const rootMasked = rootMaskedRef.current;
+
+      // Include root only if it changed and either not masked or user typed a value other than '/'
+      if (!last || cfgRoot !== last.root) {
+        if (!rootMasked || cfgRoot !== '/') {
+          payload.root = cfgRoot;
+        }
       }
+      if (!last || cfgMaxUpload !== last.maxUploadMB) payload.maxUploadMB = cfgMaxUpload;
+      if (!last || cfgAllowedTypes !== last.allowedTypes) payload.allowedTypes = cfgAllowedTypes;
+      if (!last || cfgTheme !== last.theme) payload.theme = cfgTheme;
+
+      // If nothing changed (or root was masked and unchanged), skip save
+      if (Object.keys(payload).length === 0) return;
+
       try {
-        await api.setConfig(current);
-        lastSavedRef.current = { ...current } as any;
+        const saved = await api.setConfig(payload);
+        // Update lastSaved snapshot, merging only fields we sent and what server returned
+        lastSavedRef.current = {
+          root: saved.root ?? (last?.root ?? cfgRoot),
+          maxUploadMB: saved.maxUploadMB ?? (last?.maxUploadMB ?? cfgMaxUpload),
+          allowedTypes: saved.allowedTypes ?? (last?.allowedTypes ?? cfgAllowedTypes),
+          theme: saved.theme ?? (last?.theme ?? cfgTheme),
+        };
         notifySuccess(t('notifications.settingsSaved', { defaultValue: 'Settings saved' }));
       } catch (e) {
         notifyError(
