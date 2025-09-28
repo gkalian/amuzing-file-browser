@@ -12,19 +12,28 @@ process.on('uncaughtException', (err) => {
   console.error('[uncaughtException]', err);
 });
 
-// Ensure initial root exists, then load persisted settings asynchronously
-ensureRootExists();
-(async () => {
+// Bootstrap: ensure root exists, then load settings BEFORE building the app.
+// This guarantees runtime limits like maxUploadMB are applied when configuring Multer.
+async function bootstrap() {
+  // Ensure initial root exists
+  ensureRootExists();
+  // Load persisted settings (await to apply before app/middleware initialization)
   await loadInitialSettings();
-})();
 
-// Build the app from modular routes and middleware
-const app = createApp();
+  // Build the app from modular routes and middleware
+  const app = createApp();
 
-// Expose PORT and ROOT for the listen block below (kept for context)
-const PORT = getPort();
-const ROOT = getRoot();
+  // Expose PORT and ROOT for the listen block below (kept for context)
+  const PORT = getPort();
+  const ROOT = getRoot();
 
-app.listen(PORT, () => {
-  console.log(`FileBrowser server listening on http://0.0.0.0:${PORT} with root ${ROOT}`);
+  app.listen(PORT, () => {
+    console.log(`FileBrowser server listening on http://0.0.0.0:${PORT} with root ${ROOT}`);
+  });
+}
+
+// Start the server
+bootstrap().catch((err) => {
+  console.error('Failed to bootstrap server:', err);
+  process.exit(1);
 });
