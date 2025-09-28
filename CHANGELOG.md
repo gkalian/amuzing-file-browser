@@ -1,3 +1,10 @@
+## [1.4.7](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.6...v1.4.7) (2025-09-28)
+
+
+### Bug Fixes
+
+* proper behavior when going back to root folder ([42e60e3](https://github.com/gkalian/amuzing-file-browser/commit/42e60e34b268bfa0c08fb5eee761aaff9ea4e442))
+
 ## [1.4.6](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.5...v1.4.6) (2025-09-26)
 
 
