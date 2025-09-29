@@ -1,3 +1,13 @@
+## [1.4.11](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.10...v1.4.11) (2025-09-29)
+
+
+### Bug Fixes
+
+* add close icon and show upload speed ([220ae33](https://github.com/gkalian/amuzing-file-browser/commit/220ae337d244ceac675da6b05a8d8314229b1b65))
+* detailed file size ([a59ec3a](https://github.com/gkalian/amuzing-file-browser/commit/a59ec3a1762f09d2f4fcdd37c7dd2a106f67c0e4))
+* three-step sorting on column names ([6febc2a](https://github.com/gkalian/amuzing-file-browser/commit/6febc2a9bf0824097e54a7c8fad5604610690738))
+* update locales ([6a4c045](https://github.com/gkalian/amuzing-file-browser/commit/6a4c045e6c76c8b5490e1281af0a56eb57650089))
+
 ## [1.4.10](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.9...v1.4.10) (2025-09-28)
 
 
