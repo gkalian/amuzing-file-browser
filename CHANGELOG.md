@@ -1,3 +1,12 @@
+## [1.4.12](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.11...v1.4.12) (2025-09-29)
+
+
+### Bug Fixes
+
+* better ui for rename and mkdir dialogs ([7998d31](https://github.com/gkalian/amuzing-file-browser/commit/7998d31c158199ffc885f5ff607fb7f08d00b959))
+* minor root rename ([87ca935](https://github.com/gkalian/amuzing-file-browser/commit/87ca935e6ab6ab111393edd6159d9a8d12e03b48))
+* new buttons to open pics ([892c476](https://github.com/gkalian/amuzing-file-browser/commit/892c476d91a0dd954c0ad5251168414f74a70477))
+
 ## [1.4.11](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.10...v1.4.11) (2025-09-29)
 
 
