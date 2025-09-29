@@ -1,6 +1,6 @@
 import React from 'react';
 import { ActionIcon, Group } from '@mantine/core';
-import { IconDownload, IconLink } from '@tabler/icons-react';
+import { IconDownload, IconLink, IconExternalLink } from '@tabler/icons-react';
 import type { FsItem } from '../../../core/types';
 import { useTranslation } from 'react-i18next';
 import { api } from '../../../services/apiClient';
@@ -17,6 +17,25 @@ export function ActionsCell(props: {
 
   return (
     <Group gap={4} justify="flex-end">
+      {(it.mime || '').startsWith('image/') && (
+        <ActionIcon
+          variant="light"
+          aria-label="Open"
+          title={t('table.actions.open', { defaultValue: 'Open' })}
+          data-testid="action-open"
+          onClick={async (e) => {
+            e.stopPropagation();
+            try {
+              const url = await api.publicFileUrl(it.path);
+              window.open(url, '_blank', 'noopener,noreferrer');
+            } catch {
+              // ignore
+            }
+          }}
+        >
+          <IconExternalLink size={16} />
+        </ActionIcon>
+      )}
       <ActionIcon
         component="a"
         href={api.downloadUrl(it.path)}
