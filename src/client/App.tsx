@@ -96,7 +96,7 @@ function AppBase() {
 
   // autosave is handled in useSettings
 
-  const crumbs = useBreadcrumbs(cwd, t('breadcrumbs.root', { defaultValue: 'root' }));
+  const crumbs = useBreadcrumbs(cwd, '..' );
   // uploads hook (keeps this file slim)
   const { uploading, uploadedBytes, totalBytes, uploadItems, uploadSpeedBps, cancelUploads, handleUpload, handleUploadTo } =
     useUploads({
@@ -287,12 +287,14 @@ function AppBase() {
               marginBottom: 8,
             }}
           >
-            <BreadcrumbsBar
-              crumbs={crumbs}
-              cwd={cwd}
-              onCrumbClick={(p) => setCwd(p)}
-              onUp={() => setCwd(parentPath(cwd))}
-            />
+            <Box style={{ marginLeft: 10 }}>
+              <BreadcrumbsBar
+                crumbs={crumbs}
+                cwd={cwd}
+                onCrumbClick={(p) => setCwd(p)}
+                onUp={() => setCwd(parentPath(cwd))}
+              />
+            </Box>
             {selectedPaths.size > 0 && (
               <Group gap="xs" wrap="nowrap">
                 <Button
