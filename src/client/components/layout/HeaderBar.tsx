@@ -86,7 +86,7 @@ function HeaderBarBase({
               size="xs"
               leftSection={<IconUpload size={16} />}
               title={t('header.uploadTooltip', { defaultValue: 'Upload files' })}
-              aria-label={t('header.upload', { defaultValue: 'Upload' })}
+              aria-label="Upload"
               data-testid="btn-upload"
             >
               {t('header.upload', { defaultValue: 'Upload' })}
@@ -99,7 +99,7 @@ function HeaderBarBase({
           leftSection={<IconPlus size={16} />}
           onClick={onNewFolder}
           title={t('header.newFolderTooltip', { defaultValue: 'Create new folder' })}
-          aria-label={t('header.newFolder', { defaultValue: 'New folder' })}
+          aria-label="New folder"
           data-testid="btn-new-folder"
         >
           {t('header.newFolder', { defaultValue: 'New folder' })}
@@ -109,7 +109,7 @@ function HeaderBarBase({
           size="xs"
           onClick={onOpenSettings}
           title={t('header.settingsTooltip', { defaultValue: 'Open settings' })}
-          aria-label={t('header.settings', { defaultValue: 'Settings' })}
+          aria-label="Settings"
           data-testid="btn-settings"
         >
           {t('header.settings', { defaultValue: 'Settings' })}

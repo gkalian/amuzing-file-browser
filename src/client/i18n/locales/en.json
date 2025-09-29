@@ -14,7 +14,6 @@
     "save": "Save settings",
     "saved": "Settings saved",
     "lang": "Language",
-    "allowedTypes": "Allowed upload formats (comma-separated)",
     "allowedTypesPlaceholder": "e.g. jpg,png,webp"
   },
   "search": {
@@ -36,7 +35,16 @@
     "renameFailed": "Rename failed",
     "settingsSaved": "Settings saved",
     "settingsSaveFailed": "Settings save failed",
-    "uploadTypeNotAllowed": "Not allowed format: {{name}}"
+    "uploadTypeNotAllowed": "Not allowed format: {{name}}",
+    "uploadAborted": "Upload aborted",
+    "destNotFolder": "Destination exists but is not a folder",
+    "moveFailed": "Move failed",
+    "createDestFailed": "Create destination failed",
+    "bulkDeleteSuccess": "Deleted {{count}} file(s)",
+    "bulkDeleteFailed": "Failed to delete {{count}} file(s)",
+    "itemNotFound": "Item not found in list",
+    "bulkMoveSuccess": "Moved {{count}} file(s)",
+    "bulkMoveFailed": "Failed to move {{count}} file(s)"
   },
   "header": {
     "upload": "Upload",
@@ -57,12 +65,6 @@
     "actions": {
       "download": "Download",
       "copyLink": "Copy permanent link"
-    },
-    "aria": {
-      "download": "download",
-      "rename": "rename",
-      "getLink": "get-link",
-      "delete": "delete"
     }
   },
   "bottom": {

@@ -5,6 +5,7 @@ import type { FsItem } from '../../core/types';
 import { joinPath } from '../../core/utils';
 import { notifyError, notifySuccess } from '../../core/notify';
 import { formatErrorMessage } from '../../core/errorUtils';
+import { useTranslation } from 'react-i18next';
 
 export function useBulkOps(params: {
   cwd: string;
@@ -12,6 +13,7 @@ export function useBulkOps(params: {
   loadList: (path: string) => Promise<void> | void;
 }) {
   const { cwd, items, loadList } = params;
+  const { t } = useTranslation();
 
   const resolveUniquePath = useCallback(async (destDir: string, name: string, isDir: boolean) => {
     const dot = name.lastIndexOf('.');
@@ -47,7 +49,10 @@ export function useBulkOps(params: {
     try {
       const st = await api.stat(dest);
       if (!st.isDir) {
-        notifyError('Destination exists but is not a folder', 'Move failed');
+        notifyError(
+          t('notifications.destNotFolder', { defaultValue: 'Destination exists but is not a folder' }),
+          t('notifications.moveFailed', { defaultValue: 'Move failed' })
+        );
         return false;
       }
       return true;
@@ -57,8 +62,11 @@ export function useBulkOps(params: {
         return true;
       } catch (e: any) {
         notifyError(
-          formatErrorMessage(e, 'Create destination failed'),
-          'Create destination failed'
+          formatErrorMessage(
+            e,
+            t('notifications.createDestFailed', { defaultValue: 'Create destination failed' })
+          ),
+          t('notifications.createDestFailed', { defaultValue: 'Create destination failed' })
         );
         return false;
       }
@@ -77,15 +85,33 @@ export function useBulkOps(params: {
           ok++;
         } catch (e: any) {
           fail++;
-          notifyError(`${p}: ${formatErrorMessage(e, 'Delete failed')}`, 'Delete failed');
+          notifyError(
+            `${p}: ${formatErrorMessage(
+              e,
+              t('notifications.deleteFailed', { defaultValue: 'Delete failed' })
+            )}`,
+            t('notifications.deleteFailed', { defaultValue: 'Delete failed' })
+          );
         }
       }
       await loadList(cwd);
-      if (ok) notifySuccess(`Deleted ${ok} file(s)`);
-      if (fail) notifyError(`Failed to delete ${fail} file(s)`);
+      if (ok)
+        notifySuccess(
+          t('notifications.bulkDeleteSuccess', {
+            defaultValue: 'Deleted {{count}} file(s)',
+            count: ok,
+          })
+        );
+      if (fail)
+        notifyError(
+          t('notifications.bulkDeleteFailed', {
+            defaultValue: 'Failed to delete {{count}} file(s)',
+            count: fail,
+          })
+        );
       return { ok, fail };
     },
-    [cwd, loadList]
+    [cwd, loadList, t]
   );
 
   const bulkMove = useCallback(
@@ -104,7 +130,10 @@ export function useBulkOps(params: {
         const it = byPath.get(p);
         if (!it) {
           fail++;
-          notifyError(`${p}: not found in list`, 'Move failed');
+          notifyError(
+            t('notifications.itemNotFound', { defaultValue: 'Item not found in list' }) + `: ${p}`,
+            t('notifications.moveFailed', { defaultValue: 'Move failed' })
+          );
           continue;
         }
         const to = joinPath(destTrim, it.name);
@@ -115,15 +144,33 @@ export function useBulkOps(params: {
           ok++;
         } catch (e: any) {
           fail++;
-          notifyError(`${it.name}: ${formatErrorMessage(e, 'Move failed')}`, 'Move failed');
+          notifyError(
+            `${it.name}: ${formatErrorMessage(
+              e,
+              t('notifications.moveFailed', { defaultValue: 'Move failed' })
+            )}`,
+            t('notifications.moveFailed', { defaultValue: 'Move failed' })
+          );
         }
       }
       await loadList(cwd);
-      if (ok) notifySuccess(`Moved ${ok} file(s)`);
-      if (fail) notifyError(`Failed to move ${fail} file(s)`);
+      if (ok)
+        notifySuccess(
+          t('notifications.bulkMoveSuccess', {
+            defaultValue: 'Moved {{count}} file(s)',
+            count: ok,
+          })
+        );
+      if (fail)
+        notifyError(
+          t('notifications.bulkMoveFailed', {
+            defaultValue: 'Failed to move {{count}} file(s)',
+            count: fail,
+          })
+        );
       return { ok, fail };
     },
-    [cwd, items, loadList, ensureDestDir, resolveUniquePath]
+    [cwd, items, loadList, ensureDestDir, resolveUniquePath, t]
   );
 
   return { bulkDelete, bulkMove } as const;

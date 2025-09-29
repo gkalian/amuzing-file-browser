@@ -36,7 +36,16 @@
     "renameFailed": "Ошибка переименования",
     "settingsSaved": "Настройки сохранены",
     "settingsSaveFailed": "Ошибка сохранения настроек",
-    "uploadTypeNotAllowed": "Недопустимый формат: {{name}}"
+    "uploadTypeNotAllowed": "Недопустимый формат: {{name}}",
+    "uploadAborted": "Загрузка отменена",
+    "destNotFolder": "Пункт назначения существует, но это не папка",
+    "moveFailed": "Ошибка перемещения",
+    "createDestFailed": "Не удалось создать папку назначения",
+    "bulkDeleteSuccess": "Удалено файлов: {{count}}",
+    "bulkDeleteFailed": "Не удалось удалить файлов: {{count}}",
+    "itemNotFound": "Элемент не найден в списке",
+    "bulkMoveSuccess": "Перемещено файлов: {{count}}",
+    "bulkMoveFailed": "Не удалось переместить файлов: {{count}}"
   },
   "header": {
     "upload": "Загрузить",
@@ -57,12 +66,6 @@
     "actions": {
       "download": "Скачать",
       "copyLink": "Скопировать постоянную ссылку"
-    },
-    "aria": {
-      "download": "скачать",
-      "rename": "переименовать",
-      "getLink": "получить-ссылку",
-      "delete": "удалить"
     }
   },
   "bottom": {

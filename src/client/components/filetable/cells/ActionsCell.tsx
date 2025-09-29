@@ -21,7 +21,7 @@ export function ActionsCell(props: {
         component="a"
         href={api.downloadUrl(it.path)}
         variant="light"
-        aria-label={t('table.actions.download', { defaultValue: 'Download' })}
+        aria-label="Download"
         title={t('table.actions.download', { defaultValue: 'Download' })}
         data-testid="action-download"
         onClick={(e) => e.stopPropagation()}
@@ -31,7 +31,7 @@ export function ActionsCell(props: {
 
       <ActionIcon
         variant="light"
-        aria-label={t('table.actions.copyLink', { defaultValue: 'Copy permanent link' })}
+        aria-label="Copy permanent link"
         title={t('table.actions.copyLink', { defaultValue: 'Copy permanent link' })}
         onClick={(e) => {
           e.stopPropagation();
