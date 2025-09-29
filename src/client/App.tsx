@@ -117,7 +117,42 @@ function AppBase() {
     return list.filter((it) => it.name.toLowerCase().includes(q));
   }, [items, debouncedSearch]);
   const totals = useTotals(filtered as any);
-  const { paged, totalPages } = usePageSlice(filtered as any[], page, Number(pageSize));
+  // sorting state and application
+  const [sortField, setSortField] = useState<'name' | 'size' | 'mtime' | null>(null);
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
+  const sorted = useMemo(() => {
+    const arr = [...(filtered as FsItem[])];
+    if (!sortField) return arr;
+    const dirMul = sortDir === 'asc' ? 1 : -1;
+    return arr.sort((a, b) => {
+      if (sortField === 'name') {
+        const an = (a.name || '').toLowerCase();
+        const bn = (b.name || '').toLowerCase();
+        return an.localeCompare(bn) * dirMul;
+      }
+      if (sortField === 'size') {
+        return ((a.size || 0) - (b.size || 0)) * dirMul;
+      }
+      // mtime
+      return ((a.mtimeMs || 0) - (b.mtimeMs || 0)) * dirMul;
+    });
+  }, [filtered, sortField, sortDir]);
+  const onSort = useCallback((field: 'name' | 'size' | 'mtime') => {
+    setSortField((prev) => {
+      if (prev === field) {
+        if (sortDir === 'asc') {
+          setSortDir('desc');
+          return prev; // same field, now desc
+        }
+        // was desc -> go to none
+        setSortDir('asc'); // default dir for next time
+        return null;
+      }
+      setSortDir('asc');
+      return field;
+    });
+  }, [sortDir]);
+  const { paged, totalPages } = usePageSlice(sorted as any[], page, Number(pageSize));
 
   // selection logic extracted to hook
   const { selectedPaths, setSelectedPaths, onItemClick, clearSelection } =
@@ -309,6 +344,9 @@ function AppBase() {
             setDragging={setDragging}
             splitRef={splitRef}
             onDropUpload={onDropUpload}
+            sortField={sortField}
+            sortDir={sortDir}
+            onSort={onSort}
           />
 
           <BottomBar

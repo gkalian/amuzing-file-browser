@@ -13,15 +13,20 @@ type Props = {
   onItemClick: (item: FsItem, index: number, e: React.MouseEvent) => void;
   selectedPaths: Set<string>;
   onDropUpload?: (targetDir: string | null, files: File[]) => void;
+  sortField: 'name' | 'size' | 'mtime' | null;
+  sortDir: 'asc' | 'desc';
+  onSort: (field: 'name' | 'size' | 'mtime') => void;
 };
 
 // Virtuoso components provided by hook (includes custom tbody to clear DnD row highlight)
 
-const FileTableBase: React.FC<Props> = ({ items, onItemClick, selectedPaths, onDropUpload }) => {
+const FileTableBase: React.FC<Props> = ({ items, onItemClick, selectedPaths, onDropUpload, sortField, sortDir, onSort }) => {
   const numberFmt = useNumberFmt();
   const [dragOverPath, setDragOverPath] = useState<string | null>(null);
   // Memoized header and row renderer to minimize allocations
-  const headerContent = useCallback(() => <FileTableHeader />, []);
+  const headerContent = useCallback(() => (
+    <FileTableHeader sortField={sortField} sortDir={sortDir} onSort={onSort} />
+  ), [sortField, sortDir, onSort]);
 
   const itemContent = useCallback(
     (idx: number, it: Item) => {

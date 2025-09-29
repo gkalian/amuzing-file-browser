@@ -18,6 +18,9 @@ export function FileBrowserPane(props: {
   setDragging: (v: boolean) => void;
   splitRef: RefObject<HTMLDivElement | null>;
   onDropUpload: (targetDir: string | null, files: File[]) => void;
+  sortField: 'name' | 'size' | 'mtime' | null;
+  sortDir: 'asc' | 'desc';
+  onSort: (field: 'name' | 'size' | 'mtime') => void;
 }) {
   const {
     items,
@@ -30,6 +33,9 @@ export function FileBrowserPane(props: {
     setDragging,
     splitRef,
     onDropUpload,
+    sortField,
+    sortDir,
+    onSort,
   } = props;
 
   // Determine preview item: only when exactly one image file is selected
@@ -64,6 +70,9 @@ export function FileBrowserPane(props: {
           selectedPaths={selectedPaths}
           onItemClick={onItemClick}
           onDropUpload={onDropUpload}
+          sortField={sortField}
+          sortDir={sortDir}
+          onSort={onSort}
         />
       }
       right={
