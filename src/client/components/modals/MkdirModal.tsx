@@ -20,13 +20,18 @@ function MkdirModalBase({ opened, name, setName, onCreate, onClose }: Props) {
       title={t('mkdir.title', { defaultValue: 'Create folder' })}
       centered
     >
-      <Group>
+      <Group style={{ display: 'flex', width: '100%' }} gap="sm">
         <TextInput
           placeholder={t('mkdir.placeholder', { defaultValue: 'Folder name' })}
           value={name}
           onChange={(e) => setName(e.currentTarget.value)}
+          style={{ flex: 1 }}
+          autoFocus
+          data-testid="mkdir-input"
         />
-        <Button onClick={onCreate}>{t('mkdir.create', { defaultValue: 'Create' })}</Button>
+        <Button onClick={onCreate} data-testid="mkdir-submit">
+          {t('mkdir.create', { defaultValue: 'Create' })}
+        </Button>
       </Group>
     </Modal>
   );

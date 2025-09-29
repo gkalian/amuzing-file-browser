@@ -20,14 +20,18 @@ function RenameModalBase({ opened, name, setName, onRename, onClose }: Props) {
       title={t('table.aria.rename', { defaultValue: 'Rename' })}
       centered
     >
-      <Group>
+      <Group style={{ display: 'flex', width: '100%' }} gap="sm">
         <TextInput
           placeholder={t('rename.placeholder', { defaultValue: 'New name' })}
           value={name}
           onChange={(e) => setName(e.currentTarget.value)}
           autoFocus
+          style={{ flex: 1 }}
+          data-testid="rename-input"
         />
-        <Button onClick={onRename}>{t('table.aria.rename', { defaultValue: 'Rename' })}</Button>
+        <Button onClick={onRename} data-testid="rename-submit">
+          {t('table.aria.rename', { defaultValue: 'Rename' })}
+        </Button>
       </Group>
     </Modal>
   );
