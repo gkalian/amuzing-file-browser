@@ -1,6 +1,6 @@
 // Hook: manages queued uploads with type filtering, per-file and total progress,
 // notifications, and directory refresh on completion.
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { api } from '../../services/apiClient';
 import { notifyError, notifySuccess } from '../../core/notify';
 import { formatErrorMessage } from '../../core/errorUtils';
@@ -17,6 +17,12 @@ export function useUploads(params: {
   const [uploadedBytes, setUploadedBytes] = useState(0);
   const [totalBytes, setTotalBytes] = useState(0);
   const [uploadItems, setUploadItems] = useState<UploadItem[]>([]);
+  const [uploadSpeedBps, setUploadSpeedBps] = useState(0);
+
+  // cancellation and speed measurement refs
+  const cancelRequestedRef = useRef(false);
+  const currentAbortRef = useRef<null | (() => void)>(null);
+  const lastMeasureRef = useRef<{ t: number; bytes: number }>({ t: 0, bytes: 0 });
 
   const runUpload = useCallback(
     async (targetDir: string, files: File[]) => {
@@ -52,6 +58,10 @@ export function useUploads(params: {
       setTotalBytes(total);
       setUploadedBytes(0);
       setUploading(true);
+      setUploadSpeedBps(0);
+      cancelRequestedRef.current = false;
+      currentAbortRef.current = null;
+      lastMeasureRef.current = { t: Date.now(), bytes: 0 };
       setUploadItems(
         arr.map((f) => ({
           name: f.name,
@@ -63,22 +73,38 @@ export function useUploads(params: {
       try {
         let base = 0; // accumulated bytes from completed files
         for (let idx = 0; idx < arr.length; idx++) {
+          if (cancelRequestedRef.current) break;
           const f = arr[idx];
           setUploadItems((prev) =>
             prev.map((it, i) => (i === idx ? { ...it, status: 'uploading' } : it))
           );
           try {
-            const resp = await api.uploadWithProgress(targetDir, [f], (loaded, _tot) => {
-              const current = base + Math.min(loaded, f.size || 0);
-              setUploadedBytes(current);
-              setUploadItems((prev) =>
-                prev.map((it, i) =>
-                  i === idx ? { ...it, uploaded: Math.min(loaded, f.size || 0) } : it
-                )
-              );
-            });
+            const { promise, abort } = api.uploadWithProgressCancelable(
+              targetDir,
+              [f],
+              (loaded, _tot) => {
+                const now = Date.now();
+                const current = base + Math.min(loaded, f.size || 0);
+                // speed calculation
+                const dtMs = now - lastMeasureRef.current.t;
+                const dBytes = current - lastMeasureRef.current.bytes;
+                if (dtMs > 250 && dBytes >= 0) {
+                  setUploadSpeedBps((dBytes * 1000) / dtMs);
+                  lastMeasureRef.current = { t: now, bytes: current };
+                }
+                setUploadedBytes(current);
+                setUploadItems((prev) =>
+                  prev.map((it, i) =>
+                    i === idx ? { ...it, uploaded: Math.min(loaded, f.size || 0) } : it
+                  )
+                );
+              }
+            );
+            currentAbortRef.current = abort;
+            const resp = await promise;
             base += f.size || 0;
             setUploadedBytes(base);
+            lastMeasureRef.current = { t: Date.now(), bytes: base };
             setUploadItems((prev) =>
               prev.map((it, i) =>
                 i === idx ? { ...it, uploaded: f.size || 0, status: 'done' } : it
@@ -90,6 +116,23 @@ export function useUploads(params: {
               t('notifications.uploadSuccess', { defaultValue: 'Uploaded: {{name}}', name: saved })
             );
           } catch (e: any) {
+            if (cancelRequestedRef.current) {
+              // mark current as error-aborted
+              setUploadItems((prev) =>
+                prev.map((it, i) =>
+                  i === idx
+                    ? {
+                        ...it,
+                        status: 'error',
+                        error: t('notifications.uploadAborted', {
+                          defaultValue: 'Upload aborted',
+                        }),
+                      }
+                    : it
+                )
+              );
+              break;
+            }
             notifyError(
               `${f.name}: ${formatErrorMessage(e, t('notifications.uploadFailed', { defaultValue: 'Upload failed' }))}`,
               t('notifications.uploadFailed', { defaultValue: 'Upload failed' }),
@@ -115,7 +158,9 @@ export function useUploads(params: {
           }
         }
         // Refresh current working directory list (table shows cwd)
-        await loadList(cwd);
+        if (!cancelRequestedRef.current) {
+          await loadList(cwd);
+        }
       } finally {
         setUploading(false);
         // Small delay to let the user see the completion, then reset UI state
@@ -123,7 +168,9 @@ export function useUploads(params: {
           setUploadedBytes(0);
           setTotalBytes(0);
           setUploadItems([]);
-        }, 300);
+          setUploadSpeedBps(0);
+          }, 300);
+        currentAbortRef.current = null;
       }
     },
     [cwd, allowedTypes, t, loadList]
@@ -141,12 +188,24 @@ export function useUploads(params: {
     [runUpload]
   );
 
+  const cancelUploads = useCallback(() => {
+    if (!uploading) return;
+    cancelRequestedRef.current = true;
+    try {
+      currentAbortRef.current?.();
+    } catch {
+      // ignore
+    }
+  }, [uploading]);
+
   return {
     uploading,
     uploadedBytes,
     totalBytes,
     uploadItems,
+    uploadSpeedBps,
     handleUpload,
     handleUploadTo,
+    cancelUploads,
   } as const;
 }

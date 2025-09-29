@@ -188,13 +188,24 @@ export const api = {
     files: File[],
     onProgress?: (uploaded: number, total: number) => void
   ) =>
-    new Promise<{
+    // Backward-compatible wrapper around the cancelable variant
+    api.uploadWithProgressCancelable(dirPath, files, onProgress).promise,
+  /**
+   * Cancelable upload with progress reporting. Returns a pair: { promise, abort }.
+   */
+  uploadWithProgressCancelable: (
+    dirPath: string,
+    files: File[],
+    onProgress?: (uploaded: number, total: number) => void
+  ) => {
+    let xhr: XMLHttpRequest | null = null;
+    const promise = new Promise<{
       ok: true;
       files: { originalname: string; filename: string; size: number; path: string }[];
     }>((resolve, reject) => {
       const fd = new FormData();
       files.forEach((f) => fd.append('files', f, f.name));
-      const xhr = new XMLHttpRequest();
+      xhr = new XMLHttpRequest();
       xhr.open('POST', `/api/fs/upload?path=${encodeURIComponent(dirPath)}`);
       xhr.responseType = 'json';
       xhr.upload.onprogress = (e) => {
@@ -204,8 +215,10 @@ export const api = {
         reject(
           new ApiError({ code: 'network_error', message: 'Network error during upload', status: 0 })
         );
+      xhr.onabort = () =>
+        reject(new ApiError({ code: 'aborted', message: 'Upload aborted by user', status: 0 }));
       xhr.onload = () => {
-        if (xhr.status >= 200 && xhr.status < 300) {
+        if (xhr && xhr.status >= 200 && xhr.status < 300) {
           // Some browsers may not fill response when responseType json from node; fallback
           // Avoid accessing responseText when responseType is 'json' (InvalidStateError)
           let data: any = null;
@@ -219,7 +232,7 @@ export const api = {
             }
           }
           resolve(data as any);
-        } else {
+        } else if (xhr) {
           let rawBody: any = null;
           let fallbackText: string | undefined;
           if (xhr.responseType === 'json' && xhr.response) {
@@ -239,7 +252,16 @@ export const api = {
         }
       };
       xhr.send(fd);
-    }),
+    });
+    const abort = () => {
+      try {
+        xhr?.abort();
+      } catch {
+        // ignore
+      }
+    };
+    return { promise, abort } as const;
+  },
   downloadUrl: (path: string) => `/api/fs/download?path=${encodeURIComponent(path)}`,
   previewUrl: (path: string) => `/api/fs/preview?path=${encodeURIComponent(path)}`,
   publicFileUrl: async (path: string) => {

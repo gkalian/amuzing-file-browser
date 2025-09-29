@@ -98,7 +98,7 @@ function AppBase() {
 
   const crumbs = useBreadcrumbs(cwd, t('breadcrumbs.root', { defaultValue: 'root' }));
   // uploads hook (keeps this file slim)
-  const { uploading, uploadedBytes, totalBytes, uploadItems, handleUpload, handleUploadTo } =
+  const { uploading, uploadedBytes, totalBytes, uploadItems, uploadSpeedBps, cancelUploads, handleUpload, handleUploadTo } =
     useUploads({
       cwd,
       allowedTypes: cfgAllowedTypes,
@@ -234,6 +234,8 @@ function AppBase() {
               items={uploadItems}
               uploadedBytes={uploadedBytes}
               totalBytes={totalBytes}
+              speedBps={uploadSpeedBps}
+              onCancel={cancelUploads}
             />
           }
         />
