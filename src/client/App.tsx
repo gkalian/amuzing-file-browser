@@ -31,6 +31,8 @@ import { useSelection } from './hooks/selection/useSelection';
 import { useBulkOps } from './hooks/selection/useBulkOps';
 import { useMoveOptions } from './hooks/selection/useMoveOptions';
 import { useThemeSync } from './hooks/ui/useThemeSync';
+import { useDeleteHotkey } from './hooks/selection/useDeleteHotkey';
+import { useKeyboardNav } from './hooks/selection/useKeyboardNav';
 
 function AppBase() {
   // no direct i18n usage in this component
@@ -229,6 +231,19 @@ function AppBase() {
 
   // destination options for move
   const moveOptions = useMoveOptions(cwd, items, moveDest);
+
+  // Hotkey: Delete to remove selected files (when any selected); Esc already handled in useSelection
+  useDeleteHotkey(selectedPaths.size > 0, handleBulkDelete);
+
+  // Keyboard navigation: ArrowUp/Down move cursor and select item; Enter opens dir or selects file
+  useKeyboardNav({
+    items: paged as any,
+    selectedPaths,
+    setSelectedPaths,
+    onOpenDir: (path) => setCwd(path),
+    onGoUp: () => setCwd(parentPath(cwd)),
+    enabled: true,
+  });
 
   const onRenameSelected = useCallback(() => {
     if (selectedPaths.size !== 1) return;
