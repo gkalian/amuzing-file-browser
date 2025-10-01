@@ -1,3 +1,12 @@
+## [1.4.13](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.12...v1.4.13) (2025-10-01)
+
+
+### Bug Fixes
+
+* prettier + tests update + refactor code ([27eca12](https://github.com/gkalian/amuzing-file-browser/commit/27eca12641f29666c832485bba11778f16cb8127))
+* refactor app, reduce layout code, add modal layout and hook, additional changes ([4c26502](https://github.com/gkalian/amuzing-file-browser/commit/4c26502ed13925a91104372b8f3032b4fbac70e7))
+* use keyboard for navigating in the table ([3b42b9a](https://github.com/gkalian/amuzing-file-browser/commit/3b42b9a969031b906cebe33ef661a608e406dbd5))
+
 ## [1.4.12](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.11...v1.4.12) (2025-09-29)
 
 
