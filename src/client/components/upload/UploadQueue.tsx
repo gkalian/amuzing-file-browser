@@ -20,7 +20,14 @@ type Props = {
   onCancel?: () => void;
 };
 
-function UploadQueueBase({ uploading, items, uploadedBytes = 0, totalBytes = 0, speedBps = 0, onCancel }: Props) {
+function UploadQueueBase({
+  uploading,
+  items,
+  uploadedBytes = 0,
+  totalBytes = 0,
+  speedBps = 0,
+  onCancel,
+}: Props) {
   if (!uploading || !items?.length) return null;
 
   // Show only the current item: first 'uploading', otherwise first 'pending'
@@ -57,7 +64,13 @@ function UploadQueueBase({ uploading, items, uploadedBytes = 0, totalBytes = 0, 
           {current.name}
         </Text>
         {onCancel && (
-          <ActionIcon size="xs" variant="subtle" color="gray" aria-label="cancel-upload" onClick={onCancel}>
+          <ActionIcon
+            size="xs"
+            variant="subtle"
+            color="gray"
+            aria-label="cancel-upload"
+            onClick={onCancel}
+          >
             <IconX size={12} />
           </ActionIcon>
         )}

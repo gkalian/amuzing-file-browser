@@ -66,7 +66,11 @@ export function AppLayout(props: {
                 onUp={breadcrumbs.onUp}
               />
             </Box>
-            {breadcrumbs.rightActions && <Group gap="xs" wrap="nowrap">{breadcrumbs.rightActions}</Group>}
+            {breadcrumbs.rightActions && (
+              <Group gap="xs" wrap="nowrap">
+                {breadcrumbs.rightActions}
+              </Group>
+            )}
           </Box>
 
           {main.content}

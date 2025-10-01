@@ -69,10 +69,10 @@ export function useSettings(params: {
         const saved = await api.setConfig(payload);
         // Update lastSaved snapshot, merging only fields we sent and what server returned
         lastSavedRef.current = {
-          root: saved.root ?? (last?.root ?? cfgRoot),
-          maxUploadMB: saved.maxUploadMB ?? (last?.maxUploadMB ?? cfgMaxUpload),
-          allowedTypes: saved.allowedTypes ?? (last?.allowedTypes ?? cfgAllowedTypes),
-          theme: saved.theme ?? (last?.theme ?? cfgTheme),
+          root: saved.root ?? last?.root ?? cfgRoot,
+          maxUploadMB: saved.maxUploadMB ?? last?.maxUploadMB ?? cfgMaxUpload,
+          allowedTypes: saved.allowedTypes ?? last?.allowedTypes ?? cfgAllowedTypes,
+          theme: saved.theme ?? last?.theme ?? cfgTheme,
         };
         notifySuccess(t('notifications.settingsSaved', { defaultValue: 'Settings saved' }));
       } catch (e) {

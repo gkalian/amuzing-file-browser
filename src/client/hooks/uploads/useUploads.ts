@@ -169,7 +169,7 @@ export function useUploads(params: {
           setTotalBytes(0);
           setUploadItems([]);
           setUploadSpeedBps(0);
-          }, 300);
+        }, 300);
         currentAbortRef.current = null;
       }
     },

@@ -54,21 +54,24 @@ export function useListingModel(params: {
   }, [filtered, sortField, sortDir]);
 
   // sorting handler
-  const onSort = useCallback((field: Exclude<SortField, null>) => {
-    setSortField((prev) => {
-      if (prev === field) {
-        if (sortDir === 'asc') {
-          setSortDir('desc');
-          return prev; // same column, change direction
+  const onSort = useCallback(
+    (field: Exclude<SortField, null>) => {
+      setSortField((prev) => {
+        if (prev === field) {
+          if (sortDir === 'asc') {
+            setSortDir('desc');
+            return prev; // same column, change direction
+          }
+          // was desc -> reset sorting
+          setSortDir('asc');
+          return null;
         }
-        // was desc -> reset sorting
         setSortDir('asc');
-        return null;
-      }
-      setSortDir('asc');
-      return field;
-    });
-  }, [sortDir]);
+        return field;
+      });
+    },
+    [sortDir]
+  );
 
   // pagination
   const { paged, totalPages } = usePageSlice(sorted as any[], page, Number(pageSize));

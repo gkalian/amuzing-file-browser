@@ -14,9 +14,7 @@ describe('NameCell', () => {
   };
 
   it('renders item name', () => {
-    render(
-      <NameCell it={base} idx={0} isSymlink={false} onItemClick={() => {}} />
-    );
+    render(<NameCell it={base} idx={0} isSymlink={false} onItemClick={() => {}} />);
     expect(screen.getByText('file.txt')).toBeInTheDocument();
   });
 
@@ -33,7 +31,14 @@ describe('NameCell', () => {
 
   it('does not call onItemClick for symlink', () => {
     const onItemClick = vi.fn();
-    render(<NameCell it={{ ...base, isSymlink: true }} idx={1} isSymlink={true} onItemClick={onItemClick} />);
+    render(
+      <NameCell
+        it={{ ...base, isSymlink: true }}
+        idx={1}
+        isSymlink={true}
+        onItemClick={onItemClick}
+      />
+    );
     fireEvent.click(screen.getByTestId('item-open'));
     expect(onItemClick).not.toHaveBeenCalled();
   });

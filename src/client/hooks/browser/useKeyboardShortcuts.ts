@@ -25,7 +25,16 @@ export function useKeyboardShortcuts(params: {
   onRename: () => void;
   enabled?: boolean;
 }) {
-  const { items, selectedPaths, setSelectedPaths, onOpenDir, onGoUp, onDelete, onRename, enabled = true } = params;
+  const {
+    items,
+    selectedPaths,
+    setSelectedPaths,
+    onOpenDir,
+    onGoUp,
+    onDelete,
+    onRename,
+    enabled = true,
+  } = params;
   const [cursor, setCursor] = useState<number>(0);
   const itemsRef = useRef(items);
   itemsRef.current = items;

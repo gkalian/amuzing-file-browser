@@ -15,7 +15,8 @@ export function LeftPane(props: {
   sortDir: 'asc' | 'desc';
   onSort: (field: 'name' | 'size' | 'mtime') => void;
 }) {
-  const { items, loading, selectedPaths, onItemClick, onDropUpload, sortField, sortDir, onSort } = props;
+  const { items, loading, selectedPaths, onItemClick, onDropUpload, sortField, sortDir, onSort } =
+    props;
 
   const [isDragOver, setIsDragOver] = useState(false);
   const hasFiles = (e: React.DragEvent) =>

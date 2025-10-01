@@ -20,13 +20,22 @@ type Props = {
 
 // Virtuoso components provided by hook (includes custom tbody to clear DnD row highlight)
 
-const FileTableBase: React.FC<Props> = ({ items, onItemClick, selectedPaths, onDropUpload, sortField, sortDir, onSort }) => {
+const FileTableBase: React.FC<Props> = ({
+  items,
+  onItemClick,
+  selectedPaths,
+  onDropUpload,
+  sortField,
+  sortDir,
+  onSort,
+}) => {
   const numberFmt = useNumberFmt();
   const [dragOverPath, setDragOverPath] = useState<string | null>(null);
   // Memoized header and row renderer to minimize allocations
-  const headerContent = useCallback(() => (
-    <FileTableHeader sortField={sortField} sortDir={sortDir} onSort={onSort} />
-  ), [sortField, sortDir, onSort]);
+  const headerContent = useCallback(
+    () => <FileTableHeader sortField={sortField} sortDir={sortDir} onSort={onSort} />,
+    [sortField, sortDir, onSort]
+  );
 
   const itemContent = useCallback(
     (idx: number, it: Item) => {

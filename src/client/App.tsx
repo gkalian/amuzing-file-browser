@@ -17,9 +17,8 @@ import { useBreadcrumbs } from './hooks/navigation/useBreadcrumbs';
 import { useUploads } from './hooks/uploads/useUploads';
 import { useSettings } from './hooks/ui/useSettings';
 import { useListingModel } from './hooks/browser/useListingModel';
-import { useFileSystemOps } from './hooks/data/useFileSystemOps';
+import { useFsActions } from './hooks/data/useFsActions';
 import { useSelection } from './hooks/selection/useSelection';
-import { useBulkOps } from './hooks/selection/useBulkOps';
 import { useMoveOptions } from './hooks/selection/useMoveOptions';
 import { useThemeSync } from './hooks/ui/useThemeSync';
 import { useKeyboardShortcuts } from './hooks/browser/useKeyboardShortcuts';
@@ -74,31 +73,48 @@ function AppBase() {
   // Sync theme attribute
   useThemeSync(theme);
 
-  const crumbs = useBreadcrumbs(cwd, '..' );
+  const crumbs = useBreadcrumbs(cwd, '..');
   // uploads hook (keeps this file slim)
-  const { uploading, uploadedBytes, totalBytes, uploadItems, uploadSpeedBps, cancelUploads, handleUpload, handleUploadTo } =
-    useUploads({
-      cwd,
-      allowedTypes: cfgAllowedTypes,
-      t,
-      loadList,
-    });
+  const {
+    uploading,
+    uploadedBytes,
+    totalBytes,
+    uploadItems,
+    uploadSpeedBps,
+    cancelUploads,
+    handleUpload,
+    handleUploadTo,
+  } = useUploads({
+    cwd,
+    allowedTypes: cfgAllowedTypes,
+    t,
+    loadList,
+  });
 
-  // filesystem operations
-  const { mkdir, rename } = useFileSystemOps({ cwd, t, loadList });
+  // unified filesystem actions (mkdir, rename, bulkDelete, bulkMove)
+  const { mkdir, rename, bulkDelete, bulkMove } = useFsActions({ cwd, items, loadList, t });
 
-  const { paged, totals, totalPages, sortField, sortDir, onSort, page, setPage, pageSize, setPageSize } = listing as any;
+  const {
+    paged,
+    totals,
+    totalPages,
+    sortField,
+    sortDir,
+    onSort,
+    page,
+    setPage,
+    pageSize,
+    setPageSize,
+  } = listing as any;
 
   // selection logic extracted to hook
-  const { selectedPaths, setSelectedPaths, onItemClick, clearSelection } =
-    useSelection({
-      paged: paged as any,
-      cwd,
-      onOpenDir: (path) => setCwd(path),
-    });
+  const { selectedPaths, setSelectedPaths, onItemClick, clearSelection } = useSelection({
+    paged: paged as any,
+    cwd,
+    onOpenDir: (path) => setCwd(path),
+  });
 
-  // bulk operations extracted to hook
-  const { bulkDelete, bulkMove } = useBulkOps({ cwd, items, loadList });
+  // bulk actions are provided by useFsActions (above)
 
   // Modals controller: centralizes Mkdir/Rename/Move/Settings
   const modals = useModalsController({
@@ -239,7 +255,12 @@ function AppBase() {
                 >
                   Delete
                 </Button>
-                <Button size="xs" variant="light" onClick={() => modals.api.openMove(cwd)} disabled={bulkWorking}>
+                <Button
+                  size="xs"
+                  variant="light"
+                  onClick={() => modals.api.openMove(cwd)}
+                  disabled={bulkWorking}
+                >
                   Move
                 </Button>
                 <Button size="xs" variant="subtle" onClick={clearSelection} disabled={bulkWorking}>

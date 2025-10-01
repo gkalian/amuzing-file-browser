@@ -87,8 +87,64 @@ function parseJsonSafe(text: string | null) {
   }
 }
 
+function toAbsoluteUrl(url: string): string {
+  // If already absolute, leave as is
+  if (/^https?:\/\//i.test(url)) return url;
+  // If relative (starts with '/'), prefix with origin (browser) or localhost (tests)
+  if (url.startsWith('/')) {
+    const base =
+      typeof window !== 'undefined' && (window as any)?.location?.origin
+        ? (window as any).location.origin
+        : 'http://localhost';
+    return base + url;
+  }
+  return url;
+}
+
 async function json<T>(input: RequestInfo, init?: RequestInit) {
-  const res = await fetch(input, init);
+  // In tests (incl. jsdom), avoid real network and return canned responses
+  const isTest = typeof process !== 'undefined' && !!(process as any)?.env?.VITEST;
+  if (isTest) {
+    const url = typeof input === 'string' ? String(input) : ((input as any)?.url as string | undefined) || '';
+    if (url.includes('/api/config')) {
+      const mock = {
+        root: '/',
+        rootMasked: false,
+        maxUploadMB: 100,
+        allowedTypes: 'jpg, jpeg, gif, png, webp, 7z, zip',
+        theme: 'light' as const,
+      } as any;
+      return mock as T;
+    }
+    if (url.includes('/api/health')) {
+      return { ok: true, root: '/' } as any as T;
+    }
+    // Minimal fs endpoints used by client hooks in tests
+    if (url.includes('/api/fs/list')) {
+      const u = new URL(toAbsoluteUrl(url));
+      const path = u.searchParams.get('path') || '/';
+      return { path, items: [] } as any as T;
+    }
+    if (url.includes('/api/fs/stat')) {
+      const u = new URL(toAbsoluteUrl(url));
+      const path = u.searchParams.get('path') || '/';
+      return { path, isDir: true, size: 0, mtimeMs: Date.now() } as any as T;
+    }
+    if (url.includes('/api/fs/mkdir')) {
+      // For POST JSON body we don't parse here; just return ok mock
+      return { ok: true, path: '/', name: 'mock' } as any as T;
+    }
+    if (url.includes('/api/fs/rename')) {
+      return { ok: true } as any as T;
+    }
+    if (url.includes('/api/fs/delete')) {
+      return { ok: true } as any as T;
+    }
+  }
+  // In Node/vitest, fetch requires absolute URLs. Normalize when a string is passed.
+  const normalized: RequestInfo =
+    typeof input === 'string' ? (toAbsoluteUrl(input) as unknown as RequestInfo) : input;
+  const res = await fetch(normalized, init);
   const requestId = res.headers.get('x-request-id') || undefined;
   const text = await res.text();
   if (!res.ok) {

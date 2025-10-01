@@ -41,9 +41,7 @@ describe('FileTable', () => {
 
   it('renders header and rows; clicking row calls onItemClick', () => {
     const onItemClick = vi.fn();
-    render(
-      <FileTable items={[file]} onItemClick={onItemClick} selectedPaths={new Set()} />
-    );
+    render(<FileTable items={[file]} onItemClick={onItemClick} selectedPaths={new Set()} />);
 
     // Header
     expect(screen.getByText(/Name/i)).toBeInTheDocument();

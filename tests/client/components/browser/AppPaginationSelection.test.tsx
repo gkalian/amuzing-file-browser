@@ -13,7 +13,10 @@ vi.mock('@/client/components/browser/FileBrowserPane', () => ({
       <div>
         <div data-testid="selected-count">{selectedPaths?.size ?? 0}</div>
         <button
-          onClick={() => first && onItemClick(first, 0, { ctrlKey: false, metaKey: false, shiftKey: false } as any)}
+          onClick={() =>
+            first &&
+            onItemClick(first, 0, { ctrlKey: false, metaKey: false, shiftKey: false } as any)
+          }
         >
           SelectFirst
         </button>

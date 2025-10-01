@@ -21,12 +21,17 @@ describe('SizeCell', () => {
 
   it('renders formatted size when displaySize not provided', () => {
     render(<SizeCell it={base as any} numberFmt={new Intl.NumberFormat('en-US')} />);
-    expect(screen.getByText('1,234')).toBeInTheDocument();
+    const el = screen.getByText('1.2 KB');
+    expect(el).toBeInTheDocument();
+    expect(el).toHaveAttribute('title', '1,234 B');
   });
 
   it('renders displaySize when provided', () => {
     render(
-      <SizeCell it={{ ...base, displaySize: '1.2 KB' } as any} numberFmt={new Intl.NumberFormat()} />
+      <SizeCell
+        it={{ ...base, displaySize: '1.2 KB' } as any}
+        numberFmt={new Intl.NumberFormat()}
+      />
     );
     expect(screen.getByText('1.2 KB')).toBeInTheDocument();
   });
