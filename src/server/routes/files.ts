@@ -11,7 +11,10 @@ export function registerFilesRoutes(app: express.Application) {
   // Pretty public file URL: /files/<path within root>
   app.get(/^\/files\/.+$/, async (req, res, next) => {
     try {
-      const rel = req.path.slice('/files'.length) || '/';
+      // Use decodeURIComponent to normalize any percent-encoded characters (e.g., spaces as %20)
+      // Express req.path may retain percent-encoding when using a regex route, so decode explicitly.
+      const relRaw = req.path.slice('/files'.length) || '/';
+      const rel = decodeURIComponent(relRaw);
       const target = safeJoinRoot(rel);
       const st = await fsp.stat(target);
       if (st.isDirectory()) return res.status(403).json({ error: 'Forbidden' });
