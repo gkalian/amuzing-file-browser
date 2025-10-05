@@ -1,3 +1,10 @@
+## [1.4.14](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.13...v1.4.14) (2025-10-05)
+
+
+### Bug Fixes
+
+* update ENOENT behavior ([5456296](https://github.com/gkalian/amuzing-file-browser/commit/5456296121abf0aeb1845c2b15e222e3dd19f2b6))
+
 ## [1.4.13](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.12...v1.4.13) (2025-10-01)
 
 
