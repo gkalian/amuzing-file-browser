@@ -11,6 +11,7 @@ export function FileBrowserPane(props: {
   loading: boolean;
   selectedPaths: Set<string>;
   onItemClick: (item: FsItem, index: number, e: ReactMouseEvent) => void;
+  onItemDoubleClick: (item: FsItem, index: number, e: ReactMouseEvent) => void;
   onDeselect: () => void;
   showPreview: boolean;
   isNarrow: boolean;
@@ -27,6 +28,7 @@ export function FileBrowserPane(props: {
     loading,
     selectedPaths,
     onItemClick,
+    onItemDoubleClick,
     showPreview,
     isNarrow,
     split,
@@ -69,6 +71,7 @@ export function FileBrowserPane(props: {
           loading={loading}
           selectedPaths={selectedPaths}
           onItemClick={onItemClick}
+          onItemDoubleClick={onItemDoubleClick}
           onDropUpload={onDropUpload}
           sortField={sortField}
           sortDir={sortDir}

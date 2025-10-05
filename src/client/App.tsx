@@ -108,7 +108,7 @@ function AppBase() {
   } = listing as any;
 
   // selection logic extracted to hook
-  const { selectedPaths, setSelectedPaths, onItemClick, clearSelection } = useSelection({
+  const { selectedPaths, setSelectedPaths, onItemClick, onItemDoubleClick, clearSelection } = useSelection({
     paged: paged as any,
     cwd,
     onOpenDir: (path) => setCwd(path),
@@ -276,6 +276,7 @@ function AppBase() {
               loading={loading}
               selectedPaths={selectedPaths}
               onItemClick={onItemClick}
+              onItemDoubleClick={onItemDoubleClick}
               onDeselect={() => {
                 clearSelection();
               }}

@@ -18,6 +18,7 @@ export function FileRow(props: {
   isFolderDnDTarget: boolean;
   numberFmt: Intl.NumberFormat;
   onItemClick: (item: FsItem, index: number, e: React.MouseEvent) => void;
+  onItemDoubleClick: (item: FsItem, index: number, e: React.MouseEvent) => void;
   onDropUpload?: (targetDir: string | null, files: File[]) => void;
   setDragOverPath: (path: string | null) => void;
 }) {
@@ -30,6 +31,7 @@ export function FileRow(props: {
     isFolderDnDTarget,
     numberFmt,
     onItemClick,
+    onItemDoubleClick,
     onDropUpload,
     setDragOverPath,
   } = props;
@@ -60,6 +62,12 @@ export function FileRow(props: {
           }
         }}
         onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
+        onDoubleClick={(e: React.MouseEvent) => {
+          if (!it.isDir) return;
+          e.preventDefault();
+          e.stopPropagation();
+          onItemDoubleClick(it, idx, e);
+        }}
         onDragOver={(e) => {
           if (!isFolderDnDTarget) return;
           e.preventDefault();
@@ -92,7 +100,7 @@ export function FileRow(props: {
           isSymlink
             ? undefined
             : it.isDir
-              ? t('table.tooltips.openFolder', { defaultValue: 'Click to open' })
+              ? t('table.tooltips.openFolder', { defaultValue: 'Double-click to open' })
               : (it.mime || '').startsWith('image/')
                 ? t('table.tooltips.selectDeselect', { defaultValue: 'Select/Deselect' })
                 : undefined
@@ -106,6 +114,7 @@ export function FileRow(props: {
             isBroken={isBroken}
             isUnsafe={isUnsafe}
             onItemClick={onItemClick}
+            onItemDoubleClick={onItemDoubleClick}
           />
         </Group>
       </Table.Td>
@@ -128,6 +137,7 @@ export function FileRow(props: {
           }
         }}
         onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
+        onDoubleClick={(e: React.MouseEvent) => onItemDoubleClick(it, idx, e)}
         onDragOver={(e) => {
           if (!isFolderDnDTarget) return;
           e.preventDefault();
@@ -160,7 +170,7 @@ export function FileRow(props: {
           isSymlink
             ? undefined
             : it.isDir
-              ? t('table.tooltips.openFolder', { defaultValue: 'Click to open' })
+              ? t('table.tooltips.openFolder', { defaultValue: 'Double-click to open' })
               : (it.mime || '').startsWith('image/')
                 ? t('table.tooltips.selectDeselect', { defaultValue: 'Select/Deselect' })
                 : undefined
@@ -186,6 +196,7 @@ export function FileRow(props: {
           }
         }}
         onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
+        onDoubleClick={(e: React.MouseEvent) => onItemDoubleClick(it, idx, e)}
         onDragOver={(e) => {
           if (!isFolderDnDTarget) return;
           e.preventDefault();
@@ -244,6 +255,7 @@ export function FileRow(props: {
           }
         }}
         onClick={(e: React.MouseEvent) => onItemClick(it, idx, e)}
+        onDoubleClick={(e: React.MouseEvent) => onItemDoubleClick(it, idx, e)}
         title={
           isSymlink
             ? undefined

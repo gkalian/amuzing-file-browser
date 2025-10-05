@@ -31,14 +31,10 @@ export function useSelection(params: {
 
   const onItemClick = useCallback(
     (item: FsItem, index: number, e: React.MouseEvent) => {
-      // Directories: open on single click; clear selection
-      if (item.isDir) {
-        onOpenDir(item.path);
-        setSelectedPaths(new Set());
-        setLastSelectedIndex(null);
+      // If this is part of a double-click sequence, let onItemDoubleClick handle it
+      if ((e as any).detail && (e as any).detail >= 2) {
         return;
       }
-
       const path = item.path;
       const isToggle = e.ctrlKey || e.metaKey;
       const isRange = e.shiftKey && lastSelectedIndex !== null;
@@ -49,7 +45,7 @@ export function useSelection(params: {
         const rangePaths = new Set<string>();
         for (let i = start; i <= end; i++) {
           const it = paged[i];
-          if (it && !it.isDir) rangePaths.add(it.path);
+          if (it) rangePaths.add(it.path);
         }
         setSelectedPaths(rangePaths);
       } else if (isToggle) {

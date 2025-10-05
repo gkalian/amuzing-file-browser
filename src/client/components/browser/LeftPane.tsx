@@ -10,12 +10,13 @@ export function LeftPane(props: {
   loading: boolean;
   selectedPaths: Set<string>;
   onItemClick: (item: FsItem, index: number, e: React.MouseEvent) => void;
+  onItemDoubleClick: (item: FsItem, index: number, e: React.MouseEvent) => void;
   onDropUpload: (targetDir: string | null, files: File[]) => void;
   sortField: 'name' | 'size' | 'mtime' | null;
   sortDir: 'asc' | 'desc';
   onSort: (field: 'name' | 'size' | 'mtime') => void;
 }) {
-  const { items, loading, selectedPaths, onItemClick, onDropUpload, sortField, sortDir, onSort } =
+  const { items, loading, selectedPaths, onItemClick, onItemDoubleClick, onDropUpload, sortField, sortDir, onSort } =
     props;
 
   const [isDragOver, setIsDragOver] = useState(false);
@@ -58,6 +59,7 @@ export function LeftPane(props: {
       <FileTable
         items={items}
         onItemClick={onItemClick}
+        onItemDoubleClick={onItemDoubleClick}
         selectedPaths={selectedPaths}
         onDropUpload={onDropUpload}
         sortField={sortField}
