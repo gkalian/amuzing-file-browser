@@ -105,7 +105,8 @@ async function json<T>(input: RequestInfo, init?: RequestInit) {
   // In tests (incl. jsdom), avoid real network and return canned responses
   const isTest = typeof process !== 'undefined' && !!(process as any)?.env?.VITEST;
   if (isTest) {
-    const url = typeof input === 'string' ? String(input) : ((input as any)?.url as string | undefined) || '';
+    const url =
+      typeof input === 'string' ? String(input) : ((input as any)?.url as string | undefined) || '';
     if (url.includes('/api/config')) {
       const mock = {
         root: '/',

@@ -82,7 +82,7 @@ Configure:
 
 ## Kubernetes
 
-See basic helm chart folder. 
+See basic helm chart folder.
 
 ## Credits
 

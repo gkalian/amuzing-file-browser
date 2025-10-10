@@ -108,11 +108,12 @@ function AppBase() {
   } = listing as any;
 
   // selection logic extracted to hook
-  const { selectedPaths, setSelectedPaths, onItemClick, onItemDoubleClick, clearSelection } = useSelection({
-    paged: paged as any,
-    cwd,
-    onOpenDir: (path) => setCwd(path),
-  });
+  const { selectedPaths, setSelectedPaths, onItemClick, onItemDoubleClick, clearSelection } =
+    useSelection({
+      paged: paged as any,
+      cwd,
+      onOpenDir: (path) => setCwd(path),
+    });
 
   // bulk actions are provided by useFsActions (above)
 
