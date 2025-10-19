@@ -1,3 +1,10 @@
+## [1.4.16](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.15...v1.4.16) (2025-10-19)
+
+
+### Bug Fixes
+
+* libs update, more tests added ([975ee86](https://github.com/gkalian/amuzing-file-browser/commit/975ee86c9df0ec823f2a7c32049e412a825f31c5))
+
 ## [1.4.15](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.14...v1.4.15) (2025-10-05)
 
 
