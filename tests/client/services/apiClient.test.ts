@@ -27,7 +27,9 @@ describe('apiClient', () => {
       response: { ok: true, files: [] },
       getResponseHeader: vi.fn(),
     };
-    vi.spyOn(window as any, 'XMLHttpRequest').mockImplementation(() => xhrMock);
+    vi.spyOn(window as any, 'XMLHttpRequest').mockImplementation(function FakeXHR(this: any) {
+      return xhrMock as any;
+    });
 
     const { promise } = api.uploadWithProgressCancelable('/p', [new File(['x'], 'x.txt')], progress);
     // simulate progress + load success
@@ -49,13 +51,17 @@ describe('apiClient', () => {
     });
 
     let xhr: any = baseXhr();
-    vi.spyOn(window as any, 'XMLHttpRequest').mockImplementation(() => xhr);
+    vi.spyOn(window as any, 'XMLHttpRequest').mockImplementation(function FakeXHR(this: any) {
+      return xhr as any;
+    });
     const p1 = api.uploadWithProgressCancelable('/p', [new File(['x'], 'x.txt')]).promise;
     setTimeout(() => xhr.onerror());
     await expect(p1).rejects.toMatchObject({ code: 'network_error' });
 
     xhr = baseXhr();
-    vi.spyOn(window as any, 'XMLHttpRequest').mockImplementation(() => xhr);
+    vi.spyOn(window as any, 'XMLHttpRequest').mockImplementation(function FakeXHR(this: any) {
+      return xhr as any;
+    });
     const p2 = api.uploadWithProgressCancelable('/p', [new File(['x'], 'x.txt')]).promise;
     setTimeout(() => xhr.onabort());
     await expect(p2).rejects.toMatchObject({ code: 'aborted' });
@@ -74,7 +80,9 @@ describe('apiClient', () => {
       onerror: null,
       onabort: null,
     };
-    vi.spyOn(window as any, 'XMLHttpRequest').mockImplementation(() => xhrMock);
+    vi.spyOn(window as any, 'XMLHttpRequest').mockImplementation(function FakeXHR(this: any) {
+      return xhrMock as any;
+    });
     const p = api.uploadWithProgressCancelable('/p', [new File(['x'], 'x.txt')]).promise;
     setTimeout(() => xhrMock.onload());
     await expect(p).rejects.toMatchObject({ status: 500 });
