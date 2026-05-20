@@ -1,3 +1,10 @@
+## [1.4.17](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.16...v1.4.17) (2026-05-20)
+
+
+### Bug Fixes
+
+* libs update and chunk warning removed ([80c31db](https://github.com/gkalian/amuzing-file-browser/commit/80c31db8f73031704308be584796238446736106))
+
 ## [1.4.16](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.15...v1.4.16) (2025-10-19)
 
 
