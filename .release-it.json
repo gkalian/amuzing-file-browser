@@ -22,8 +22,8 @@
   "hooks": {
     "before:init": [],
     "after:bump": [
-      "echo 'Updating helm/Chart.yaml with version ${version}'",
-      "node -e \"const fs = require('fs'); const yaml = require('yaml'); const chartPath = 'helm/Chart.yaml'; const chart = yaml.parse(fs.readFileSync(chartPath, 'utf8')); chart.version = '${version}'; chart.appVersion = '${version}'; fs.writeFileSync(chartPath, yaml.stringify(chart));\""
+      "sed -i \"s/^version:.*/version: ${version}/\" helm/Chart.yaml",
+      "sed -i \"s/^appVersion:.*/appVersion: ${version}/\" helm/Chart.yaml"
     ],
     "after:release": []
   },
