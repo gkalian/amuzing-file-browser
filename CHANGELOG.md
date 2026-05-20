@@ -1,3 +1,12 @@
+# Changelog
+
+## [1.4.18](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.17...v1.4.18) (2026-05-20)
+
+### Bug Fixes
+
+* correct hook ([3a1e575](https://github.com/gkalian/amuzing-file-browser/commit/3a1e5751db7bb82440c2ae7d21f581d84bead4ce))
+* move to release it plugin ([d596eb8](https://github.com/gkalian/amuzing-file-browser/commit/d596eb8a5595f94e2ca70468a6dc815156db7ff9))
+
 ## [1.4.17](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.16...v1.4.17) (2026-05-20)
 
 
