@@ -1,5 +1,7 @@
 # Changelog
 
+## [1.4.19](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.18...v1.4.19) (2026-05-20)
+
 ## [1.4.18](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.17...v1.4.18) (2026-05-20)
 
 ### Bug Fixes
