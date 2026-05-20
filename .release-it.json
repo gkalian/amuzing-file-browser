@@ -1,0 +1,40 @@
+{
+  "git": {
+    "commitMessage": "chore(release): ${version} [skip ci]",
+    "requireBranch": "main",
+    "requireCleanWorkingDir": false,
+    "tagName": "v${version}",
+    "push": true,
+    "commit": true,
+    "tag": true
+  },
+  "github": {
+    "release": true,
+    "releaseName": "v${version}",
+    "comments": {
+      "submit": false,
+      "issue": false
+    }
+  },
+  "npm": {
+    "publish": false
+  },
+  "hooks": {
+    "before:init": [],
+    "after:bump": [
+      "echo 'Updating helm/Chart.yaml with version ${version}'",
+      "node -e \"const fs = require('fs'); const yaml = require('yaml'); const chartPath = 'helm/Chart.yaml'; const chart = yaml.parse(fs.readFileSync(chartPath, 'utf8')); chart.version = '${version}'; chart.appVersion = '${version}'; fs.writeFileSync(chartPath, yaml.stringify(chart));\""
+    ],
+    "after:release": []
+  },
+  "plugins": {
+    "@release-it/conventional-changelog": {
+      "preset": {
+        "name": "conventionalcommits"
+      },
+      "infile": "CHANGELOG.md",
+      "header": "# Changelog",
+      "ignoreRecommendedBump": false
+    }
+  }
+}

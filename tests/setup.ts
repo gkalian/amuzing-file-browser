@@ -4,6 +4,36 @@ import '@testing-library/jest-dom';
 // Initialize i18n for all tests
 import '@/client/i18n';
 
+// Polyfill localStorage for jsdom 29+ (file-based storage breaks clear/setItem).
+// Class-based so vi.spyOn(window.localStorage.__proto__, ...) works correctly.
+if (typeof window !== 'undefined') {
+  class LocalStorageMock implements Storage {
+    private store: Record<string, string> = {};
+    get length() {
+      return Object.keys(this.store).length;
+    }
+    key(index: number) {
+      return Object.keys(this.store)[index] ?? null;
+    }
+    getItem(key: string) {
+      return this.store[key] ?? null;
+    }
+    setItem(key: string, value: string) {
+      this.store[key] = String(value);
+    }
+    removeItem(key: string) {
+      delete this.store[key];
+    }
+    clear() {
+      Object.keys(this.store).forEach((k) => delete this.store[k]);
+    }
+  }
+  Object.defineProperty(window, 'localStorage', {
+    value: new LocalStorageMock(),
+    writable: true,
+  });
+}
+
 // Polyfill matchMedia for Mantine (color scheme detection)
 if (typeof window !== 'undefined' && !window.matchMedia) {
   window.matchMedia = (query: string) => {

@@ -43,10 +43,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run semantic-release
+      - name: Configure Git
+        run: |
+          git config --global user.name "release-it[bot]"
+          git config --global user.email "release-it[bot]@users.noreply.github.com"
+
+      - name: Run release-it
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+        run: npx release-it --ci
 
       - name: Read version
         id: version
