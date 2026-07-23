@@ -6,6 +6,7 @@ import fsp from 'fs/promises';
 import { safeJoinRoot, safeJoinRootNoFollow, toApiPath } from '../../paths.js';
 import { getRoot } from '../../config.js';
 import { logAction, makeActionMeta } from '../../log.js';
+import { httpError } from '../../lib/httpError.js';
 
 export function fsMutationRoutes(app: express.Application) {
   // Mkdir
@@ -55,16 +56,10 @@ export function fsMutationRoutes(app: express.Application) {
       // Protect root: forbid renaming the root or renaming anything to the root path
       const ROOT_REAL = fs.realpathSync(getRoot());
       if (src === ROOT_REAL || toApiPath(src) === '/') {
-        const err = new Error('Renaming root is forbidden');
-        (err as any).status = 403;
-        (err as any).appCode = 'forbidden_root_operation';
-        throw err;
+        throw httpError(403, 'forbidden_root_operation', 'Renaming root is forbidden');
       }
       if (dst === ROOT_REAL || toApiPath(dst) === '/') {
-        const err = new Error('Invalid rename target: root');
-        (err as any).status = 400;
-        (err as any).appCode = 'invalid_operation';
-        throw err;
+        throw httpError(400, 'invalid_operation', 'Invalid rename target: root');
       }
       await fsp.rename(src, dst);
       // Action log
@@ -85,10 +80,7 @@ export function fsMutationRoutes(app: express.Application) {
       // Protect root: forbid deleting the root directory
       const ROOT_REAL = fs.realpathSync(getRoot());
       if (target === ROOT_REAL || toApiPath(target) === '/') {
-        const err = new Error('Deleting root is forbidden');
-        (err as any).status = 403;
-        (err as any).appCode = 'forbidden_root_operation';
-        throw err;
+        throw httpError(403, 'forbidden_root_operation', 'Deleting root is forbidden');
       }
       const st = await fsp.lstat(target);
       if (st.isSymbolicLink()) {

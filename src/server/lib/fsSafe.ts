@@ -128,6 +128,8 @@ export function isPathSafe(filePath: string, root: string): boolean {
   const resolvedPath = path.resolve(filePath);
   const resolvedRoot = path.resolve(root);
 
-  // Check if the resolved path starts with the root path
-  return resolvedPath.startsWith(resolvedRoot + path.sep) || resolvedPath === resolvedRoot;
+  // Use path.relative to reliably detect escapes (avoids prefix false-positives
+  // like "/root-evil" matching "/root"). Inside iff relative stays within root.
+  const rel = path.relative(resolvedRoot, resolvedPath);
+  return rel === '' || (!rel.startsWith('..') && !path.isAbsolute(rel));
 }

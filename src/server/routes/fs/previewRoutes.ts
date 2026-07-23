@@ -6,6 +6,7 @@ import mime from 'mime-types';
 import { isImageLike } from '../../utils.js';
 import { safeJoinRoot, toApiPath } from '../../paths.js';
 import { logAction, makeActionMeta } from '../../log.js';
+import { httpError } from '../../lib/httpError.js';
 
 export function fsPreviewRoutes(app: express.Application) {
   // Preview: images only
@@ -14,10 +15,7 @@ export function fsPreviewRoutes(app: express.Application) {
       const target = safeJoinRoot(String(req.query.path || '/'));
       const st = await fsp.stat(target);
       if (st.isDirectory()) {
-        const err = new Error('Cannot preview a directory');
-        (err as any).status = 400;
-        (err as any).appCode = 'invalid_operation';
-        throw err;
+        throw httpError(400, 'invalid_operation', 'Cannot preview a directory');
       }
       const type = mime.lookup(target) || false;
       if (isImageLike(type)) {
@@ -25,10 +23,7 @@ export function fsPreviewRoutes(app: express.Application) {
         res.type((type as string) || 'application/octet-stream');
         fs.createReadStream(target).pipe(res);
       } else {
-        const err = new Error('Unsupported preview type');
-        (err as any).status = 415;
-        (err as any).appCode = 'unsupported_type';
-        throw err;
+        throw httpError(415, 'unsupported_type', 'Unsupported preview type');
       }
     } catch (e: any) {
       (e as any).status = (e as any).status || 400;

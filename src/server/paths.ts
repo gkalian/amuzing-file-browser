@@ -2,6 +2,7 @@
 import path from 'path';
 import { getRoot } from './config.js';
 import fs from 'fs';
+import { httpError } from './lib/httpError.js';
 
 export function safeJoinRoot(p: string) {
   const ROOT = getRoot();
@@ -15,10 +16,7 @@ export function safeJoinRoot(p: string) {
     const real = fs.realpathSync(combined);
     const inside = path.relative(ROOT_REAL, real);
     if (inside.startsWith('..') || path.isAbsolute(inside)) {
-      const err = new Error('Path traversal detected');
-      (err as any).status = 403;
-      (err as any).appCode = 'forbidden';
-      throw err;
+      throw httpError(403, 'forbidden', 'Path traversal detected');
     }
     return real;
   } catch (e: any) {
@@ -29,10 +27,7 @@ export function safeJoinRoot(p: string) {
       const parentReal = fs.realpathSync(parent);
       const inside = path.relative(ROOT_REAL, parentReal);
       if (inside.startsWith('..') || path.isAbsolute(inside)) {
-        const err = new Error('Path traversal detected');
-        (err as any).status = 403;
-        (err as any).appCode = 'forbidden';
-        throw err;
+        throw httpError(403, 'forbidden', 'Path traversal detected');
       }
       return path.join(parentReal, base);
     }
@@ -61,10 +56,7 @@ export function safeJoinRootNoFollow(p: string) {
   const parentReal = fs.realpathSync(parent);
   const inside = path.relative(ROOT_REAL, parentReal);
   if (inside.startsWith('..') || path.isAbsolute(inside)) {
-    const err = new Error('Path traversal detected');
-    (err as any).status = 403;
-    (err as any).appCode = 'forbidden';
-    throw err;
+    throw httpError(403, 'forbidden', 'Path traversal detected');
   }
   return path.join(parentReal, base);
 }

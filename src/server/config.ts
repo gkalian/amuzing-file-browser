@@ -3,6 +3,7 @@
 import fs from 'fs';
 import path from 'path';
 import { loadSettings } from './lib/settings.js';
+import { httpError } from './lib/httpError.js';
 
 export type LogLevel = 'error' | 'warn' | 'info' | 'debug';
 
@@ -109,10 +110,11 @@ export function setRoot(newRoot: string) {
   const rel = path.relative(INITIAL_ROOT_REAL, candidateReal);
   const inside = rel === '' || (!rel.startsWith('..') && !path.isAbsolute(rel));
   if (!inside) {
-    const err: any = new Error('New root must be inside the initially configured root');
-    err.status = 403;
-    err.appCode = 'forbidden_root_change';
-    throw err;
+    throw httpError(
+      403,
+      'forbidden_root_change',
+      'New root must be inside the initially configured root'
+    );
   }
   state.root = candidateReal;
 }
