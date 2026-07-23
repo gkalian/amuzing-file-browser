@@ -1,6 +1,6 @@
 apiVersion: v2
 name: amuzing-filebrowser
-version: 1.4.19
-appVersion: 1.4.19
+version: 1.4.20
+appVersion: 1.4.20
 description: Simple file browser app
 type: application

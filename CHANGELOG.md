@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.20](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.19...v1.4.20) (2026-07-23)
+
+### Bug Fixes
+
+* install oxlint ([d79311d](https://github.com/gkalian/amuzing-file-browser/commit/d79311da85453719b525f4ae66e1ac09db1af884))
+* minor tests update ([097b7f9](https://github.com/gkalian/amuzing-file-browser/commit/097b7f9af31949befc2c26c489e36579834cf586))
+* update dockerfile and github flow ([8cf1fb5](https://github.com/gkalian/amuzing-file-browser/commit/8cf1fb5d09338f6c1ad4ae564c91e7458f127597))
+
 ## [1.4.19](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.18...v1.4.19) (2026-05-20)
 
 ## [1.4.18](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.17...v1.4.18) (2026-05-20)
