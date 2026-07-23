@@ -2,6 +2,18 @@ import { describe, it, expect, vi } from 'vitest';
 import { api } from '@/client/services/apiClient';
 
 describe('apiClient', () => {
+  it('previewUrl builds correct query', () => {
+    const url = api.previewUrl('/foo/bar.txt');
+    expect(url).toContain('/api/fs/preview');
+    expect(url).toContain('path=%2Ffoo%2Fbar.txt');
+  });
+
+  it('downloadUrl builds correct query', () => {
+    const url = api.downloadUrl('/image.webp');
+    expect(url).toContain('/api/fs/download');
+    expect(url).toContain('path=%2Fimage.webp');
+  });
+
   it('publicFileUrl uses window origin when mediaDomain is absent', async () => {
     const url = await api.publicFileUrl('/foo.jpg');
     expect(url).toContain(window.location.origin);
@@ -31,7 +43,11 @@ describe('apiClient', () => {
       return xhrMock as any;
     });
 
-    const { promise } = api.uploadWithProgressCancelable('/p', [new File(['x'], 'x.txt')], progress);
+    const { promise } = api.uploadWithProgressCancelable(
+      '/p',
+      [new File(['x'], 'x.txt')],
+      progress
+    );
     // simulate progress + load success
     xhrMock.upload.onprogress({ lengthComputable: true, loaded: 1, total: 1 });
     xhrMock.onload();
