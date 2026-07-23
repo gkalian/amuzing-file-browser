@@ -3,6 +3,7 @@ import { memo, useCallback, useState } from 'react';
 import { Group, Button } from '@mantine/core';
 import pkg from '../../package.json';
 import { parentPath } from './core/utils';
+import { DEFAULT_ALLOWED_TYPES } from './core/constants';
 
 import { FileBrowserPane } from './components/browser/FileBrowserPane';
 import { BottomBar } from './components/layout/BottomBar';
@@ -30,7 +31,6 @@ import { useModalsController } from './hooks/modals/useModalsController';
 function AppBase() {
   // no direct i18n usage in this component
   const { t } = useTranslation();
-  const DEFAULT_ALLOWED_TYPES = 'jpg, jpeg, gif, png, webp, 7z, zip';
   const [cwd, setCwd] = useState<string>('/');
   // selection state handled via useSelection hook
   // file list

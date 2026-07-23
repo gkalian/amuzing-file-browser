@@ -1,5 +1,5 @@
 // Host-based access control middleware
-// - filesDomain: only allow GET requests to /files/* and /api/health (others: 403)
+// - mediaDomain: only allow GET requests to /files/* and /api/health (others: 403/405)
 // - adminDomain: full access (UI + API)
 // - if domains are not set (local dev), no restrictions are applied
 import type { Request, Response, NextFunction } from 'express';
