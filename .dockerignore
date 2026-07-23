@@ -10,3 +10,21 @@ node_modules
 backup
 coverage
 _to-do.md
+
+# VCS and CI
+.git
+.github
+.gitignore
+
+# Tests and local tooling
+tests
+**/*.test.ts
+**/*.test.tsx
+.oxlintrc.json
+.prettierrc.json
+.prettierignore
+
+# Docs and assets not needed at build time
+*.md
+fb-preview.png
+helm
