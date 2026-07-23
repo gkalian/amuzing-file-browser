@@ -10,6 +10,13 @@ function PreviewPanelBase({ item, onDeselect }: { item: FsItem | null; onDeselec
   const { t } = useTranslation();
   const [dims, setDims] = useState<{ w: number; h: number } | null>(null);
 
+  // Hooks must run unconditionally, so keep this above the early returns below.
+  const onImgLoad = useCallback<React.ReactEventHandler<HTMLImageElement>>((e) => {
+    const img = e.currentTarget;
+    const next = { w: img.naturalWidth, h: img.naturalHeight };
+    setDims((prev) => (prev && prev.w === next.w && prev.h === next.h ? prev : next));
+  }, []);
+
   if (!item)
     return (
       <Text c="dimmed">
@@ -18,11 +25,6 @@ function PreviewPanelBase({ item, onDeselect }: { item: FsItem | null; onDeselec
     );
   if (item.isDir) return <Text c="dimmed">{t('preview.folder', { defaultValue: 'Folder' })}</Text>;
   if ((item.mime || '').startsWith('image/')) {
-    const onImgLoad = useCallback<React.ReactEventHandler<HTMLImageElement>>((e) => {
-      const img = e.currentTarget;
-      const next = { w: img.naturalWidth, h: img.naturalHeight };
-      setDims((prev) => (prev && prev.w === next.w && prev.h === next.h ? prev : next));
-    }, []);
     return (
       <Box style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         <Box style={{ flex: 1, overflow: 'auto' }}>

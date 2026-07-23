@@ -19,7 +19,7 @@ describe('apiClient', () => {
       get responseType() {
         return 'json';
       },
-      upload: { onprogress: (e: any) => {} },
+      upload: { onprogress: (_e: any) => {} },
       onload: null as any,
       onerror: null as any,
       onabort: null as any,

@@ -1,5 +1,5 @@
 // App root component: orchestrates layout, state, API calls, and wiring between UI parts
-import { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import { Group, Button } from '@mantine/core';
 import pkg from '../../package.json';
 import { parentPath } from './core/utils';

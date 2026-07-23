@@ -23,7 +23,6 @@ export default defineConfig({
         '**/*.config.ts',
         'vitest.config.mjs',
         'vite.config.mjs',
-        'eslint.config.mjs',
 
         '**/*.d.ts',
         'components.d.ts',

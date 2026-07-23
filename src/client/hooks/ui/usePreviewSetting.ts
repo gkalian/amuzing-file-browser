@@ -14,7 +14,7 @@ export function usePreviewSetting(defaultValue = true) {
   useEffect(() => {
     try {
       localStorage.setItem('showPreview', String(showPreview));
-    } catch (e) {
+    } catch {
       // noop
     }
   }, [showPreview]);
