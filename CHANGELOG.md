@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.4.21](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.20...v1.4.21) (2026-07-23)
+
+### Bug Fixes
+
+* default allowed type and minor fixes ([e341120](https://github.com/gkalian/amuzing-file-browser/commit/e3411205b7fe12ad4cb5be153a75475f65733e73))
+* http error  helper ([9d21058](https://github.com/gkalian/amuzing-file-browser/commit/9d210586a892be8605942be50a5af6158a4c3c18))
+* update readme ([9a914da](https://github.com/gkalian/amuzing-file-browser/commit/9a914da1aaa0feeb29145b51ae1d1ad60fdc4866))
+* update tests ([b0774b5](https://github.com/gkalian/amuzing-file-browser/commit/b0774b527eada9bf6b372fe3470802cbddf02555))
+
 ## [1.4.20](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.19...v1.4.20) (2026-07-23)
 
 ### Bug Fixes
