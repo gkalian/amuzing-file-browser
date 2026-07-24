@@ -8,7 +8,7 @@ import { getRoot } from '../../config.js';
 import { logAction, makeActionMeta } from '../../log.js';
 import { httpError } from '../../lib/httpError.js';
 
-export function fsMutationRoutes(app: express.Application) {
+export function registerFsMutationRoutes(app: express.Application) {
   // Mkdir
   app.post('/api/fs/mkdir', async (req, res, next) => {
     try {

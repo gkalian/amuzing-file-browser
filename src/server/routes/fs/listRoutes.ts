@@ -8,7 +8,7 @@ import { safeJoinRoot, toApiPath } from '../../paths.js';
 import { getIgnoreNames, getRoot } from '../../config.js';
 import { resolveSymlinkSafe, isPathSafe } from '../../lib/fsSafe.js';
 
-export function fsListRoutes(app: express.Application) {
+export function registerFsListRoutes(app: express.Application) {
   // List directory (with pagination and sorting)
   app.get('/api/fs/list', async (req, res, next) => {
     try {

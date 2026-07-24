@@ -5,7 +5,7 @@ import { safeJoinRoot, toApiPath } from '../../paths.js';
 import { logAction, makeActionMeta } from '../../log.js';
 import { httpError } from '../../lib/httpError.js';
 
-export function fsDownloadRoutes(app: express.Application) {
+export function registerFsDownloadRoutes(app: express.Application) {
   // Download
   app.get('/api/fs/download', async (req, res, next) => {
     try {

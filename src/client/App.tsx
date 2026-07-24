@@ -105,12 +105,12 @@ function AppBase() {
     setPage,
     pageSize,
     setPageSize,
-  } = listing as any;
+  } = listing;
 
   // selection logic extracted to hook
   const { selectedPaths, setSelectedPaths, onItemClick, onItemDoubleClick, clearSelection } =
     useSelection({
-      paged: paged as any,
+      paged,
       cwd,
       onOpenDir: (path) => setCwd(path),
     });
@@ -187,7 +187,7 @@ function AppBase() {
 
   // Unified keyboard shortcuts: arrows, Enter, Delete, Backspace, F2
   useKeyboardShortcuts({
-    items: paged as any,
+    items: paged,
     selectedPaths,
     setSelectedPaths,
     onOpenDir: (path) => setCwd(path),
@@ -273,7 +273,7 @@ function AppBase() {
         main={{
           content: (
             <FileBrowserPane
-              items={paged as any}
+              items={paged}
               loading={loading}
               selectedPaths={selectedPaths}
               onItemClick={onItemClick}

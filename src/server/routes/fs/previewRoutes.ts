@@ -8,7 +8,7 @@ import { safeJoinRoot, toApiPath } from '../../paths.js';
 import { logAction, makeActionMeta } from '../../log.js';
 import { httpError } from '../../lib/httpError.js';
 
-export function fsPreviewRoutes(app: express.Application) {
+export function registerFsPreviewRoutes(app: express.Application) {
   // Preview: images only
   app.get('/api/fs/preview', async (req, res, next) => {
     try {

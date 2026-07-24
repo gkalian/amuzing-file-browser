@@ -8,8 +8,8 @@ export type SortField = 'name' | 'size' | 'mtime' | null;
 export type SortDir = 'asc' | 'desc';
 export type PageSize = '25' | '50' | '100';
 
-export function useListingModel(params: {
-  items: FsItem[] | null | undefined;
+export function useListingModel<T extends FsItem>(params: {
+  items: T[] | null | undefined;
   search: string; // debounced value
   initialPageSize?: PageSize;
 }) {
@@ -26,17 +26,17 @@ export function useListingModel(params: {
   // filtering
   const filtered = useMemo(() => {
     const q = (search || '').trim().toLowerCase();
-    const list = (items || []) as FsItem[];
+    const list = items || [];
     if (!q) return list;
     return list.filter((it) => (it.name || '').toLowerCase().includes(q));
   }, [items, search]);
 
   // totals (by filtered set)
-  const totals = useTotals(filtered as any);
+  const totals = useTotals(filtered);
 
   // sorting
   const sorted = useMemo(() => {
-    const arr = [...(filtered as FsItem[])];
+    const arr = [...filtered];
     if (!sortField) return arr;
     const dirMul = sortDir === 'asc' ? 1 : -1;
     return arr.sort((a, b) => {
@@ -74,7 +74,7 @@ export function useListingModel(params: {
   );
 
   // pagination
-  const { paged, totalPages } = usePageSlice(sorted as any[], page, Number(pageSize));
+  const { paged, totalPages } = usePageSlice(sorted, page, Number(pageSize));
 
   return {
     // data
