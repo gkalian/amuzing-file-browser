@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.22](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.21...v1.4.22) (2026-07-30)
+
+### Bug Fixes
+
+* add types and common way of register ([3422853](https://github.com/gkalian/amuzing-file-browser/commit/34228538a8cdcab24a24b69449c3a3b885c2a5d8))
+* major libs update and tests fixes ([2f3c1a2](https://github.com/gkalian/amuzing-file-browser/commit/2f3c1a292219c00984f40e00309f6cade820e8b3))
+
 ## [1.4.21](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.20...v1.4.21) (2026-07-23)
 
 ### Bug Fixes
