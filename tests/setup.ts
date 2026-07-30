@@ -1,6 +1,8 @@
 // Global settings for Vitest
-// Import jest-dom, to use matchers like toBeInTheDocument and others.
-import '@testing-library/jest-dom';
+// Import jest-dom to register matchers like toBeInTheDocument and others.
+// v7+ no longer auto-extends via the root import; the /vitest entry wires the
+// matchers into Vitest's expect explicitly.
+import '@testing-library/jest-dom/vitest';
 // Initialize i18n for all tests
 import '@/client/i18n';
 import { vi } from 'vitest';
@@ -104,4 +106,37 @@ if (typeof window !== 'undefined' && typeof (window as any).ResizeObserver === '
     disconnect() {}
   }
   (window as any).ResizeObserver = ResizeObserver;
+}
+
+// Guard getComputedStyle against a jsdom 30 regression: resolving a `font-size`
+// declared with calc() (as Mantine v9 does via `calc(... * var(--mantine-scale))`)
+// throws deep in jsdom's CSS engine. This surfaces whenever Testing Library computes
+// an accessible name (e.g. getByRole(..., { name })). We keep the real result when
+// it works and fall back to an empty declaration only when jsdom throws, so the
+// accessible-name algorithm can proceed instead of crashing the whole test.
+if (typeof window !== 'undefined') {
+  const nativeGetComputedStyle = window.getComputedStyle.bind(window);
+  const emptyDeclaration = new Proxy(
+    {
+      getPropertyValue: () => '',
+      getPropertyPriority: () => '',
+      item: () => '',
+      length: 0,
+    },
+    {
+      get(target, prop) {
+        if (prop in target) return (target as any)[prop];
+        // Any longhand/shorthand access (e.g. .display, .visibility) resolves to ''
+        return '';
+      },
+    }
+  ) as unknown as CSSStyleDeclaration;
+
+  window.getComputedStyle = ((elt: Element, pseudoElt?: string | null) => {
+    try {
+      return nativeGetComputedStyle(elt, pseudoElt ?? undefined);
+    } catch {
+      return emptyDeclaration;
+    }
+  }) as typeof window.getComputedStyle;
 }

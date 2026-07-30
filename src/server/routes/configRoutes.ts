@@ -15,6 +15,8 @@ import {
   setAllowedTypes,
   setIgnoreNames,
   setTheme,
+  isRootMasked,
+  getMaskedRoot,
   DEFAULT_ALLOWED_TYPES,
 } from '../config.js';
 import { saveSettings } from '../lib/settings.js';
@@ -23,15 +25,9 @@ import { logAction } from '../log.js';
 export function registerConfigRoutes(app: express.Application) {
   // GET /api/config
   app.get('/api/config', (_req, res) => {
-    const maskRoot =
-      process.env.NODE_ENV === 'production' &&
-      String(process.env.FILEBROWSER_EXPOSE_ROOT) !== 'true';
-    const rootMasked = maskRoot ? true : false;
-    const rootOut = maskRoot ? '/' : getRoot();
-
     res.json({
-      root: rootOut,
-      rootMasked,
+      root: getMaskedRoot(),
+      rootMasked: isRootMasked(),
       maxUploadMB: getMaxUploadMB(),
       allowedTypes: getAllowedTypes() || DEFAULT_ALLOWED_TYPES,
       ignoreNames: getIgnoreNames(),
@@ -90,17 +86,10 @@ export function registerConfigRoutes(app: express.Application) {
         { ua: req.get('user-agent') || '' }
       );
 
-      // Apply the same masking logic as GET /api/config
-      const maskRoot =
-        process.env.NODE_ENV === 'production' &&
-        String(process.env.FILEBROWSER_EXPOSE_ROOT) !== 'true';
-      const rootMasked = maskRoot ? true : false;
-      const rootOut = maskRoot ? '/' : getRoot();
-
       res.json({
         ok: true,
-        root: rootOut,
-        rootMasked,
+        root: getMaskedRoot(),
+        rootMasked: isRootMasked(),
         maxUploadMB: getMaxUploadMB(),
         allowedTypes: getAllowedTypes() || DEFAULT_ALLOWED_TYPES,
         ignoreNames: getIgnoreNames(),

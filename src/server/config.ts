@@ -84,6 +84,19 @@ export function isLevelEnabled(level: LogLevel) {
   return idx <= cur;
 }
 
+// Whether the real filesystem root must be hidden from API responses.
+// In production the root is masked unless explicitly exposed via env.
+export function isRootMasked(): boolean {
+  return (
+    process.env.NODE_ENV === 'production' && String(process.env.FILEBROWSER_EXPOSE_ROOT) !== 'true'
+  );
+}
+
+// Root path safe to expose to clients: '/' when masked, real root otherwise.
+export function getMaskedRoot(): string {
+  return isRootMasked() ? '/' : state.root;
+}
+
 // Mutators
 export function setRoot(newRoot: string) {
   const candidate = path.resolve(newRoot);

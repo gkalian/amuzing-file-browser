@@ -1,5 +1,6 @@
 // Centralized error handler middleware: normalizes errors into JSON responses with proper HTTP codes.
-// Maps common filesystem and validation errors, logs via centralized logger, and includes optional requestId.
+// Maps common filesystem errors and app-specific status/appCode signals, logs via the centralized
+// logger, and includes an optional requestId.
 import type { Request, Response, NextFunction } from 'express';
 import { isLevelEnabled, type LogLevel } from '../config.js';
 import { log } from '../log.js';
@@ -10,17 +11,6 @@ function statusFromError(err: any): {
   message: string;
   details?: unknown;
 } {
-  // Zod validation (duck-typing: no hard dependency required here)
-  const isZod = err && (err.name === 'ZodError' || Array.isArray(err.issues));
-  if (isZod) {
-    return {
-      status: 400,
-      code: 'validation_error',
-      message: 'Invalid request data',
-      details: err.issues,
-    };
-  }
-
   // Node.js fs error codes
   const code = (err && (err.code as string)) || '';
   const msg = (err && (err.message as string)) || 'Internal Server Error';
