@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.23](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.22...v1.4.23) (2026-09-07)
+
+### Bug Fixes
+
+* add types instead of using any ([3513ce4](https://github.com/gkalian/amuzing-file-browser/commit/3513ce4b05a322a5c8d127c212c6b54857dec780))
+* update libs, move to oxlint ([046f43c](https://github.com/gkalian/amuzing-file-browser/commit/046f43ceb80f9e5fa51c2d6b1089b46fe663328a))
+
 ## [1.4.22](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.21...v1.4.22) (2026-07-30)
 
 ### Bug Fixes
