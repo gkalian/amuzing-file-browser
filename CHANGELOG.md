@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.4.24](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.23...v1.4.24) (2026-09-07)
+
+### Bug Fixes
+
+* add locale for action buttons ([faa621d](https://github.com/gkalian/amuzing-file-browser/commit/faa621df776a7a7e9a86fd9d22f4f33b98a65bfc))
+
 ## [1.4.23](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.22...v1.4.23) (2026-09-07)
 
 ### Bug Fixes
