@@ -1,7 +1,7 @@
 // File browser pane: composes LeftPane (table) and optional PreviewPane with a draggable split.
 import type { FsItem } from '../../core/types';
 import type { RefObject, MouseEvent as ReactMouseEvent } from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { SplitContainer } from './SplitContainer';
 import { LeftPane } from './LeftPane';
 import { PreviewPane } from './PreviewPane';
@@ -52,10 +52,12 @@ export function FileBrowserPane(props: {
 
   // Local suppression of preview (X button): do not clear selection
   const [hidePreview, setHidePreview] = useState(false);
-  useEffect(() => {
-    // when selection changes, re-enable preview panel
+  // Re-enable preview panel when selection changes (adjust state during render)
+  const [prevSelectedPath, setPrevSelectedPath] = useState(selectedItem?.path);
+  if (selectedItem?.path !== prevSelectedPath) {
+    setPrevSelectedPath(selectedItem?.path);
     setHidePreview(false);
-  }, [selectedItem?.path]);
+  }
 
   const showImagePreview = showPreview && !isNarrow && !!selectedItem && !hidePreview;
 

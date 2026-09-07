@@ -11,11 +11,13 @@ export function useSelection(params: {
   const [selectedPaths, setSelectedPaths] = useState<Set<string>>(new Set());
   const [lastSelectedIndex, setLastSelectedIndex] = useState<number | null>(null);
 
-  // Clear selection on cwd change
-  useEffect(() => {
+  // Clear selection on cwd change (adjust state during render, not in an effect)
+  const [prevCwd, setPrevCwd] = useState(cwd);
+  if (cwd !== prevCwd) {
+    setPrevCwd(cwd);
     setSelectedPaths(new Set());
     setLastSelectedIndex(null);
-  }, [cwd]);
+  }
 
   // Escape key clears selection
   useEffect(() => {

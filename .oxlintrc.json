@@ -16,7 +16,8 @@
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "react/react-in-jsx-scope": "off",
-    "no-unused-expressions": "off"
+    "no-unused-expressions": "off",
+    "react/set-state-in-effect": "warn"
   },
   "ignorePatterns": [
     "dist",

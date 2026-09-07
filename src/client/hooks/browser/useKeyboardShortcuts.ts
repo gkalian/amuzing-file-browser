@@ -37,7 +37,9 @@ export function useKeyboardShortcuts(params: {
   } = params;
   const [cursor, setCursor] = useState<number>(0);
   const itemsRef = useRef(items);
-  itemsRef.current = items;
+  useEffect(() => {
+    itemsRef.current = items;
+  }, [items]);
 
   // Sync cursor when selection or items change
   useEffect(() => {

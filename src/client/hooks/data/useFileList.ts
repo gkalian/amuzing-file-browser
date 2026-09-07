@@ -35,8 +35,14 @@ export function useFileList(cwd: string) {
     [numberFmt]
   );
 
-  useEffect(() => {
+  // Clear stale items during render when cwd changes, then trigger the fetch
+  const [prevCwd, setPrevCwd] = useState(cwd);
+  if (cwd !== prevCwd) {
+    setPrevCwd(cwd);
     setItems(null);
+  }
+
+  useEffect(() => {
     loadList(cwd);
   }, [cwd, loadList]);
 
