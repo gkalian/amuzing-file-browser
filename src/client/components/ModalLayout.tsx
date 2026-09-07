@@ -1,4 +1,4 @@
-// ModalLayout: централизованный рендер модальных окон приложения
+// ModalLayout: centralized rendering of the application's modal dialogs
 import React, { memo } from 'react';
 import { MkdirModal } from './modals/MkdirModal';
 import { RenameModal } from './modals/RenameModal';

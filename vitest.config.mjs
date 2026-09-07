@@ -9,6 +9,9 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['tests/setup.ts'],
+    // v8 coverage instrumentation slows down heavy Mantine renders enough to
+    // trip the default 5s timeout on some machines; give those tests more room.
+    testTimeout: 15000,
     coverage: {
       provider: 'v8', // 'istanbul'
       reporter: ['text', 'json-summary', 'html'],

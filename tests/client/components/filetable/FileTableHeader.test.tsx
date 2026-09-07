@@ -8,7 +8,7 @@ describe('FileTableHeader', () => {
     render(
       <Table>
         <Table.Thead>
-          <FileTableHeader />
+          <FileTableHeader sortField={null} sortDir="asc" onSort={() => {}} />
         </Table.Thead>
       </Table>
     );

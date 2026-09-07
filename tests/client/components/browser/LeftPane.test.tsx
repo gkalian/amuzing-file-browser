@@ -21,7 +21,11 @@ describe('LeftPane', () => {
         loading={true}
         selectedPaths={new Set()}
         onItemClick={() => {}}
+        onItemDoubleClick={() => {}}
         onDropUpload={() => {}}
+        sortField={null}
+        sortDir="asc"
+        onSort={() => {}}
       />
     );
     // Mantine Loader does not expose an ARIA role by default; check its stable class
@@ -36,7 +40,11 @@ describe('LeftPane', () => {
         loading={false}
         selectedPaths={new Set()}
         onItemClick={() => {}}
+        onItemDoubleClick={() => {}}
         onDropUpload={onDropUpload}
+        sortField={null}
+        sortDir="asc"
+        onSort={() => {}}
       />
     );
 

@@ -1,4 +1,4 @@
-// AppLayout: отвечает за каркас приложения (AppShell, Header, Main, Footer)
+// AppLayout: provides the application shell (AppShell, Header, Main, Footer)
 import React from 'react';
 import { AppShell, Box, Group } from '@mantine/core';
 import { HeaderBar } from './layout/HeaderBar';
@@ -26,8 +26,8 @@ export function AppLayout(props: {
     rightActions?: React.ReactNode;
   };
   main: {
-    content: React.ReactNode; // основной контент (обычно FileBrowserPane)
-    bottomBar: React.ReactNode; // низ страницы (пагинация/итоги)
+    content: React.ReactNode; // main content (usually FileBrowserPane)
+    bottomBar: React.ReactNode; // page bottom (pagination/totals)
   };
   footerVersion: string;
 }) {

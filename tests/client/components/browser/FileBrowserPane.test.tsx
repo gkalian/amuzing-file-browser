@@ -42,6 +42,7 @@ describe('FileBrowserPane', () => {
         loading={false}
         selectedPaths={new Set()}
         onItemClick={() => {}}
+        onItemDoubleClick={() => {}}
         onDeselect={() => {}}
         showPreview={true}
         isNarrow={false}
@@ -49,6 +50,9 @@ describe('FileBrowserPane', () => {
         setDragging={() => {}}
         splitRef={createRef()}
         onDropUpload={() => {}}
+        sortField={null}
+        sortDir="asc"
+        onSort={() => {}}
       />
     );
     expect(screen.getByTestId('left-slot')).toBeInTheDocument();
@@ -63,6 +67,7 @@ describe('FileBrowserPane', () => {
         loading={false}
         selectedPaths={selected}
         onItemClick={() => {}}
+        onItemDoubleClick={() => {}}
         onDeselect={() => {}}
         showPreview={true}
         isNarrow={false}
@@ -70,6 +75,9 @@ describe('FileBrowserPane', () => {
         setDragging={() => {}}
         splitRef={createRef()}
         onDropUpload={() => {}}
+        sortField={null}
+        sortDir="asc"
+        onSort={() => {}}
       />
     );
 
