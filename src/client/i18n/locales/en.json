@@ -63,6 +63,7 @@
       "symlink": "symlink"
     },
     "actions": {
+      "open": "Open",
       "download": "Download",
       "copyLink": "Copy permanent link"
     }
@@ -76,7 +77,16 @@
     "create": "Create"
   },
   "rename": {
+    "title": "Rename",
     "placeholder": "New name"
+  },
+  "bulk": {
+    "delete": "Delete",
+    "move": "Move",
+    "clear": "Clear",
+    "moveTitle": "Move selected files",
+    "destination": "Destination folder",
+    "movePlaceholder": "Choose or type folder path"
   },
   "preview": {
     "selectFile": "Select a file to preview",
@@ -93,7 +103,8 @@
   },
   "aria": {
     "clear": "clear",
-    "uploadProgress": "upload-progress"
+    "uploadProgress": "upload-progress",
+    "cancelUpload": "Cancel upload"
   },
   "footer": {
     "version": "Amuzing File Browser {{year}}, ver. {{version}}"

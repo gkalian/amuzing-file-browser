@@ -17,7 +17,7 @@ function RenameModalBase({ opened, name, setName, onRename, onClose }: Props) {
     <Modal
       opened={opened}
       onClose={onClose}
-      title={t('table.aria.rename', { defaultValue: 'Rename' })}
+      title={t('rename.title', { defaultValue: 'Rename' })}
       centered
     >
       <Group style={{ display: 'flex', width: '100%' }} gap="sm">
@@ -30,7 +30,7 @@ function RenameModalBase({ opened, name, setName, onRename, onClose }: Props) {
           data-testid="rename-input"
         />
         <Button onClick={onRename} data-testid="rename-submit">
-          {t('table.aria.rename', { defaultValue: 'Rename' })}
+          {t('rename.title', { defaultValue: 'Rename' })}
         </Button>
       </Group>
     </Modal>

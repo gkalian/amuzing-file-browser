@@ -20,7 +20,7 @@ export function ActionsCell(props: {
       {(it.mime || '').startsWith('image/') && (
         <ActionIcon
           variant="light"
-          aria-label="Open"
+          aria-label={t('table.actions.open', { defaultValue: 'Open' })}
           title={t('table.actions.open', { defaultValue: 'Open' })}
           data-testid="action-open"
           onClick={async (e) => {
@@ -40,7 +40,7 @@ export function ActionsCell(props: {
         component="a"
         href={api.downloadUrl(it.path)}
         variant="light"
-        aria-label="Download"
+        aria-label={t('table.actions.download', { defaultValue: 'Download' })}
         title={t('table.actions.download', { defaultValue: 'Download' })}
         data-testid="action-download"
         onClick={(e) => e.stopPropagation()}
@@ -50,7 +50,7 @@ export function ActionsCell(props: {
 
       <ActionIcon
         variant="light"
-        aria-label="Copy permanent link"
+        aria-label={t('table.actions.copyLink', { defaultValue: 'Copy permanent link' })}
         title={t('table.actions.copyLink', { defaultValue: 'Copy permanent link' })}
         onClick={(e) => {
           e.stopPropagation();

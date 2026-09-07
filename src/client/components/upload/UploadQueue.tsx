@@ -2,6 +2,7 @@
 import { Group, Progress, Text, ActionIcon } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 import React, { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export type UploadItem = {
   name: string;
@@ -28,6 +29,7 @@ function UploadQueueBase({
   speedBps = 0,
   onCancel,
 }: Props) {
+  const { t } = useTranslation();
   if (!uploading || !items?.length) return null;
 
   // Show only the current item: first 'uploading', otherwise first 'pending'
@@ -68,7 +70,7 @@ function UploadQueueBase({
             size="xs"
             variant="subtle"
             color="gray"
-            aria-label="cancel-upload"
+            aria-label={t('aria.cancelUpload', { defaultValue: 'Cancel upload' })}
             onClick={onCancel}
           >
             <IconX size={12} />
@@ -87,7 +89,7 @@ function UploadQueueBase({
         </Text>
       </Group>
       {!!speedBps && speedBps > 0 && (
-        <Text size="10px" c="dimmed" mt={2} title="upload-speed">
+        <Text size="10px" c="dimmed" mt={2} data-testid="upload-speed">
           {fmtSpeed(speedBps)}
         </Text>
       )}

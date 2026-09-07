@@ -245,7 +245,7 @@ function AppBase() {
                   onClick={onRenameSelected}
                   disabled={selectedPaths.size !== 1 || bulkWorking}
                 >
-                  Rename
+                  {t('rename.title', { defaultValue: 'Rename' })}
                 </Button>
                 <Button
                   size="xs"
@@ -254,7 +254,7 @@ function AppBase() {
                   onClick={handleBulkDelete}
                   disabled={bulkWorking}
                 >
-                  Delete
+                  {t('bulk.delete', { defaultValue: 'Delete' })}
                 </Button>
                 <Button
                   size="xs"
@@ -262,10 +262,10 @@ function AppBase() {
                   onClick={() => modals.api.openMove(cwd)}
                   disabled={bulkWorking}
                 >
-                  Move
+                  {t('bulk.move', { defaultValue: 'Move' })}
                 </Button>
                 <Button size="xs" variant="subtle" onClick={clearSelection} disabled={bulkWorking}>
-                  Clear
+                  {t('bulk.clear', { defaultValue: 'Clear' })}
                 </Button>
               </Group>
             ) : undefined,

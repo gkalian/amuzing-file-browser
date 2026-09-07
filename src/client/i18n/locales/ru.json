@@ -64,6 +64,7 @@
       "symlink": "симлинк"
     },
     "actions": {
+      "open": "Открыть",
       "download": "Скачать",
       "copyLink": "Скопировать постоянную ссылку"
     }
@@ -77,7 +78,16 @@
     "create": "Создать"
   },
   "rename": {
+    "title": "Переименовать",
     "placeholder": "Новое имя"
+  },
+  "bulk": {
+    "delete": "Удалить",
+    "move": "Переместить",
+    "clear": "Снять выделение",
+    "moveTitle": "Переместить выбранные файлы",
+    "destination": "Папка назначения",
+    "movePlaceholder": "Выберите или введите путь папки"
   },
   "preview": {
     "selectFile": "Выберите файл для предпросмотра",
@@ -94,7 +104,8 @@
   },
   "aria": {
     "clear": "очистить",
-    "uploadProgress": "прогресс-загрузки"
+    "uploadProgress": "прогресс-загрузки",
+    "cancelUpload": "Отменить загрузку"
   },
   "footer": {
     "version": "Amuzing File Browser {{year}}, вер. {{version}}"

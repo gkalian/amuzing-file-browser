@@ -60,7 +60,7 @@ function HeaderBarBase({
                 size="xs"
                 variant="subtle"
                 onClick={() => setSearch('')}
-                aria-label="clear"
+                aria-label={t('aria.clear', { defaultValue: 'clear' })}
                 data-testid="search-clear"
               >
                 <IconX size={12} />
@@ -86,7 +86,7 @@ function HeaderBarBase({
               size="xs"
               leftSection={<IconUpload size={16} />}
               title={t('header.uploadTooltip', { defaultValue: 'Upload files' })}
-              aria-label="Upload"
+              aria-label={t('header.upload', { defaultValue: 'Upload' })}
               data-testid="btn-upload"
             >
               {t('header.upload', { defaultValue: 'Upload' })}
@@ -99,7 +99,7 @@ function HeaderBarBase({
           leftSection={<IconPlus size={16} />}
           onClick={onNewFolder}
           title={t('header.newFolderTooltip', { defaultValue: 'Create new folder' })}
-          aria-label="New folder"
+          aria-label={t('header.newFolder', { defaultValue: 'New folder' })}
           data-testid="btn-new-folder"
         >
           {t('header.newFolder', { defaultValue: 'New folder' })}
@@ -109,7 +109,7 @@ function HeaderBarBase({
           size="xs"
           onClick={onOpenSettings}
           title={t('header.settingsTooltip', { defaultValue: 'Open settings' })}
-          aria-label="Settings"
+          aria-label={t('header.settings', { defaultValue: 'Settings' })}
           data-testid="btn-settings"
         >
           {t('header.settings', { defaultValue: 'Settings' })}
