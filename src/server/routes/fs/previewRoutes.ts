@@ -6,7 +6,7 @@ import mime from 'mime-types';
 import { isImageLike } from '../../utils.js';
 import { safeJoinRoot, toApiPath } from '../../paths.js';
 import { logAction, makeActionMeta } from '../../log.js';
-import { httpError } from '../../lib/httpError.js';
+import { httpError, withDefaultStatus } from '../../lib/httpError.js';
 
 export function registerFsPreviewRoutes(app: express.Application) {
   // Preview: images only
@@ -25,9 +25,8 @@ export function registerFsPreviewRoutes(app: express.Application) {
       } else {
         throw httpError(415, 'unsupported_type', 'Unsupported preview type');
       }
-    } catch (e: any) {
-      (e as any).status = (e as any).status || 400;
-      next(e);
+    } catch (e) {
+      next(withDefaultStatus(e, 400));
     }
   });
 }

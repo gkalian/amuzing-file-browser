@@ -41,6 +41,6 @@ export function makeActionMeta(req: express.Request, res: express.Response) {
     ip: req.ip,
     xff: (req.headers['x-forwarded-for'] as string) || '',
     host: (req.headers['x-forwarded-host'] as string) || (req.headers['host'] as string) || '',
-    requestId: (res.locals as any)?.requestId,
+    requestId: res.locals.requestId as string | undefined,
   } as const;
 }

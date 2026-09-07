@@ -19,8 +19,8 @@ export function safeJoinRoot(p: string) {
       throw httpError(403, 'forbidden', 'Path traversal detected');
     }
     return real;
-  } catch (e: any) {
-    if (e && e.code === 'ENOENT') {
+  } catch (e) {
+    if (e instanceof Error && (e as NodeJS.ErrnoException).code === 'ENOENT') {
       // Target may not exist yet (e.g., upload or new file). Validate parent dir.
       const parent = path.dirname(combined);
       const base = path.basename(combined);

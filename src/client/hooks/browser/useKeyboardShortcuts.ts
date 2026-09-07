@@ -7,7 +7,7 @@ import type { FsItem } from '../../core/types';
 function isTextInput(el: Element | null): boolean {
   const e = el as HTMLElement | null;
   if (!e) return false;
-  if ((e as any).isContentEditable) return true;
+  if (e.isContentEditable) return true;
   const tag = (e.tagName || '').toLowerCase();
   if (tag === 'input' || tag === 'textarea' || tag === 'select') return true;
   const role = (e.getAttribute && e.getAttribute('role')) || '';
@@ -68,12 +68,11 @@ export function useKeyboardShortcuts(params: {
       if (e.key === 'Backspace') {
         // If focused element is a text input with non-empty value, let default deletion happen
         if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')) {
-          const asAny = active as unknown as { value?: string };
-          const val = (asAny.value ?? '').toString();
-          if (val.length > 0) return;
+          const field = active as HTMLInputElement | HTMLTextAreaElement;
+          if (field.value.length > 0) return;
         }
         // contentEditable -> don't hijack
-        if (active && (active as any).isContentEditable) return;
+        if (active && active.isContentEditable) return;
         e.preventDefault();
         e.stopPropagation();
         onGoUp();

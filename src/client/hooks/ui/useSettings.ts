@@ -3,11 +3,11 @@ import { useEffect, useRef, useState } from 'react';
 import { api } from '../../services/apiClient';
 import { notifyError, notifySuccess } from '../../core/notify';
 import { formatErrorMessage } from '../../core/errorUtils';
+import type { TranslateFn } from '../../core/types';
 
-export function useSettings(params: {
-  defaultAllowedTypes: string;
-  t: (key: string, opts?: any) => string;
-}) {
+type SettingsPayload = Parameters<typeof api.setConfig>[0];
+
+export function useSettings(params: { defaultAllowedTypes: string; t: TranslateFn }) {
   const { defaultAllowedTypes, t } = params;
   const [cfgRoot, setCfgRoot] = useState('');
   const [cfgMaxUpload, setCfgMaxUpload] = useState<number>(50);
@@ -32,7 +32,7 @@ export function useSettings(params: {
       const allowed = c.allowedTypes ?? defaultAllowedTypes;
       setCfgAllowedTypes(allowed);
       setCfgTheme(c.theme);
-      rootMaskedRef.current = Boolean((c as any).rootMasked);
+      rootMaskedRef.current = Boolean(c.rootMasked);
       configLoadedRef.current = true;
       lastSavedRef.current = {
         root: c.root,
@@ -49,7 +49,7 @@ export function useSettings(params: {
       if (!configLoadedRef.current) return;
       // Build minimal payload: only include changed fields; avoid sending masked root back.
       const last = lastSavedRef.current;
-      const payload: any = {};
+      const payload: SettingsPayload = {};
       const rootMasked = rootMaskedRef.current;
 
       // Include root only if it changed and either not masked or user typed a value other than '/'

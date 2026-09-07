@@ -4,17 +4,19 @@
 import type { Request, Response, NextFunction } from 'express';
 import { isLevelEnabled, type LogLevel } from '../config.js';
 import { log } from '../log.js';
+import type { HttpAwareError } from '../lib/httpError.js';
 
-function statusFromError(err: any): {
+function statusFromError(err: unknown): {
   status: number;
   code: string;
   message: string;
   details?: unknown;
 } {
+  const msg = err instanceof Error ? err.message : 'Internal Server Error';
+
   // Node.js fs error codes
-  const code = (err && (err.code as string)) || '';
-  const msg = (err && (err.message as string)) || 'Internal Server Error';
-  switch (code) {
+  const errnoCode = err instanceof Error ? (err as NodeJS.ErrnoException).code : undefined;
+  switch (errnoCode) {
     case 'ENOENT':
       return { status: 404, code: 'not_found', message: msg };
     case 'EISDIR':
@@ -31,9 +33,10 @@ function statusFromError(err: any): {
       break;
   }
 
-  // App-specific signals (optionally mark errors with .status / .httpCode / .appCode)
-  const httpStatus = (err && (err.status || err.statusCode || err.httpCode)) as number | undefined;
-  const appCode = (err && (err.appCode as string)) || 'internal_error';
+  // App-specific signals (errors tagged via lib/httpError's withDefaultStatus/HttpError)
+  const aware = err instanceof Error ? (err as HttpAwareError) : undefined;
+  const httpStatus = aware?.status;
+  const appCode = aware?.appCode || 'internal_error';
   if (httpStatus && httpStatus >= 400 && httpStatus <= 599) {
     return { status: httpStatus, code: appCode, message: msg };
   }
@@ -42,9 +45,9 @@ function statusFromError(err: any): {
 }
 
 export function errorHandler() {
-  return (err: any, req: Request, res: Response, _next: NextFunction) => {
+  return (err: unknown, req: Request, res: Response, _next: NextFunction) => {
     const requestId =
-      ((res.locals as any)?.requestId as string) ||
+      (res.locals.requestId as string | undefined) ||
       (req.headers['x-request-id'] as string) ||
       undefined;
     if (requestId) res.setHeader('X-Request-Id', requestId);
@@ -56,13 +59,13 @@ export function errorHandler() {
       log(level, {
         event: 'request_error',
         method: req.method,
-        url: (req as any).originalUrl || req.url,
+        url: req.originalUrl || req.url,
         status,
         code,
         message,
         requestId,
         // Only include stack when debug level is enabled
-        stack: isLevelEnabled('debug') ? err?.stack : undefined,
+        stack: isLevelEnabled('debug') && err instanceof Error ? err.stack : undefined,
       });
     }
 

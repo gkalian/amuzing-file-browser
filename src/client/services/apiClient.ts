@@ -92,10 +92,7 @@ function toAbsoluteUrl(url: string): string {
   if (/^https?:\/\//i.test(url)) return url;
   // If relative (starts with '/'), prefix with origin (browser) or localhost (tests)
   if (url.startsWith('/')) {
-    const base =
-      typeof window !== 'undefined' && (window as any)?.location?.origin
-        ? (window as any).location.origin
-        : 'http://localhost';
+    const base = typeof window !== 'undefined' ? window.location.origin : 'http://localhost';
     return base + url;
   }
   return url;
@@ -127,6 +124,11 @@ async function json<T>(input: RequestInfo, init?: RequestInit) {
   }
   return body as T;
 }
+
+type UploadResponse = {
+  ok: true;
+  files: { originalname: string; filename: string; size: number; path: string }[];
+};
 
 type ServerConfig = {
   root: string;
@@ -192,10 +194,7 @@ export const api = {
   upload: async (dirPath: string, files: File[]) => {
     const fd = new FormData();
     files.forEach((f) => fd.append('files', f, f.name));
-    return json<{
-      ok: true;
-      files: { originalname: string; filename: string; size: number; path: string }[];
-    }>(`/api/fs/upload?path=${encodeURIComponent(dirPath)}`, {
+    return json<UploadResponse>(`/api/fs/upload?path=${encodeURIComponent(dirPath)}`, {
       method: 'POST',
       body: fd,
     });
@@ -216,10 +215,7 @@ export const api = {
     onProgress?: (uploaded: number, total: number) => void
   ) => {
     let xhr: XMLHttpRequest | null = null;
-    const promise = new Promise<{
-      ok: true;
-      files: { originalname: string; filename: string; size: number; path: string }[];
-    }>((resolve, reject) => {
+    const promise = new Promise<UploadResponse>((resolve, reject) => {
       const fd = new FormData();
       files.forEach((f) => fd.append('files', f, f.name));
       xhr = new XMLHttpRequest();
@@ -238,7 +234,7 @@ export const api = {
         if (xhr && xhr.status >= 200 && xhr.status < 300) {
           // Some browsers may not fill response when responseType json from node; fallback
           // Avoid accessing responseText when responseType is 'json' (InvalidStateError)
-          let data: any = null;
+          let data: unknown = null;
           if (xhr.response !== null && xhr.response !== undefined) {
             data = xhr.response;
           } else if (xhr.responseType === '' || xhr.responseType === 'text') {
@@ -248,9 +244,9 @@ export const api = {
               data = {};
             }
           }
-          resolve(data as any);
+          resolve(data as UploadResponse);
         } else if (xhr) {
-          let rawBody: any = null;
+          let rawBody: unknown = null;
           let fallbackText: string | undefined;
           if (xhr.responseType === 'json' && xhr.response) {
             rawBody = xhr.response;

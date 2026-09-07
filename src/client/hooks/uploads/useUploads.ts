@@ -5,11 +5,12 @@ import { api } from '../../services/apiClient';
 import { notifyError, notifySuccess } from '../../core/notify';
 import { formatErrorMessage } from '../../core/errorUtils';
 import type { UploadItem } from '../../components/upload/UploadQueue';
+import type { TranslateFn } from '../../core/types';
 
 export function useUploads(params: {
   cwd: string;
   allowedTypes: string;
-  t: (key: string, opts?: any) => string;
+  t: TranslateFn;
   loadList: (path: string) => Promise<void> | void;
 }) {
   const { cwd, allowedTypes, t, loadList } = params;
@@ -115,7 +116,7 @@ export function useUploads(params: {
             notifySuccess(
               t('notifications.uploadSuccess', { defaultValue: 'Uploaded: {{name}}', name: saved })
             );
-          } catch (e: any) {
+          } catch (e) {
             if (cancelRequestedRef.current) {
               // mark current as error-aborted
               setUploadItems((prev) =>

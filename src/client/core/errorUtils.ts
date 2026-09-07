@@ -20,9 +20,9 @@ export function toErrorDetails(error: unknown, fallbackMessage?: string): ErrorD
     };
   }
   if (error instanceof Error) {
-    const anyErr = error as any;
+    const errWithCode = error as Error & { code?: unknown };
     return {
-      code: pickCode(anyErr?.code, 'unknown_error'),
+      code: pickCode(errWithCode.code, 'unknown_error'),
       message: error.message || fallbackMessage || 'An unexpected error occurred',
     };
   }

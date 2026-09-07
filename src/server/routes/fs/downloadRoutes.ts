@@ -3,7 +3,7 @@ import express from 'express';
 import fsp from 'fs/promises';
 import { safeJoinRoot, toApiPath } from '../../paths.js';
 import { logAction, makeActionMeta } from '../../log.js';
-import { httpError } from '../../lib/httpError.js';
+import { httpError, withDefaultStatus } from '../../lib/httpError.js';
 
 export function registerFsDownloadRoutes(app: express.Application) {
   // Download
@@ -17,9 +17,8 @@ export function registerFsDownloadRoutes(app: express.Application) {
       // Action log: download
       logAction('download', { path: toApiPath(target), bytes: st.size }, makeActionMeta(req, res));
       res.download(target);
-    } catch (e: any) {
-      (e as any).status = (e as any).status || 400;
-      next(e);
+    } catch (e) {
+      next(withDefaultStatus(e, 400));
     }
   });
 }

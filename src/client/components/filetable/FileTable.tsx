@@ -68,7 +68,7 @@ const FileTableBase: React.FC<Props> = ({
   );
 
   // Virtuoso parts (with tbody that clears row highlight on background hover)
-  const { VirtTable, VirtTableHead, VirtTableRow, VirtTableBody } = useVirtuosoParts(() =>
+  const { VirtTable, VirtTableHead, VirtTableRow, VirtTableBody } = useVirtuosoParts<Item>(() =>
     setDragOverPath(null)
   );
 

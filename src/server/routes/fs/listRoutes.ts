@@ -7,6 +7,19 @@ import mime from 'mime-types';
 import { safeJoinRoot, toApiPath } from '../../paths.js';
 import { getIgnoreNames, getRoot } from '../../config.js';
 import { resolveSymlinkSafe, isPathSafe } from '../../lib/fsSafe.js';
+import { withDefaultStatus } from '../../lib/httpError.js';
+
+type FsListItem = {
+  name: string;
+  path: string;
+  isDir: boolean;
+  isSymlink: boolean;
+  isBroken: boolean;
+  isUnsafe: boolean;
+  size: number;
+  mtimeMs: number;
+  mime: string | null;
+};
 
 export function registerFsListRoutes(app: express.Application) {
   // List directory (with pagination and sorting)
@@ -32,8 +45,8 @@ export function registerFsListRoutes(app: express.Application) {
       const visible = entries.filter((ent) => !ignore.includes(ent.name));
 
       // Collect metadata for visible items
-      const allItems = await Promise.all(
-        visible.map(async (ent) => {
+      const allItems: FsListItem[] = await Promise.all(
+        visible.map(async (ent): Promise<FsListItem> => {
           const abs = path.join(target, ent.name);
 
           // Check if the path is a symlink and resolve it
@@ -91,7 +104,8 @@ export function registerFsListRoutes(app: express.Application) {
       );
 
       // Sorting
-      const dirFirst = (a: any, b: any) => (a.isDir === b.isDir ? 0 : a.isDir ? -1 : 1);
+      const dirFirst = (a: FsListItem, b: FsListItem) =>
+        a.isDir === b.isDir ? 0 : a.isDir ? -1 : 1;
       allItems.sort((a, b) => {
         // Directories first (UX standard), then sort by key
         const dirCmp = dirFirst(a, b);
@@ -130,9 +144,8 @@ export function registerFsListRoutes(app: express.Application) {
         sort: sortKey,
         order,
       });
-    } catch (e: any) {
-      (e as any).status = (e as any).status || 400;
-      next(e);
+    } catch (e) {
+      next(withDefaultStatus(e, 400));
     }
   });
 
@@ -147,9 +160,8 @@ export function registerFsListRoutes(app: express.Application) {
         size: st.size,
         mtimeMs: st.mtimeMs,
       });
-    } catch (e: any) {
-      (e as any).status = (e as any).status || 400;
-      next(e);
+    } catch (e) {
+      next(withDefaultStatus(e, 400));
     }
   });
 }

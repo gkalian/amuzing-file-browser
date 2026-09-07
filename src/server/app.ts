@@ -48,7 +48,7 @@ export function createApp() {
       })) || [];
 
     const totalBytes = files.reduce((acc, f) => acc + (typeof f.size === 'number' ? f.size : 0), 0);
-    const dest = String((req.query as any).path || '/');
+    const dest = String(req.query.path || '/');
     // Action log (base at info, extras at debug)
     logAction(
       'upload',

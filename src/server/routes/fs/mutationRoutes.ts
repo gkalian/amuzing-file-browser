@@ -6,7 +6,7 @@ import fsp from 'fs/promises';
 import { safeJoinRoot, safeJoinRootNoFollow, toApiPath } from '../../paths.js';
 import { getRoot } from '../../config.js';
 import { logAction, makeActionMeta } from '../../log.js';
-import { httpError } from '../../lib/httpError.js';
+import { httpError, withDefaultStatus } from '../../lib/httpError.js';
 
 export function registerFsMutationRoutes(app: express.Application) {
   // Mkdir
@@ -41,9 +41,8 @@ export function registerFsMutationRoutes(app: express.Application) {
       // Action log
       logAction('mkdir', { path: apiPath, name: finalName }, makeActionMeta(req, res));
       res.json({ ok: true, path: apiPath, name: finalName });
-    } catch (e: any) {
-      (e as any).status = (e as any).status || 400;
-      next(e);
+    } catch (e) {
+      next(withDefaultStatus(e, 400));
     }
   });
 
@@ -65,9 +64,8 @@ export function registerFsMutationRoutes(app: express.Application) {
       // Action log
       logAction('rename', { from: toApiPath(src), to: toApiPath(dst) }, makeActionMeta(req, res));
       res.json({ ok: true });
-    } catch (e: any) {
-      (e as any).status = (e as any).status || 400;
-      next(e);
+    } catch (e) {
+      next(withDefaultStatus(e, 400));
     }
   });
 
@@ -97,9 +95,8 @@ export function registerFsMutationRoutes(app: express.Application) {
         makeActionMeta(req, res)
       );
       res.json({ ok: true });
-    } catch (e: any) {
-      (e as any).status = (e as any).status || 400;
-      next(e);
+    } catch (e) {
+      next(withDefaultStatus(e, 400));
     }
   });
 }

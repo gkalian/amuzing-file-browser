@@ -9,7 +9,7 @@ export function registerLogger(app: express.Application) {
   app.use((req, res, next) => {
     const fromHeader = (req.headers['x-request-id'] as string) || '';
     const requestId = fromHeader || crypto.randomBytes(8).toString('hex');
-    (res.locals as any).requestId = requestId;
+    res.locals.requestId = requestId;
     res.setHeader('X-Request-Id', requestId);
     next();
   });
@@ -18,7 +18,7 @@ export function registerLogger(app: express.Application) {
   app.use((req, res, next) => {
     const start = Date.now();
     const { method } = req;
-    const url = (req as any).originalUrl || req.url;
+    const url = req.originalUrl || req.url;
     const ua = req.get('user-agent') || '';
     const ip = req.ip;
     const xff = (req.headers['x-forwarded-for'] as string) || '';
@@ -28,7 +28,7 @@ export function registerLogger(app: express.Application) {
       const durationMs = Date.now() - start;
       const status = res.statusCode;
       const length = res.getHeader('content-length') || '-';
-      const requestId = (res.locals as any)?.requestId;
+      const requestId = res.locals.requestId as string | undefined;
       log('debug', { method, url, status, durationMs, length, ua, ip, xff, host, requestId });
     });
     next();

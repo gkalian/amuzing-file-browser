@@ -6,7 +6,7 @@ function TestComp({ clear }: { clear: () => void }) {
   const { VirtTable, VirtTableBody } = useVirtuosoParts(clear);
   return (
     <VirtTable>
-      <VirtTableBody>
+      <VirtTableBody data-testid="table-body">
         <tr>
           <td>cell</td>
         </tr>

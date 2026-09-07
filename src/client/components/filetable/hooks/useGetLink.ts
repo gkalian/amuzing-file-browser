@@ -11,10 +11,11 @@ export function useGetLink() {
       try {
         await navigator.clipboard.writeText(url);
         notifySuccess(t('notifications.linkCopied', { defaultValue: 'Link copied: {{url}}', url }));
-      } catch (e: any) {
+      } catch (e) {
+        const detail = e instanceof Error ? e.message : '';
         notifyError(
           t('notifications.copyLinkFailed', { defaultValue: 'Failed to copy link' }) +
-            (e?.message ? `: ${e.message}` : ''),
+            (detail ? `: ${detail}` : ''),
           t('notifications.copyLinkFailed', { defaultValue: 'Failed to copy link' })
         );
       }

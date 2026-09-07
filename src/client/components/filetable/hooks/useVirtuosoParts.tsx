@@ -1,17 +1,22 @@
 import React, { useCallback } from 'react';
 import { Table } from '@mantine/core';
+import type { ContextProp, ItemProps, TableBodyProps, TableProps } from 'react-virtuoso';
 
 // Provides Virtuoso table parts. Accepts a function to clear row DnD highlight
 // when dragging over the background (tbody) instead of a folder cell.
-export function useVirtuosoParts(clearDragOverPath: () => void) {
+export function useVirtuosoParts<Data>(clearDragOverPath: () => void) {
   const VirtTable = useCallback(
-    (props: any) => <Table {...props} highlightOnHover stickyHeader />,
+    (props: TableProps) => <Table {...props} highlightOnHover stickyHeader />,
     []
   );
   const VirtTableHead = Table.Thead;
-  const VirtTableRow = Table.Tr as any;
+  // Mantine's <Table.Tr> doesn't declare Virtuoso's row props (item, data-index, ...),
+  // but forwards unknown props at runtime; cast through the real shape instead of `any`.
+  const VirtTableRow = Table.Tr as unknown as React.ComponentType<
+    ItemProps<Data> & ContextProp<unknown>
+  >;
   const VirtTableBody = useCallback(
-    (props: any) => (
+    (props: TableBodyProps) => (
       <Table.Tbody
         {...props}
         data-testid="table-body"

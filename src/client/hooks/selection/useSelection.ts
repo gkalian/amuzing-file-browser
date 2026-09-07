@@ -34,7 +34,7 @@ export function useSelection(params: {
   const onItemClick = useCallback(
     (item: FsItem, index: number, e: React.MouseEvent) => {
       // If this is part of a double-click sequence, let onItemDoubleClick handle it
-      if ((e as any).detail && (e as any).detail >= 2) {
+      if (e.detail && e.detail >= 2) {
         return;
       }
       const path = item.path;

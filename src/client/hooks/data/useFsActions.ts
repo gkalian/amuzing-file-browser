@@ -2,7 +2,7 @@
 // Combines logic from useFileSystemOps and useBulkOps with notifications and list refresh
 import { useCallback } from 'react';
 import { api } from '../../services/apiClient';
-import type { FsItem } from '../../core/types';
+import type { FsItem, TranslateFn } from '../../core/types';
 import { notifyError, notifySuccess } from '../../core/notify';
 import { formatErrorMessage } from '../../core/errorUtils';
 import { joinPath, parentPath } from '../../core/utils';
@@ -12,7 +12,7 @@ export function useFsActions(params: {
   cwd: string;
   items: (FsItem[] | null) | undefined;
   loadList: (path: string) => Promise<void> | void;
-  t: (key: string, opts?: any) => string;
+  t: TranslateFn;
 }) {
   const { cwd, items, loadList, t } = params;
   const { t: tHook } = useTranslation();
@@ -32,7 +32,7 @@ export function useFsActions(params: {
           })
         );
         await loadList(cwd);
-      } catch (e: any) {
+      } catch (e) {
         notifyError(
           formatErrorMessage(
             e,
@@ -57,7 +57,7 @@ export function useFsActions(params: {
           tt('notifications.renameSuccess', { defaultValue: 'Renamed to: {{name}}', name: trimmed })
         );
         await loadList(cwd);
-      } catch (e: any) {
+      } catch (e) {
         notifyError(
           formatErrorMessage(
             e,
@@ -81,7 +81,7 @@ export function useFsActions(params: {
         try {
           await api.delete(p);
           ok++;
-        } catch (e: any) {
+        } catch (e) {
           fail++;
           notifyError(
             `${p}: ${formatErrorMessage(
@@ -160,7 +160,7 @@ export function useFsActions(params: {
         try {
           await api.mkdir(dest);
           return true;
-        } catch (e: any) {
+        } catch (e) {
           notifyError(
             formatErrorMessage(
               e,
@@ -203,7 +203,7 @@ export function useFsActions(params: {
           const toResolved = await resolveUniquePath(destTrim, it.name, it.isDir);
           await api.rename(p, toResolved);
           ok++;
-        } catch (e: any) {
+        } catch (e) {
           fail++;
           notifyError(
             `${it.name}: ${formatErrorMessage(

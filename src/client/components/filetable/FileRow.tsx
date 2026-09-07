@@ -176,7 +176,7 @@ export function FileRow(props: {
                 : undefined
         }
       >
-        <SizeCell it={it as any} numberFmt={numberFmt} />
+        <SizeCell it={it} numberFmt={numberFmt} />
       </Table.Td>
 
       <Table.Td
@@ -235,7 +235,7 @@ export function FileRow(props: {
                 : undefined
         }
       >
-        <ModifiedCell it={it as any} />
+        <ModifiedCell it={it} />
       </Table.Td>
 
       <Table.Td

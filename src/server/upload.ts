@@ -37,7 +37,7 @@ export function createMulter() {
     destination: (req, _file, cb) => {
       try {
         // Resolve target directory safely within ROOT (defaults to '/')
-        const dest = safeJoinRoot(String((req as any).query.path || '/'));
+        const dest = safeJoinRoot(String(req.query.path || '/'));
         fs.mkdirSync(dest, { recursive: true });
         cb(null, dest);
       } catch (e) {
@@ -46,7 +46,7 @@ export function createMulter() {
     },
     filename: (req, file, cb) => {
       try {
-        const dest = safeJoinRoot(String((req as any).query.path || '/'));
+        const dest = safeJoinRoot(String(req.query.path || '/'));
         const safeName = sanitizeFilename(file.originalname);
         const name = resolveUniqueName(dest, safeName);
         cb(null, name);

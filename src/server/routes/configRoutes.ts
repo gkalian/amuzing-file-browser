@@ -20,6 +20,7 @@ import {
   DEFAULT_ALLOWED_TYPES,
 } from '../config.js';
 import { saveSettings } from '../lib/settings.js';
+import { withDefaultStatus } from '../lib/httpError.js';
 import { logAction } from '../log.js';
 
 export function registerConfigRoutes(app: express.Application) {
@@ -97,12 +98,9 @@ export function registerConfigRoutes(app: express.Application) {
         adminDomain: getAdminDomain(),
         mediaDomain: getMediaDomain(),
       });
-    } catch (e: any) {
+    } catch (e) {
       // Normalize error to go through centralized error handler
-      const err = e instanceof Error ? e : new Error(String(e));
-      (err as any).status = (err as any).status || 400;
-      (err as any).appCode = (err as any).appCode || 'invalid_config';
-      next(err);
+      next(withDefaultStatus(e, 400, 'invalid_config'));
     }
   });
 }
