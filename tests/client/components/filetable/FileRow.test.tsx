@@ -266,7 +266,6 @@ describe('FileRow', () => {
   });
 
   it('shows selected and drag-over styles and handles multi-select mousedown', () => {
-
     render(
       <Table>
         <Table.Tbody>

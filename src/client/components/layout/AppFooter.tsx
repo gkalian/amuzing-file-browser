@@ -5,6 +5,9 @@ import { useTranslation } from 'react-i18next';
 
 type Props = { version: string };
 
+// Computed once at module load: keeps render pure
+const CURRENT_YEAR = new Date().getFullYear();
+
 function AppFooterBase({ version }: Props) {
   const { t } = useTranslation();
   return (
@@ -12,7 +15,7 @@ function AppFooterBase({ version }: Props) {
       <Text size="sm">
         {t('footer.version', {
           defaultValue: 'Amuzing File Browser {{year}}, ver. {{version}}',
-          year: new Date().getFullYear(),
+          year: CURRENT_YEAR,
           version,
         })}
       </Text>

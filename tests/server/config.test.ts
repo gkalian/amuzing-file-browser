@@ -5,8 +5,8 @@ import * as cfg from '@/server/config';
 
 describe('server/config', () => {
   it('getters return sensible defaults', () => {
-    expect(['error','warn','info','debug']).toContain(cfg.getLogLevel());
-    expect(['light','dark']).toContain(cfg.getTheme());
+    expect(['error', 'warn', 'info', 'debug']).toContain(cfg.getLogLevel());
+    expect(['light', 'dark']).toContain(cfg.getTheme());
     expect(typeof cfg.getPort()).toBe('number');
     expect(cfg.getAllowedTypes()).toContain('jpg');
     expect(Array.isArray(cfg.getIgnoreNames())).toBe(true);
