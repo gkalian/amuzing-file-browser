@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.4.25](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.24...v1.4.25) (2026-10-31)
+
+### Bug Fixes
+
+* add tests for filerow,shortcuts and modal controller ([4842066](https://github.com/gkalian/amuzing-file-browser/commit/48420662ef31f1ded1848005dd9de0ab1f586260))
+* fix linter error (date in footer) ([987c7e5](https://github.com/gkalian/amuzing-file-browser/commit/987c7e5423e75abf66e20338d318e19f2b1fec8a))
+* libs update ([c517d64](https://github.com/gkalian/amuzing-file-browser/commit/c517d649cd8ee98008038e313f9d9a83a1ef7a08))
+* run linter ([39378e5](https://github.com/gkalian/amuzing-file-browser/commit/39378e51850f9f18e906060c23bd2e6dafb1deaf))
+* update libs [skip ci] ([66c4b91](https://github.com/gkalian/amuzing-file-browser/commit/66c4b91dfdc23e4699c4b87a65ba4a5c2b46aabe))
+
 ## [1.4.24](https://github.com/gkalian/amuzing-file-browser/compare/v1.4.23...v1.4.24) (2026-09-07)
 
 ### Bug Fixes
