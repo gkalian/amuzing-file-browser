@@ -295,3 +295,111 @@ describe('FileRow', () => {
     expect(cell).toHaveStyle({ borderRadius: '4px' });
   });
 });
+
+describe('FileRow: other cells and non-target rows', () => {
+  const folder: FsItem = {
+    name: 'folder',
+    path: '/folder',
+    isDir: true,
+    size: 0,
+    mtimeMs: 0,
+    mime: null,
+  };
+  const textFile: FsItem = {
+    name: 'a.txt',
+    path: '/a.txt',
+    isDir: false,
+    size: 5,
+    mtimeMs: 0,
+    mime: 'text/plain',
+  };
+
+  function renderRow(it: FsItem, props: Partial<React.ComponentProps<typeof FileRow>> = {}) {
+    const handlers = {
+      onItemClick: vi.fn(),
+      onItemDoubleClick: vi.fn(),
+      onDropUpload: vi.fn(),
+      setDragOverPath: vi.fn(),
+    };
+    render(
+      <Table>
+        <Table.Tbody>
+          <Table.Tr>
+            <FileRow
+              idx={3}
+              it={it}
+              isSelected={false}
+              selStyle={undefined}
+              isRowDragOver={false}
+              isFolderDnDTarget={it.isDir}
+              numberFmt={new Intl.NumberFormat()}
+              {...handlers}
+              {...props}
+            />
+          </Table.Tr>
+        </Table.Tbody>
+      </Table>
+    );
+    return { handlers, cells: screen.getAllByRole('cell') };
+  }
+
+  it('click and double-click on size/modified/actions cells call handlers', () => {
+    const { handlers, cells } = renderRow(folder);
+    for (const cell of cells.slice(1)) {
+      fireEvent.click(cell);
+      fireEvent.doubleClick(cell);
+    }
+    expect(handlers.onItemClick).toHaveBeenCalledTimes(3);
+    expect(handlers.onItemDoubleClick).toHaveBeenCalledTimes(3);
+    expect(handlers.onItemClick).toHaveBeenCalledWith(folder, 3, expect.any(Object));
+  });
+
+  it('drag events on size and modified cells update drag-over path and upload', () => {
+    const { handlers, cells } = renderRow(folder);
+    const files = [new File(['x'], 'x.txt')];
+    for (const cell of [cells[1], cells[2]]) {
+      fireEvent.dragEnter(cell, { dataTransfer: { files } });
+      fireEvent.dragOver(cell, { dataTransfer: { files, dropEffect: 'none' } });
+      fireEvent.dragLeave(cell, { dataTransfer: { files } });
+      fireEvent.drop(cell, { dataTransfer: { files } });
+    }
+    expect(handlers.setDragOverPath).toHaveBeenCalledWith('/folder');
+    expect(handlers.setDragOverPath).toHaveBeenCalledWith(null);
+    expect(handlers.onDropUpload).toHaveBeenCalledTimes(2);
+    expect(handlers.onDropUpload).toHaveBeenCalledWith('/folder', files);
+  });
+
+  it('drop without files does not upload', () => {
+    const { handlers, cells } = renderRow(folder);
+    for (const cell of cells.slice(0, 3)) {
+      fireEvent.drop(cell, { dataTransfer: { files: [] } });
+    }
+    expect(handlers.onDropUpload).not.toHaveBeenCalled();
+    expect(handlers.setDragOverPath).not.toHaveBeenCalled();
+  });
+
+  it('non-target rows ignore all drag events', () => {
+    const { handlers, cells } = renderRow(textFile);
+    const files = [new File(['x'], 'x.txt')];
+    for (const cell of cells) {
+      fireEvent.dragEnter(cell, { dataTransfer: { files } });
+      fireEvent.dragOver(cell, { dataTransfer: { files } });
+      fireEvent.dragLeave(cell, { dataTransfer: { files } });
+      fireEvent.drop(cell, { dataTransfer: { files } });
+    }
+    expect(handlers.setDragOverPath).not.toHaveBeenCalled();
+    expect(handlers.onDropUpload).not.toHaveBeenCalled();
+    expect(cells[0]).not.toHaveAttribute('data-dnd-folder');
+  });
+
+  it('non-image files have no tooltip; all cells handle ctrl+mousedown', () => {
+    const { cells } = renderRow(textFile, { isRowDragOver: true, selStyle: { color: 'red' } });
+    for (const cell of cells) {
+      expect(cell).not.toHaveAttribute('title');
+      fireEvent.mouseDown(cell, { ctrlKey: true });
+      fireEvent.mouseDown(cell, { shiftKey: true });
+      fireEvent.mouseDown(cell);
+    }
+    expect(cells[3]).toHaveStyle({ textAlign: 'right' });
+  });
+});
