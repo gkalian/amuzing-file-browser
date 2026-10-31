@@ -19,12 +19,5 @@
     "no-unused-expressions": "off",
     "react/set-state-in-effect": "warn"
   },
-  "ignorePatterns": [
-    "dist",
-    "dist-server",
-    "coverage",
-    "node_modules",
-    "public",
-    "**/*.d.ts"
-  ]
+  "ignorePatterns": ["dist", "dist-server", "coverage", "node_modules", "public", "**/*.d.ts"]
 }
