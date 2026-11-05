@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # ---- Build stage: install all deps and build client + server ----
-FROM node:24-alpine AS build
+FROM node:26-alpine AS build
 
 WORKDIR /app
 
@@ -17,7 +17,7 @@ RUN npm run build
 RUN npm prune --omit=dev --no-audit --no-fund && npm cache clean --force
 
 # ---- Runtime stage: minimal image with only build output and prod deps ----
-FROM node:24-alpine AS runtime
+FROM node:26-alpine AS runtime
 
 WORKDIR /app
 
